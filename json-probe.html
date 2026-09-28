@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KRV JSON Probe</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:20px;line-height:1.6}
+pre{white-space:pre-wrap;word-break:break-all;background:#f3f3f3;padding:14px;border-radius:12px}
+.ok{color:#18743b}.bad{color:#a22}
+</style>
+<h1>KRV JSON 배포 확인</h1>
+<div id="status">확인 중…</div><pre id="out"></pre>
+<script>
+(async()=>{
+ const s=document.getElementById('status'),o=document.getElementById('out');
+ const u=new URL('bible_1961_krv.json',document.baseURI);u.searchParams.set('probe',Date.now());
+ try{
+   const r=await fetch(u,{cache:'no-store'});
+   const t=await r.text();
+   o.textContent=`URL: ${u}\nHTTP: ${r.status}\nContent-Type: ${r.headers.get('content-type')}\nBytes: ${t.length}\nStart: ${t.slice(0,100)}`;
+   if(!r.ok)throw new Error(`HTTP ${r.status}`);
+   const j=JSON.parse(t);
+   s.className='ok';s.textContent='JSON 파일 접근 + JSON 파싱 성공';
+ }catch(e){
+   s.className='bad';s.textContent='실패: '+e.message;
+ }
+})();
+</script>

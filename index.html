@@ -921,7 +921,7 @@ body.focus-mode .focusExit{display:block}
   </aside>
   <section class="hero" id="hero">
     <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.7는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.8는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1124,7 +1124,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.7 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.8 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1408,7 +1408,7 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.7';
+const VERSION='0.3.8';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
 const OLD_COUNT=39;
@@ -1518,12 +1518,38 @@ function blankBible(){
   }));
 }
 function normalizeStructured(raw){
-  let books;
-  if(raw && !Array.isArray(raw) && Array.isArray(raw.chapters)) books=[raw];
-  else books=Array.isArray(raw)?raw:(raw?.books||raw?.bible||raw?.data||[]);
-  if(!Array.isArray(books) || !books.length) return [];
+  const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  const asBookArray=x=>{
+    if(Array.isArray(x))return x;
+    if(isObj(x)){
+      const vals=Object.values(x).filter(v=>isObj(v)&&Array.isArray(v.chapters));
+      if(vals.length)return vals;
+    }
+    return [];
+  };
+
+  let books=[];
+  if(isObj(raw)&&Array.isArray(raw.chapters)){
+    books=[raw];
+  }else if(Array.isArray(raw)){
+    books=raw;
+  }else if(isObj(raw)){
+    // Support both:
+    // { books:[...] } / { bible:[...] } / { data:[...] }
+    // and object maps such as { books:{Genesis:{...},...} }
+    // or { Genesis:{chapters:[...]}, Exodus:{...}, ... }.
+    for(const candidate of [raw.books,raw.bible,raw.data]){
+      books=asBookArray(candidate);
+      if(books.length)break;
+    }
+    if(!books.length)books=asBookArray(raw);
+  }
+
+  if(!Array.isArray(books)||!books.length)return[];
+
   return books.map((b,bi)=>({
-    title:b.koreanTitle||b.korean_title||b.nameKo||b.name_ko||BOOK_META[bi]?.name||String(b.book||b.name||''),
+    title:b.koreanTitle||b.korean_title||b.nameKo||b.name_ko||
+          BOOK_META[bi]?.name||String(b.book||b.name||''),
     chapters:(Array.isArray(b.chapters)?b.chapters:[]).map((c,ci)=>({
       chapter:Number(c.chapter??c.number??ci+1),
       verses:(Array.isArray(c.verses)?c.verses:[]).map((v,vi)=>({
@@ -1852,17 +1878,80 @@ async function quickBootCurrentBook(){
   return true;
 }
 
-async function loadStaticRepoBible(){
+
+function staticBibleUrl(){
+  // document.baseURI handles both:
+  // /KoreanBible_Reader/
+  // /KoreanBible_Reader/index.html
+  return new URL('bible_1961_krv.json',document.baseURI);
+}
+function staticBibleDiagnosticText(err,url=null){
+  const parts=[];
+  if(url)parts.push(`URL: ${url}`);
+  if(err?.message)parts.push(`오류: ${err.message}`);
+  return parts.join(' · ');
+}
+async function fetchStaticBibleJSON(){
+  const base=staticBibleUrl();
+  const u=new URL(base.href);
+  // Bust browser/CDN negative cache after a file was newly uploaded.
+  u.searchParams.set('app','0.3.8');
+
+  const ctl=new AbortController();
+  const timer=setTimeout(()=>ctl.abort(),60000);
   try{
-    $('#dataStat').textContent='같은 저장소 성경 JSON 불러오는 중…';
+    const r=await fetch(u.href,{
+      method:'GET',
+      cache:'no-store',
+      credentials:'same-origin',
+      headers:{'Accept':'application/json,text/plain;q=0.9,*/*;q=0.1'},
+      signal:ctl.signal
+    });
+
+    const contentType=r.headers.get('content-type')||'';
+    const text=await r.text();
+
+    if(!r.ok){
+      throw new Error(`HTTP ${r.status} ${r.statusText||''}`.trim());
+    }
+    if(!text.trim()){
+      throw new Error('응답은 성공했지만 JSON 내용이 비어 있습니다');
+    }
+
+    try{
+      return {raw:JSON.parse(text),url:u.href,contentType,bytes:text.length};
+    }catch(e){
+      const preview=text.slice(0,80).replace(/\s+/g,' ');
+      throw new Error(`JSON 파싱 실패 · Content-Type=${contentType||'없음'} · 시작=${preview}`);
+    }
+  }finally{
+    clearTimeout(timer);
+  }
+}
+async function loadStaticRepoBible(){
+  let resolved='';
+  try{
+    $('#dataStat').textContent='같은 저장소 성경 JSON 확인 중…';
     $('#dataStat').classList.remove('bad');
 
-    const raw=await fetchJSONFast('./bible_1961_krv.json',45000,'force-cache');
-    const d=normalizeAny(raw);
+    resolved=staticBibleUrl().href;
+    const fetched=await fetchStaticBibleJSON();
+    const d=normalizeAny(fetched.raw);
     const s=stats(d);
 
+    if(!d.length){
+      const rootType=Array.isArray(fetched.raw)?'array':typeof fetched.raw;
+      const rootKeys=fetched.raw&&typeof fetched.raw==='object'
+        ?Object.keys(fetched.raw).slice(0,8).join(', ')
+        :'없음';
+      throw new Error(`JSON 구조를 성경 데이터로 해석하지 못했습니다 · root=${rootType} · keys=${rootKeys}`);
+    }
+
     if(!valid(d)){
-      throw new Error(`구조 불일치 · ${s.books}권 / ${s.chapters}장 / ${s.verses}절`);
+      throw new Error(
+        `구조 불일치 · ${s.books}권 / ${s.chapters}장 / ${s.verses}절 `+
+        `(읽을 수 있는 본문 ${s.readableVerses}절)`
+      );
     }
 
     bible=d;
@@ -1873,11 +1962,15 @@ async function loadStaticRepoBible(){
     try{await idbSet('bible',compactBible())}
     catch(e){console.warn('full bible cache save',e)}
 
-    setReady('GitHub Pages 같은 저장소 JSON');
+    setReady('GitHub Pages JSON · 66권 준비 완료');
+    fullBibleFailure='';
     return true;
   }catch(e){
-    console.warn('static repo bible load failed',e);
-    fullBibleFailure=e.message;
+    console.error('static repo bible load failed',{
+      url:resolved||staticBibleUrl().href,
+      error:e
+    });
+    fullBibleFailure=staticBibleDiagnosticText(e,resolved||staticBibleUrl().href);
     return false;
   }
 }
@@ -1982,25 +2075,33 @@ function compactBible(){
   }));
 }
 function showInstallCard(err=''){
+  const bibleUrl=staticBibleUrl().href;
   $('#reader').innerHTML=`
     <div class="installCard">
-      <h2>성경 JSON 파일이 필요합니다</h2>
-      <p>v0.3.7은 GitHub Actions를 사용하지 않습니다.<br>
-      저장소 루트에서 <code>index.html</code>과 <code>bible_1961_krv.json</code> 두 파일을 같은 위치에 두면 됩니다.</p>
+      <h2>성경 JSON 연결을 확인해 주세요</h2>
+      <p>저장소 파일 유무뿐 아니라 <b>캐시·HTTP 응답·JSON 구조 검증</b> 중 하나에서 실패할 수 있습니다.<br>
+      v0.3.8부터는 실제 오류 원인을 아래에 표시합니다.</p>
       <div class="installActions">
-        <button class="btn primary" id="cardRetryStatic">JSON 다시 확인</button>
+        <button class="btn primary" id="cardRetryStatic">캐시 무시하고 다시 연결</button>
+        <button class="btn" id="cardOpenJson">JSON 주소 직접 열기</button>
         <button class="btn" id="cardImport">내 기기 JSON 선택</button>
       </div>
       <div class="small">
-        GitHub Pages는 <b>Deploy from a branch → main / (root)</b>로 설정하세요.
-        정상 배포에서는 CORS·프록시·JSONP·Actions 빌드가 필요 없습니다.
+        확인 주소:<br><code style="word-break:break-all">${esc(bibleUrl)}</code>
       </div>
-      ${err?`<div class="notice error"><small>${esc(err)}</small></div>`:''}
+      ${err?`<div class="notice error"><small style="word-break:break-all">${esc(err)}</small></div>`:''}
     </div>`;
+
   $('#cardRetryStatic').onclick=async()=>{
-    if(await loadStaticRepoBible()){showHome();runSelfCheck(false)}
-    else toast('bible_1961_krv.json을 찾지 못했습니다');
+    $('#cardRetryStatic').disabled=true;
+    $('#cardRetryStatic').textContent='연결 확인 중…';
+    if(await loadStaticRepoBible()){
+      showHome();runSelfCheck(false);
+    }else{
+      showInstallCard(fullBibleFailure);
+    }
   };
+  $('#cardOpenJson').onclick=()=>window.open(bibleUrl,'_blank','noopener');
   $('#cardImport').onclick=()=>$('#fileInput').click();
 }
 
@@ -3912,7 +4013,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.7_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.8_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -3927,7 +4028,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.7.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.8.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
@@ -4221,14 +4322,14 @@ async function start(){
     repairUserData(false);showHome();runSelfCheck(false);return;
   }
 
-  // 3) v0.3.7 default: one same-origin JSON beside index.html.
+  // 3) v0.3.8 default: one same-origin JSON beside index.html.
   // No GitHub Actions, no CORS proxy, no JSONP, no 66-book recovery loop.
   if(await loadStaticRepoBible()){
     repairUserData(false);showHome();runSelfCheck(false);return;
   }
 
   showInstallCard(
-    '저장소 루트에 bible_1961_krv.json 파일이 없습니다. index.html과 같은 위치에 업로드해 주세요.'
+    fullBibleFailure || 'bible_1961_krv.json 연결 또는 구조 검증에 실패했습니다.'
   );
 }
 start();
