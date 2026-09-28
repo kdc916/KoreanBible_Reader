@@ -921,7 +921,7 @@ body.focus-mode .focusExit{display:block}
   </aside>
   <section class="hero" id="hero">
     <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.5는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.6는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1124,7 +1124,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.5 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.6 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1408,7 +1408,7 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.5';
+const VERSION='0.3.6';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
 const OLD_COUNT=39;
@@ -1952,7 +1952,7 @@ function showInstallCard(err=''){
   $('#reader').innerHTML=`
     <div class="installCard">
       <h2>성경 본문 연결이 필요합니다</h2>
-      <p>v0.3.5부터는 페이지를 열자마자 몇 분씩 자동 복구하지 않습니다.<br>
+      <p>v0.3.6부터는 페이지를 열자마자 몇 분씩 자동 복구하지 않습니다.<br>
       GitHub Pages에 <code>bible_1961_krv.json</code> 또는 <code>data/*.json</code>이 함께 있으면 같은 저장소에서 빠르게 읽습니다.</p>
       <div class="installActions">
         <button class="btn primary" id="cardInstall">전체 본문 빠르게 연결</button>
@@ -3877,7 +3877,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.5_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.6_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -3892,7 +3892,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.5.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.6.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
