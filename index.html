@@ -921,7 +921,7 @@ body.focus-mode .focusExit{display:block}
   </aside>
   <section class="hero" id="hero">
     <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.8는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.9는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1124,7 +1124,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.8 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.9 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1408,9 +1408,11 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.8';
+const VERSION='0.3.9';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
+const BIBLE_CACHE_KEY='bible-canonical-v1';
+const BIBLE_CACHE_VERSION='0.3.9-canonical-v1';
 const OLD_COUNT=39;
 
 const BOOK_META=[
@@ -1446,6 +1448,230 @@ const BOOK_FILES=[
 'Philippians','Colossians','1Thessalonians','2Thessalonians','1Timothy','2Timothy','Titus','Philemon',
 'Hebrews','James','1Peter','2Peter','1John','2John','3John','Jude','Revelation'
 ];
+
+const BOOK_SHORT_CODES=[
+'gen','exo','lev','num','deu','jos','jdg','rut',
+'1sa','2sa','1ki','2ki','1ch','2ch','ezr','neh','est','job',
+'psa','pro','ecc','sng','isa','jer','lam','ezk','dan',
+'hos','jol','amo','oba','jon','mic','nah','hab','zep','hag','zec','mal',
+'mat','mrk','luk','jhn','act','rom','1co','2co','gal','eph',
+'php','col','1th','2th','1ti','2ti','tit','phm','heb','jas',
+'1pe','2pe','1jn','2jn','3jn','jud','rev'
+];
+
+function bookIdToken(v){
+  return String(v??'').normalize('NFKC').toLowerCase().replace(/[^0-9a-z가-힣]/g,'');
+}
+
+const BOOK_ID_MAP=(()=>{
+  const m=new Map();
+  const add=(id,idx)=>{const t=bookIdToken(id);if(t)m.set(t,idx)};
+  BOOK_META.forEach((meta,idx)=>{
+    add(meta.name,idx);
+    add(BOOK_FILES[idx],idx);
+    add(BOOK_SHORT_CODES[idx],idx);
+  });
+
+  const extras={
+    '창':0,'출':1,'레':2,'민':3,'신':4,'수':5,'삿':6,'룻':7,
+    '삼상':8,'삼하':9,'왕상':10,'왕하':11,'대상':12,'대하':13,
+    '스':14,'느':15,'에':16,'욥':17,'시':18,'잠':19,'전':20,'아':21,
+    '사':22,'렘':23,'애':24,'겔':25,'단':26,'호':27,'욜':28,'암':29,
+    '옵':30,'욘':31,'미':32,'나':33,'합':34,'습':35,'학':36,'슥':37,'말':38,
+    '마':39,'막':40,'눅':41,'요':42,'행':43,'롬':44,'고전':45,'고후':46,
+    '갈':47,'엡':48,'빌':49,'골':50,'살전':51,'살후':52,'딤전':53,'딤후':54,
+    '딛':55,'몬':56,'히':57,'약':58,'벧전':59,'벧후':60,'요일':61,'요이':62,
+    '요삼':63,'유':64,'계':65,
+    '요한일서':61,'요한이서':62,'요한삼서':63,
+    'songofsongs':21,'canticles':21,'psalm':18,'revelations':65,
+    '1sam':8,'2sam':9,'1kgs':10,'2kgs':11,'1chr':12,'2chr':13,
+    '1cor':45,'2cor':46,'1thess':51,'2thess':52,'1tim':53,'2tim':54,
+    '1pet':59,'2pet':60,'1john':61,'2john':62,'3john':63
+  };
+  Object.entries(extras).forEach(([id,idx])=>add(id,idx));
+  return m;
+})();
+
+function resolveBookIndex(book,sourceKey=''){
+  const ids=[
+    sourceKey,
+    book?.book,
+    book?.code,
+    book?.id,
+    book?.slug,
+    book?.name,
+    book?.title,
+    book?.koreanTitle,
+    book?.korean_title,
+    book?.nameKo,
+    book?.name_ko
+  ];
+  for(const id of ids){
+    const token=bookIdToken(id);
+    if(BOOK_ID_MAP.has(token))return BOOK_ID_MAP.get(token);
+  }
+
+  for(const n of [book?.bookNumber,book?.book_number,book?.number,book?.order]){
+    const x=Number(n);
+    if(Number.isInteger(x)&&x>=1&&x<=66)return x-1;
+  }
+
+  return null;
+}
+
+function extractStructuredBookEntries(raw){
+  const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  const fromCandidate=candidate=>{
+    if(Array.isArray(candidate))return candidate.map((b,i)=>[String(i),b]);
+    if(isObj(candidate)){
+      return Object.entries(candidate).filter(([,b])=>isObj(b)&&Array.isArray(b.chapters));
+    }
+    return [];
+  };
+
+  if(isObj(raw)&&Array.isArray(raw.chapters))return [['',raw]];
+  if(Array.isArray(raw))return fromCandidate(raw);
+
+  if(isObj(raw)){
+    for(const candidate of [raw.books,raw.bible,raw.data]){
+      const entries=fromCandidate(candidate);
+      if(entries.length)return entries;
+    }
+    return fromCandidate(raw);
+  }
+  return [];
+}
+
+function normalizeOneStructuredBook(rawBook,canonicalIndex){
+  const meta=BOOK_META[canonicalIndex];
+  const chapters=(Array.isArray(rawBook?.chapters)?rawBook.chapters:[]).map((c,ci)=>({
+    chapter:Number(c?.chapter??c?.number??ci+1),
+    verses:(Array.isArray(c?.verses)?c.verses:[]).map((v,vi)=>({
+      verse:Number(v?.verse??v?.number??vi+1),
+      text:String(v?.text??v?.hangulText??v?.content??'').trim()
+    })).sort((a,b)=>a.verse-b.verse)
+  })).sort((a,b)=>a.chapter-b.chapter);
+
+  return{
+    title:meta.name,
+    canonicalIndex,
+    chapters
+  };
+}
+
+function canonicalizeStructuredBooks(raw){
+  const entries=extractStructuredBookEntries(raw);
+  if(!entries.length)return[];
+
+  const identified=[];
+  const unresolved=[];
+  const used=new Set();
+
+  for(const [sourceKey,book] of entries){
+    const idx=resolveBookIndex(book,sourceKey);
+    if(idx==null){
+      unresolved.push(
+        String(
+          sourceKey ||
+          book?.book ||
+          book?.koreanTitle ||
+          book?.name ||
+          '(식별자 없음)'
+        )
+      );
+      continue;
+    }
+    if(used.has(idx)){
+      throw new Error(`성경책 중복 식별: ${BOOK_META[idx].name}`);
+    }
+    used.add(idx);
+    identified.push({idx,book:normalizeOneStructuredBook(book,idx)});
+  }
+
+  if(unresolved.length){
+    throw new Error(`성경책 식별 실패: ${unresolved.slice(0,5).join(', ')}`);
+  }
+
+  // A single per-book JSON is allowed for legacy/manual helpers.
+  if(identified.length===1)return [identified[0].book];
+
+  if(identified.length!==66){
+    throw new Error(`66권 식별 실패: ${identified.length}권만 식별됨`);
+  }
+
+  const ordered=new Array(66);
+  identified.forEach(x=>ordered[x.idx]=x.book);
+
+  const missing=[];
+  ordered.forEach((b,i)=>{if(!b)missing.push(BOOK_META[i].name)});
+  if(missing.length){
+    throw new Error(`정규 순서에서 누락된 책: ${missing.join(', ')}`);
+  }
+  return ordered;
+}
+
+function verseFingerprint(text){
+  return String(text??'').normalize('NFKC').replace(/[^0-9A-Za-z가-힣]/g,'');
+}
+
+function verseTextAt(d,bi,ch,v){
+  const chapter=d?.[bi]?.chapters?.find(x=>Number(x.chapter)===Number(ch));
+  return chapter?.verses?.find(x=>Number(x.verse)===Number(v))?.text||'';
+}
+
+function canonicalValidationReport(d){
+  const errors=[];
+  const s=stats(d);
+
+  if(s.books!==66)errors.push(`권 수 ${s.books}/66`);
+  if(s.chapters!==1189)errors.push(`장 수 ${s.chapters}/1189`);
+  if(s.verses!==31102)errors.push(`절 위치 ${s.verses}/31102`);
+
+  if(Array.isArray(d)&&d.length===66){
+    d.forEach((book,i)=>{
+      const meta=BOOK_META[i];
+      if(book?.title!==meta.name){
+        errors.push(`${i+1}번째 책 이름: ${book?.title||'없음'} ≠ ${meta.name}`);
+        return;
+      }
+      if(book?.chapters?.length!==meta.chapters){
+        errors.push(`${meta.name} 장 수: ${book?.chapters?.length||0}/${meta.chapters}`);
+        return;
+      }
+      for(let ch=1;ch<=meta.chapters;ch++){
+        const c=book.chapters[ch-1];
+        if(Number(c?.chapter)!==ch){
+          errors.push(`${meta.name} ${ch}장 좌표 불일치`);
+          break;
+        }
+        const verseNums=(c?.verses||[]).map(v=>Number(v.verse));
+        if(new Set(verseNums).size!==verseNums.length){
+          errors.push(`${meta.name} ${ch}장 절 번호 중복`);
+          break;
+        }
+      }
+    });
+
+    // Mapping sanity checks. These catch the exact v0.3.8 bug
+    // where 1 Chronicles was rendered under Genesis.
+    const gen11=verseFingerprint(verseTextAt(d,0,1,1));
+    const chr11=verseFingerprint(verseTextAt(d,12,1,1));
+    const john11=verseFingerprint(verseTextAt(d,42,1,1));
+
+    if(!gen11.startsWith('태초에하나님이천지를창조하시니라')){
+      errors.push('창세기 1:1 본문 식별 실패');
+    }
+    if(!chr11.startsWith('아담셋에노스')){
+      errors.push('역대상 1:1 본문 식별 실패');
+    }
+    if(!john11.startsWith('태초에말씀이계시니라')){
+      errors.push('요한복음 1:1 본문 식별 실패');
+    }
+  }
+
+  return{ok:errors.length===0,errors,stats:s};
+}
+
 
 let bible=[];
 let flat=[];
@@ -1518,46 +1744,7 @@ function blankBible(){
   }));
 }
 function normalizeStructured(raw){
-  const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
-  const asBookArray=x=>{
-    if(Array.isArray(x))return x;
-    if(isObj(x)){
-      const vals=Object.values(x).filter(v=>isObj(v)&&Array.isArray(v.chapters));
-      if(vals.length)return vals;
-    }
-    return [];
-  };
-
-  let books=[];
-  if(isObj(raw)&&Array.isArray(raw.chapters)){
-    books=[raw];
-  }else if(Array.isArray(raw)){
-    books=raw;
-  }else if(isObj(raw)){
-    // Support both:
-    // { books:[...] } / { bible:[...] } / { data:[...] }
-    // and object maps such as { books:{Genesis:{...},...} }
-    // or { Genesis:{chapters:[...]}, Exodus:{...}, ... }.
-    for(const candidate of [raw.books,raw.bible,raw.data]){
-      books=asBookArray(candidate);
-      if(books.length)break;
-    }
-    if(!books.length)books=asBookArray(raw);
-  }
-
-  if(!Array.isArray(books)||!books.length)return[];
-
-  return books.map((b,bi)=>({
-    title:b.koreanTitle||b.korean_title||b.nameKo||b.name_ko||
-          BOOK_META[bi]?.name||String(b.book||b.name||''),
-    chapters:(Array.isArray(b.chapters)?b.chapters:[]).map((c,ci)=>({
-      chapter:Number(c.chapter??c.number??ci+1),
-      verses:(Array.isArray(c.verses)?c.verses:[]).map((v,vi)=>({
-        verse:Number(v.verse??v.number??vi+1),
-        text:String(v.text??v.hangulText??v.content??'').trim()
-      }))
-    }))
-  }));
+  return canonicalizeStructuredBooks(raw);
 }
 function normalizeBolls(rows){
   if(!Array.isArray(rows)||!rows.length) return [];
@@ -1590,8 +1777,7 @@ function stats(d){
   return{books:d.length,chapters,verses,readableVerses};
 }
 function valid(d){
-  const s=stats(d);
-  return s.books===EXPECTED.books && s.chapters===EXPECTED.chapters && s.verses===EXPECTED.verses;
+  return canonicalValidationReport(d).ok;
 }
 function normalizeSearchText(s){
   return String(s??'').toLowerCase().normalize('NFC').replace(/[“”‘’"'`~!@#$%^&*()_+=\[\]{}\\|;,.<>/?：·…—–-]+/g,' ').replace(/\s+/g,' ').trim();
@@ -1649,6 +1835,25 @@ function idbDelete(k){
     r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error);
   });
 }
+async function ensureCanonicalBibleCache(){
+  const current=localStorage.getItem('krv-bible-cache-version');
+  if(current===BIBLE_CACHE_VERSION)return;
+
+  try{
+    // v0.3.8 and earlier may contain correctly-sized but wrongly ordered books.
+    await idbDelete('bible');
+    await idbDelete(BIBLE_CACHE_KEY);
+    for(let i=0;i<66;i++){
+      await idbDelete(`book:${i}`);
+      await idbDelete(`book-canonical-v1:${i}`);
+    }
+  }catch(e){
+    console.warn('legacy Bible cache cleanup',e);
+  }
+
+  localStorage.setItem('krv-bible-cache-version',BIBLE_CACHE_VERSION);
+}
+
 async function fetchJSON(url,timeout=30000){
   const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),timeout);
   try{
@@ -1763,7 +1968,7 @@ function localBookUrls(i){
 }
 async function loadCachedBook(i){
   try{
-    const raw=await idbGet(`book:${i}`);
+    const raw=await idbGet(`book-canonical-v1:${i}`);
     if(!raw)return null;
     const one=normalizeAny(raw);
     const b=one.length===1?one[0]:(raw?.chapters?normalizeStructured(raw)[0]:null);
@@ -1808,7 +2013,7 @@ async function ensureBookLoaded(i,showStatus=true){
       catch(e){console.warn('local book',i,e);return false}
     }
     bible[i]=b;
-    try{await idbSet(`book:${i}`,b)}catch(e){console.warn('book cache save',e)}
+    try{await idbSet(`book-canonical-v1:${i}`,b)}catch(e){console.warn('book cache save',e)}
     buildFlat();
     setFastBookReady(i,source);
     return true;
@@ -1833,7 +2038,7 @@ async function tryFullSourceList(sources,timeout=14000){
 async function activateFullBible(d,source,rerender=true){
   const y=window.scrollY;
   bible=d;partialBibleMode=false;buildFlat();currentSource=source;
-  try{await idbSet('bible',compactBible())}catch(e){console.warn('cache save',e)}
+  try{await idbSet(BIBLE_CACHE_KEY,compactBible())}catch(e){console.warn('cache save',e)}
   setReady(source);
   if(rerender&&activeView==='reader'){
     renderReader();
@@ -1947,10 +2152,10 @@ async function loadStaticRepoBible(){
       throw new Error(`JSON 구조를 성경 데이터로 해석하지 못했습니다 · root=${rootType} · keys=${rootKeys}`);
     }
 
-    if(!valid(d)){
+    const report=canonicalValidationReport(d);
+    if(!report.ok){
       throw new Error(
-        `구조 불일치 · ${s.books}권 / ${s.chapters}장 / ${s.verses}절 `+
-        `(읽을 수 있는 본문 ${s.readableVerses}절)`
+        `정규 매핑 검증 실패 · ${report.errors.slice(0,4).join(' / ')}`
       );
     }
 
@@ -1959,10 +2164,12 @@ async function loadStaticRepoBible(){
     buildFlat();
     currentSource='GitHub Pages 같은 저장소 JSON';
 
-    try{await idbSet('bible',compactBible())}
-    catch(e){console.warn('full bible cache save',e)}
+    try{
+      await idbSet(BIBLE_CACHE_KEY,compactBible());
+      localStorage.setItem('krv-bible-cache-version',BIBLE_CACHE_VERSION);
+    }catch(e){console.warn('full bible cache save',e)}
 
-    setReady('GitHub Pages JSON · 66권 준비 완료');
+    setReady('개역한글 1961 · 66권 정규 매핑 완료');
     fullBibleFailure='';
     return true;
   }catch(e){
@@ -1979,18 +2186,42 @@ async function loadEmbedded(){
     const txt=$('#embeddedBible').textContent.trim();
     if(!txt||txt==='[]')return false;
     const d=normalizeAny(JSON.parse(txt));
-    if(!valid(d))return false;
-    bible=d;currentSource='완전 오프라인 내장본';buildFlat();setReady(currentSource);return true;
-  }catch(e){console.warn('embedded',e);return false}
+    const report=canonicalValidationReport(d);
+    if(!report.ok){
+      console.warn('embedded canonical validation',report.errors);
+      return false;
+    }
+    bible=d;
+    currentSource='완전 오프라인 정규 내장본';
+    buildFlat();
+    setReady(currentSource);
+    return true;
+  }catch(e){
+    console.warn('embedded',e);
+    return false;
+  }
 }
 async function loadCache(){
   try{
-    const raw=await idbGet('bible');
+    const raw=await idbGet(BIBLE_CACHE_KEY);
     if(!raw)return false;
     const d=normalizeAny(raw);
-    if(!valid(d)){await idbDelete('bible');return false}
-    bible=d;currentSource='오프라인 캐시';buildFlat();setReady(currentSource);return true;
-  }catch(e){console.warn('cache',e);return false}
+    const report=canonicalValidationReport(d);
+    if(!report.ok){
+      console.warn('canonical cache rejected',report.errors);
+      await idbDelete(BIBLE_CACHE_KEY);
+      return false;
+    }
+    bible=d;
+    currentSource='검증된 정규 오프라인 캐시';
+    buildFlat();
+    setReady(currentSource);
+    return true;
+  }catch(e){
+    console.warn('cache',e);
+    try{await idbDelete(BIBLE_CACHE_KEY)}catch(_){}
+    return false;
+  }
 }
 async function installFullBible(force=false,slow=false){
   if(valid(bible))return true;
@@ -2079,8 +2310,8 @@ function showInstallCard(err=''){
   $('#reader').innerHTML=`
     <div class="installCard">
       <h2>성경 JSON 연결을 확인해 주세요</h2>
-      <p>저장소 파일 유무뿐 아니라 <b>캐시·HTTP 응답·JSON 구조 검증</b> 중 하나에서 실패할 수 있습니다.<br>
-      v0.3.8부터는 실제 오류 원인을 아래에 표시합니다.</p>
+      <p>v0.3.9는 <b>66권 책 식별자·정규 순서·장 수·대표 구절</b>까지 검증합니다.<br>
+      v0.3.9부터는 실제 오류 원인을 아래에 표시합니다.</p>
       <div class="installActions">
         <button class="btn primary" id="cardRetryStatic">캐시 무시하고 다시 연결</button>
         <button class="btn" id="cardOpenJson">JSON 주소 직접 열기</button>
@@ -3214,10 +3445,18 @@ function mergeSnapshots(current,incoming){
   return normalizeUserSnapshot(out).clean;
 }
 async function clearBibleCache(){
-  if(!confirm('본문 IndexedDB 캐시만 초기화할까요? 형광펜·메모·태그·통독 기록은 유지됩니다.'))return;
-  try{await idbDelete('bible')}catch(e){console.warn(e)}
+  if(!confirm('본문 캐시만 초기화할까요? 형광펜·메모·태그·통독 기록은 유지됩니다.'))return;
+  try{
+    await idbDelete('bible');
+    await idbDelete(BIBLE_CACHE_KEY);
+    for(let i=0;i<66;i++){
+      await idbDelete(`book:${i}`);
+      await idbDelete(`book-canonical-v1:${i}`);
+    }
+    localStorage.removeItem('krv-bible-cache-version');
+  }catch(e){console.warn(e)}
   searchCache.clear();
-  toast('본문 캐시를 초기화했습니다. 내장본이 없으면 다시 본문 연결이 필요합니다');
+  toast('본문 캐시를 초기화했습니다. 사용자 저장 데이터는 유지됩니다');
   runSelfCheck(true);
 }
 function diagItem(status,name,detail){
@@ -3230,7 +3469,12 @@ async function runSelfCheck(showPanel=true){
 
   if(bible.length){
     const s=stats(bible);
-    checks.push(diagItem(valid(bible)?'ok':'bad','본문 무결성',`${s.books}권 · ${s.chapters.toLocaleString()}장 · ${s.verses.toLocaleString()}절`));
+    const canonical=canonicalValidationReport(bible);
+    checks.push(diagItem(canonical.ok?'ok':'bad','본문 정규 매핑',
+      canonical.ok
+        ?`${s.books}권 · ${s.chapters.toLocaleString()}장 · ${s.verses.toLocaleString()}절 · 책 순서 정상`
+        :canonical.errors.slice(0,3).join(' / ')
+    ));
     checks.push(diagItem(flat.length===s.readableVerses?'ok':'warn','검색 인덱스',`${flat.length.toLocaleString()}절 인덱싱 · 구조 ${s.verses.toLocaleString()}절`));
   }else{
     checks.push(diagItem('warn','본문 상태','현재 메모리에 전체 본문이 로드되지 않음'));
@@ -3996,12 +4240,23 @@ function randomVerse(){
 
 async function importFile(file){
   try{
-    const raw=JSON.parse(await file.text()),d=normalizeAny(raw),s=stats(d);
-    if(!valid(d))throw new Error(`구조 검증 실패: ${s.books}권 / ${s.chapters}장 / ${s.verses}절`);
-    bible=d;buildFlat();currentSource='직접 불러온 전체 본문';
-    try{await idbSet('bible',compactBible())}catch(e){console.warn(e)}
-    setReady(currentSource);renderReader();toast('31,102절 불러오기 완료');
-  }catch(e){alert('성경 JSON을 불러올 수 없습니다.\n'+e.message)}
+    const raw=JSON.parse(await file.text());
+    const d=normalizeAny(raw);
+    const report=canonicalValidationReport(d);
+    if(!report.ok){
+      throw new Error(`정규 매핑 검증 실패: ${report.errors.slice(0,6).join(' / ')}`);
+    }
+    bible=d;
+    buildFlat();
+    currentSource='직접 불러온 검증된 전체 본문';
+    try{await idbSet(BIBLE_CACHE_KEY,compactBible())}catch(e){console.warn(e)}
+    localStorage.setItem('krv-bible-cache-version',BIBLE_CACHE_VERSION);
+    setReady(currentSource);
+    renderReader();
+    toast('66권 정규 매핑 · 31,102절 검증 완료');
+  }catch(e){
+    alert('성경 JSON을 불러올 수 없습니다.\n'+e.message);
+  }
 }
 function exportCompleteHTML(){
   if(!valid(bible)){alert('66권 · 1,189장 · 31,102절 검증이 완료된 뒤 만들 수 있습니다.');return}
@@ -4013,7 +4268,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.8_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.9_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -4028,7 +4283,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.8.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.9.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
@@ -4310,7 +4565,10 @@ async function start(){
   if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=()=>{}}
   window.addEventListener('beforeunload',()=>{commitRunningTimer();stopSpeech()});
 
-  try{await openDB()}catch(e){console.warn('IndexedDB',e)}
+  try{
+    await openDB();
+    await ensureCanonicalBibleCache();
+  }catch(e){console.warn('IndexedDB',e)}
 
   // 1) Optional fully embedded copy.
   if(await loadEmbedded()){
@@ -4322,7 +4580,7 @@ async function start(){
     repairUserData(false);showHome();runSelfCheck(false);return;
   }
 
-  // 3) v0.3.8 default: one same-origin JSON beside index.html.
+  // 3) v0.3.9 default: one same-origin JSON beside index.html.
   // No GitHub Actions, no CORS proxy, no JSONP, no 66-book recovery loop.
   if(await loadStaticRepoBible()){
     repairUserData(false);showHome();runSelfCheck(false);return;
