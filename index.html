@@ -102,7 +102,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .verses{background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:10px 20px;box-shadow:var(--shadow)}
 .verse{
   display:grid;grid-template-columns:38px 1fr 128px;gap:8px;padding:11px 0;border-bottom:1px dashed var(--line);
-  font:400 var(--verse)/var(--verse-line) "Noto Serif KR","Nanum Myeongjo",serif
+  font:400 var(--verse)/var(--verse-line) "Noto Serif KR","Nanum Myeongjo",serif;
+  scroll-margin-top:82px
 }
 .verse:last-child{border-bottom:0}
 .vnum{font:700 12px/1.4 system-ui;color:var(--accent);text-align:right;padding-top:10px}
@@ -921,7 +922,7 @@ body.focus-mode .focusExit{display:block}
   </aside>
   <section class="hero" id="hero">
     <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.9는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.10는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1124,7 +1125,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.9 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.10 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1408,7 +1409,7 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.9';
+const VERSION='0.3.10';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
 const BIBLE_CACHE_KEY='bible-canonical-v1';
@@ -1677,6 +1678,7 @@ let bible=[];
 let flat=[];
 let currentBook=0;
 let currentChapter=1;
+let chapterPickerBook=0;
 let testament='old';
 let db=null;
 let loadPromise=null;
@@ -2310,8 +2312,8 @@ function showInstallCard(err=''){
   $('#reader').innerHTML=`
     <div class="installCard">
       <h2>성경 JSON 연결을 확인해 주세요</h2>
-      <p>v0.3.9는 <b>66권 책 식별자·정규 순서·장 수·대표 구절</b>까지 검증합니다.<br>
-      v0.3.9부터는 실제 오류 원인을 아래에 표시합니다.</p>
+      <p>v0.3.10는 <b>66권 책 식별자·정규 순서·장 수·대표 구절</b>까지 검증합니다.<br>
+      v0.3.10부터는 실제 오류 원인을 아래에 표시합니다.</p>
       <div class="installActions">
         <button class="btn primary" id="cardRetryStatic">캐시 무시하고 다시 연결</button>
         <button class="btn" id="cardOpenJson">JSON 주소 직접 열기</button>
@@ -2802,7 +2804,7 @@ function renderHome(){
   }).join(''):'<div class="notice">오늘 읽을 분량이 없습니다.</div>';
 
   $$('[data-plan-bi]').forEach(x=>{
-    if(x.classList.contains('todayReadJump'))x.onclick=()=>{hideHome();selectLocation(+x.dataset.planBi,+x.dataset.planCh)};
+    if(x.classList.contains('todayReadJump'))x.onclick=()=>{hideHome();goToChapterStart(+x.dataset.planBi,+x.dataset.planCh)};
   });
   $$('[data-plan-check]').forEach(x=>x.onclick=()=>markChapterRead(+x.dataset.planBi,+x.dataset.planCh,!isChapterRead(+x.dataset.planBi,+x.dataset.planCh)));
 
@@ -2937,8 +2939,8 @@ function renderFavoriteBar(){
     parts.push(`<button class="favoriteBtn chapter" data-fav-ch="${esc(key)}">${esc(BOOK_META[bi].name)} ${ch}장</button>`);
   });
   host.innerHTML=parts.length?parts.join(''):'<span class="resumeBadge">☆ 책/장을 즐겨찾기에 추가하면 여기에 표시됩니다</span>';
-  $$('[data-fav-book]').forEach(x=>x.onclick=()=>selectLocation(+x.dataset.favBook,1));
-  $$('[data-fav-ch]').forEach(x=>x.onclick=()=>{const [bi,ch]=x.dataset.favCh.split('-').map(Number);selectLocation(bi,ch)});
+  $$('[data-fav-book]').forEach(x=>x.onclick=()=>goToChapterStart(+x.dataset.favBook,1));
+  $$('[data-fav-ch]').forEach(x=>x.onclick=()=>{const [bi,ch]=x.dataset.favCh.split('-').map(Number);goToChapterStart(bi,ch)});
 }
 function getRecentBooks(){
   try{
@@ -2957,7 +2959,7 @@ function renderRecentBooks(){
   const a=getRecentBooks();
   host.innerHTML=a.length?a.map(bi=>`<button class="recentBookBtn" data-recent-book="${bi}">${esc(BOOK_META[bi].name)}</button>`).join(''):
     '<span class="resumeBadge">최근 본 성경책이 여기에 표시됩니다</span>';
-  $$('[data-recent-book]').forEach(x=>x.onclick=()=>selectLocation(+x.dataset.recentBook,1));
+  $$('[data-recent-book]').forEach(x=>x.onclick=()=>goToChapterStart(+x.dataset.recentBook,1));
 }
 function getScrollPositions(){
   try{
@@ -2978,6 +2980,32 @@ function saveScrollPositionNow(){
 function scheduleScrollSave(){
   if(scrollSaveTimer)clearTimeout(scrollSaveTimer);
   scrollSaveTimer=setTimeout(saveScrollPositionNow,220);
+}
+
+function firstReadableVerseNumber(){
+  const c=chapterData();
+  const first=c?.verses?.find(v=>v.text&&v.text!=='(없음)');
+  return first?.verse||1;
+}
+function scrollToChapterStart(behavior='auto'){
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      const firstVerse=firstReadableVerseNumber();
+      const el=document.getElementById(`v-${firstVerse}`)||document.querySelector('#versesBox .verse');
+      if(el){
+        el.scrollIntoView({behavior,block:'start'});
+      }else{
+        window.scrollTo({top:0,behavior});
+      }
+      updateReadingProgress();
+    },30);
+  });
+}
+function goToChapterStart(bi,ch,close=true){
+  return selectLocation(bi,ch,null,close,'start');
+}
+function resumeChapter(bi,ch,close=true){
+  return selectLocation(bi,ch,null,close,'restore');
 }
 function restoreChapterScroll(bi,ch){
   const y=Number(getScrollPositions()[chapterKey(bi,ch)]||0);
@@ -3025,14 +3053,14 @@ function openSettingsView(){
 }
 function buildSelectors(){
   $('#bookSelect').innerHTML=BOOK_META.map((b,i)=>`<option value="${i}">${esc(b.name)}</option>`).join('');
-  $('#bookSelect').onchange=()=>selectLocation(Number($('#bookSelect').value),1);
+  $('#bookSelect').onchange=()=>goToChapterStart(Number($('#bookSelect').value),1);
   fillChapterSelect();
 }
 function fillChapterSelect(){
   const count=BOOK_META[currentBook].chapters;
   $('#chapterSelect').innerHTML=Array.from({length:count},(_,i)=>`<option value="${i+1}">${i+1}장</option>`).join('');
   $('#chapterSelect').value=String(currentChapter);
-  $('#chapterSelect').onchange=()=>selectLocation(currentBook,Number($('#chapterSelect').value));
+  $('#chapterSelect').onchange=()=>goToChapterStart(currentBook,Number($('#chapterSelect').value));
 }
 function restoreLocation(){
   try{
@@ -3044,9 +3072,16 @@ function saveLocation(){
   localStorage.setItem('krv-last',JSON.stringify({bi:currentBook,ch:currentChapter}));
   updateRecent();
 }
-async function selectLocation(bi,ch,verse=null,close=true){
+async function selectLocation(bi,ch,verse=null,close=true,scrollMode='start'){
   if(!BOOK_META[bi]||ch<1||ch>BOOK_META[bi].chapters)return;
+
+  // Commit the OLD chapter position before changing currentBook/currentChapter.
   saveScrollPositionNow();
+  if(scrollSaveTimer){
+    clearTimeout(scrollSaveTimer);
+    scrollSaveTimer=null;
+  }
+
   stopSpeech();
   multiSelectMode=false;selectedVerseKeys.clear();updateMultiBar();
   currentBook=bi;currentChapter=ch;saveLocation();pushRecentBook(bi);setActiveView('reader');renderTabletPane(bi);
@@ -3070,7 +3105,13 @@ async function selectLocation(bi,ch,verse=null,close=true){
       el.classList.add('jumpFlash');
       setTimeout(()=>el.classList.remove('jumpFlash'),1500);
     });
-  }else if(!restoreChapterScroll(bi,ch))window.scrollTo({top:0,behavior:'smooth'});
+  }else if(scrollMode==='restore'){
+    if(!restoreChapterScroll(bi,ch))scrollToChapterStart('auto');
+  }else{
+    // Book/chapter selector, drawer chapter list, tablet chapter list,
+    // previous/next chapter all land on the first readable verse.
+    scrollToChapterStart('auto');
+  }
 }
 function chapterData(){
   return bible[currentBook]?.chapters.find(c=>c.chapter===currentChapter)||null;
@@ -3192,12 +3233,12 @@ function applyMultiHighlight(color){
   toast(color==='clear'?`${count}개 구절 형광펜 삭제`:(count>=2?`${groupTitle(keys)} 묶음 저장`:`${count}개 구절 형광펜 저장`));
 }
 function prevChapter(){
-  if(currentChapter>1)selectLocation(currentBook,currentChapter-1);
-  else if(currentBook>0)selectLocation(currentBook-1,BOOK_META[currentBook-1].chapters);
+  if(currentChapter>1)goToChapterStart(currentBook,currentChapter-1);
+  else if(currentBook>0)goToChapterStart(currentBook-1,BOOK_META[currentBook-1].chapters);
 }
 function nextChapter(){
-  if(currentChapter<BOOK_META[currentBook].chapters)selectLocation(currentBook,currentChapter+1);
-  else if(currentBook<65)selectLocation(currentBook+1,1);
+  if(currentChapter<BOOK_META[currentBook].chapters)goToChapterStart(currentBook,currentChapter+1);
+  else if(currentBook<65)goToChapterStart(currentBook+1,1);
 }
 
 function openDrawer(){
@@ -3209,7 +3250,7 @@ function showBookView(){
   $('#bookView').classList.remove('hide');$('#chapterView').classList.remove('show');
 }
 function showChapterView(bi){
-  currentBook=bi;
+  chapterPickerBook=bi;
   $('#chapterBookName').textContent=BOOK_META[bi].name;
   $('#bookView').classList.add('hide');$('#chapterView').classList.add('show');
   const n=BOOK_META[bi].chapters;
@@ -3217,7 +3258,9 @@ function showChapterView(bi){
     const ch=i+1,cur=(bi===currentBook&&ch===currentChapter)?' current':'';
     return `<button class="chapterBtn${cur}" data-ch="${ch}">${ch}</button>`;
   }).join('');
-  $$('#chapterGrid .chapterBtn').forEach(x=>x.onclick=()=>selectLocation(bi,Number(x.dataset.ch)));
+  $$('#chapterGrid .chapterBtn').forEach(x=>x.onclick=()=>
+    goToChapterStart(chapterPickerBook,Number(x.dataset.ch))
+  );
 }
 function renderBookGrid(){
   const start=testament==='old'?0:39,end=testament==='old'?39:66;
@@ -4268,7 +4311,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.9_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.10_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -4283,7 +4326,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.9.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.10.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
@@ -4385,7 +4428,7 @@ function renderTabletPane(selectedBook=currentBook){
   $('#tabletChapterGrid').innerHTML=Array.from({length:meta.chapters},(_,i)=>i+1).map(ch=>
     `<button class="tabletChapterBtn ${tabletSelectedBook===currentBook&&ch===currentChapter?'active':''}" data-tablet-ch="${ch}">${ch}</button>`
   ).join('');
-  $$('[data-tablet-ch]').forEach(x=>x.onclick=()=>selectLocation(tabletSelectedBook,+x.dataset.tabletCh));
+  $$('[data-tablet-ch]').forEach(x=>x.onclick=()=>goToChapterStart(tabletSelectedBook,+x.dataset.tabletCh));
 }
 function getUiPrefs(){
   return{
@@ -4461,10 +4504,10 @@ function bind(){
   $('#dockNext').onclick=()=>{saveScrollPositionNow();nextChapter()};
   $('#backTopBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
   window.addEventListener('scroll',()=>{updateReadingProgress();scheduleScrollSave()},{passive:true});
-  $('#drawerHome').onclick=showHome;$('#drawerContinue').onclick=()=>{closeDrawer();selectLocation(currentBook,currentChapter)};
+  $('#drawerHome').onclick=showHome;$('#drawerContinue').onclick=()=>{closeDrawer();resumeChapter(currentBook,currentChapter)};
   $('#drawerBack').onclick=showBookView;
   $$('[data-testament]').forEach(x=>x.onclick=()=>{testament=x.dataset.testament;renderBookGrid()});
-  $('#recentBtn').onclick=()=>{selectLocation(currentBook,currentChapter);closeDrawer()};
+  $('#recentBtn').onclick=()=>{resumeChapter(currentBook,currentChapter);closeDrawer()};
   $('#drawerSaved').onclick=()=>showSaved('highlights');$('#drawerRandom').onclick=()=>{closeDrawer();randomVerse()};
   $('#savedBtn').onclick=()=>showSaved('highlights');$('#randomBtn').onclick=randomVerse;
   $('#planSelect').onchange=e=>changePlanDays(e.target.value);
@@ -4479,7 +4522,7 @@ function bind(){
   $('#rebalancePlanBtn').onclick=rebalanceReadingPlan;
   $$('[data-calendar-mode]').forEach(x=>x.onclick=()=>{calendarMode=x.dataset.calendarMode;renderReadingCalendar()});
   $('#resetPlanBtn').onclick=resetReadingPlan;
-  $('#continueReadingBtn').onclick=()=>{hideHome();selectLocation(currentBook,currentChapter)};
+  $('#continueReadingBtn').onclick=()=>{hideHome();resumeChapter(currentBook,currentChapter)};
   $('#openSavedHomeBtn').onclick=()=>showSaved('highlights');
   $('#dailyGoBtn').onclick=()=>{if(currentDailyVerse){hideHome();selectLocation(currentDailyVerse.bi,currentDailyVerse.ch,currentDailyVerse.v)}};
   $('#dailyNewBtn').onclick=()=>{pickDailyVerse(true);renderHome()};
@@ -4580,7 +4623,7 @@ async function start(){
     repairUserData(false);showHome();runSelfCheck(false);return;
   }
 
-  // 3) v0.3.9 default: one same-origin JSON beside index.html.
+  // 3) v0.3.10 default: one same-origin JSON beside index.html.
   // No GitHub Actions, no CORS proxy, no JSONP, no 66-book recovery loop.
   if(await loadStaticRepoBible()){
     repairUserData(false);showHome();runSelfCheck(false);return;
