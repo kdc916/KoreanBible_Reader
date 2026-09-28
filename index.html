@@ -1,0 +1,4007 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4efe5">
+<title>한글 성경 · 개역한글 1961</title>
+<style>
+:root{
+  --bg:#f4efe5;--panel:#fffdf8;--panel2:#ece4d6;--text:#25221d;--muted:#777067;
+  --line:#dcd2c3;--accent:#7b5c3f;--accent2:#9c7650;--accent-soft:#eadfce;
+  --danger:#a34e45;--ok:#39734d;--verse:19px;--verse-line:1.95;--reader-width:1080px;--shadow:0 10px 34px rgba(45,35,25,.09)
+}
+[data-theme="dark"]{
+  --bg:#171612;--panel:#211f1b;--panel2:#2d2923;--text:#f3eee5;--muted:#aaa095;
+  --line:#3a352e;--accent:#d2aa79;--accent2:#b98d5d;--accent-soft:#3b3024;
+  --danger:#df8a81;--ok:#83c696;--shadow:0 10px 34px rgba(0,0,0,.28)
+}
+[data-theme="sepia"]{
+  --bg:#eee2cd;--panel:#f8efdf;--panel2:#e6d5b8;--text:#392d21;--muted:#786858;
+  --line:#d5c0a0;--accent:#77502f;--accent2:#9a7048;--accent-soft:#e7d4b8
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 25%,transparent);outline-offset:2px}
+
+.topbar{
+  position:sticky;top:0;z-index:20;padding:10px 14px;background:color-mix(in srgb,var(--bg) 91%,transparent);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)
+}
+.topinner{max-width:1080px;margin:auto;display:flex;align-items:center;gap:8px}
+.icon{
+  width:50px;height:50px;flex:0 0 50px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:17px;font-size:23px;box-shadow:0 2px 10px rgba(0,0,0,.03)
+}
+.searchwrap{position:relative;flex:1;min-width:0}
+.search{
+  width:100%;height:50px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:17px;padding:0 54px 0 16px;outline:0
+}
+.search:focus{border-color:var(--accent)}
+.searchbtn{
+  position:absolute;right:5px;top:5px;width:40px;height:40px;border:0;border-radius:13px;
+  background:var(--accent);color:#fff;font-size:20px
+}
+
+.main{max-width:1080px;margin:auto;padding:24px 16px 100px}
+.hero{
+  background:linear-gradient(135deg,var(--panel),color-mix(in srgb,var(--panel2) 55%,var(--panel)));
+  border:1px solid var(--line);border-radius:23px;padding:23px;box-shadow:var(--shadow)
+}
+.hero.ready{padding:18px 22px}
+.hero h1{font:500 30px/1.35 "Noto Serif KR","Nanum Myeongjo",serif;margin:0 0 10px}
+.hero.ready h1{font-size:25px}
+.hero p{margin:0;color:var(--muted);line-height:1.75}
+.hero.ready .intro{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.hero.ready .chips{margin-top:7px}
+.chip{
+  border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 11px;
+  color:var(--muted);font-size:13px
+}
+.chip.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 46%,var(--line))}
+.chip.bad{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,var(--line))}
+.chip strong{color:inherit}
+
+.quicknav{
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.7fr) auto auto;
+  gap:8px;align-items:center;margin:14px 0;background:var(--panel);border:1px solid var(--line);
+  padding:10px;border-radius:18px
+}
+.select{
+  min-width:0;width:100%;height:44px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:12px;padding:0 10px
+}
+.btn{
+  min-height:44px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:12px;padding:10px 13px
+}
+.btn:hover{border-color:var(--accent2)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.soft{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:800}
+.btn.danger{color:var(--danger)}
+.installCard{
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow);
+  text-align:center
+}
+.installCard h2{font:600 25px/1.4 "Noto Serif KR","Nanum Myeongjo",serif;margin:0 0 8px}
+.installCard p{color:var(--muted);line-height:1.7;margin:7px 0 17px}
+.installActions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.small{font-size:12px;color:var(--muted);line-height:1.6;margin-top:13px}
+
+.chapterTitle{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:24px 4px 14px}
+.chapterTitle h2{font:500 30px/1.4 "Noto Serif KR","Nanum Myeongjo",serif;margin:0}
+.chapterTitleRight{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.chapterTitle .count{font-size:12px;color:var(--muted);padding:0 3px}
+.chapterAction{min-height:36px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:6px 10px;font-size:12px;font-weight:800}
+.chapterAction.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.verses{background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:10px 20px;box-shadow:var(--shadow)}
+.verse{
+  display:grid;grid-template-columns:38px 1fr 128px;gap:8px;padding:11px 0;border-bottom:1px dashed var(--line);
+  font:400 var(--verse)/var(--verse-line) "Noto Serif KR","Nanum Myeongjo",serif
+}
+.verse:last-child{border-bottom:0}
+.vnum{font:700 12px/1.4 system-ui;color:var(--accent);text-align:right;padding-top:10px}
+.vtext{word-break:keep-all;border-radius:7px;transition:background .16s,box-shadow .16s}
+.vtext.hl-yellow{background:linear-gradient(transparent 9%,rgba(255,224,92,.70) 9%,rgba(255,224,92,.70) 91%,transparent 91%)}
+.vtext.hl-green{background:linear-gradient(transparent 9%,rgba(139,222,149,.62) 9%,rgba(139,222,149,.62) 91%,transparent 91%)}
+.vtext.hl-pink{background:linear-gradient(transparent 9%,rgba(255,158,184,.55) 9%,rgba(255,158,184,.55) 91%,transparent 91%)}
+.vtext.hl-blue{background:linear-gradient(transparent 9%,rgba(125,190,255,.54) 9%,rgba(125,190,255,.54) 91%,transparent 91%)}
+.vtools{display:flex;align-items:flex-start;justify-content:flex-end;padding-top:4px}
+.mini{
+  width:30px;height:30px;border:0;background:transparent;color:var(--muted);border-radius:9px;padding:0;font-size:16px
+}
+.mini:hover{background:var(--panel2);color:var(--accent)}
+.mini.star.on{color:#d89a2b}
+.mini.marker.on{color:var(--accent);background:var(--accent-soft)}
+.verses.select-mode .verse{cursor:pointer;grid-template-columns:38px 1fr;user-select:none;-webkit-user-select:none}
+.verses.select-mode .vtools{display:none}
+.verses.select-mode .vnum{
+  position:relative;width:28px;height:28px;border:2px solid var(--line);border-radius:50%;
+  display:grid;place-items:center;padding:0;margin:5px 0 0 4px;color:var(--muted);font-size:10px
+}
+.verses.select-mode .verse:hover{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.verses.select-mode .verse.selected{background:color-mix(in srgb,var(--accent-soft) 58%,transparent);border-radius:12px}
+.verses.select-mode .verse.selected .vnum{background:var(--accent);border-color:var(--accent);color:#fff}
+.jumpFlash{animation:jumpFlash 1.45s ease}
+@keyframes jumpFlash{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}
+  25%{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 33%,transparent)}
+  100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}
+}
+.chapterTitle,.readStatusBar,.verses,.navrow{max-width:var(--reader-width);margin-left:auto;margin-right:auto}
+.navrow{display:flex;gap:10px;justify-content:space-between;margin-top:15px}
+.navrow .btn{flex:1;max-width:220px}
+
+.panel{
+  display:none;background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  padding:18px;margin:14px 0;box-shadow:var(--shadow)
+}
+.panel.show{display:block}
+.panel h3{margin:0 0 13px}
+.settingRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0}
+.range{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.range input{width:min(280px,65vw)}
+.notice{border:1px solid var(--line);background:var(--panel2);border-radius:15px;padding:14px;line-height:1.7;color:var(--muted);margin-top:10px}
+.notice.error{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,var(--line));background:var(--panel)}
+.result{padding:13px 10px;border-bottom:1px solid var(--line);border-radius:10px;cursor:pointer}
+.result:hover{background:var(--panel2)}
+.ref{font-weight:800;color:var(--accent);margin-bottom:5px}.rtext{line-height:1.65}
+.resultMeta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:8px}
+mark{background:#ffe493;color:inherit;border-radius:3px;padding:0 1px}
+.loading{text-align:center;padding:50px 10px;color:var(--muted)}
+
+.savedTabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:2px 0 13px}
+.savedStats{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0 0 12px
+}
+.statCard{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:9px 8px;text-align:center}
+.statNum{display:block;font-weight:900;color:var(--accent);font-size:18px;line-height:1.2}
+.statLabel{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.savedScopeRow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.scopeBtn{
+  min-height:32px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800
+}
+.scopeBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.savedTab{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px;font-weight:800}
+.savedTab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.savedCount{font-size:11px;opacity:.78;margin-left:4px}
+.savedTools{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 12px}
+.savedFilters{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.filterBtn{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800
+}
+.filterBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filterBtn .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.dot.yellow{background:#f5cf42}.dot.green{background:#69c875}.dot.pink{background:#ee88a5}.dot.blue{background:#69aeea}
+.savedSort{height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:0 8px;font-size:12px}
+.savedSearch{
+  width:100%;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:12px;padding:0 12px;margin:0 0 12px;outline:0
+}
+.savedSearch:focus{border-color:var(--accent)}
+.tagFilterRow{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.tagFilterBtn{
+  min-height:32px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800
+}
+.tagFilterBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tagManageBtn{
+  min-height:32px;border:1px dashed var(--accent2);background:transparent;color:var(--accent);
+  border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900
+}
+.savedEntry{display:grid;grid-template-columns:6px minmax(0,1fr) 38px;gap:10px;align-items:stretch;border-bottom:1px solid var(--line);padding:11px 2px}
+.savedEntry:last-child{border-bottom:0}
+.savedJump{border:0;background:transparent;color:var(--text);padding:2px;text-align:left;cursor:pointer;min-width:0}
+.savedJump:hover .savedTitle{color:var(--accent)}
+.savedTitle{font-weight:900;color:var(--accent);margin-bottom:5px}
+.savedPreview{color:var(--text);line-height:1.55;font-family:"Noto Serif KR","Nanum Myeongjo",serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.savedMeta{color:var(--muted);font-size:11px;margin-top:5px}
+.savedTags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.tagChip{
+  display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel2);
+  color:var(--muted);border-radius:999px;padding:3px 7px;font-size:10px;font-weight:800
+}
+.memoBadge{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-size:10px;font-weight:900;margin-top:6px}
+.groupLabel{font-size:10px;color:var(--accent);font-weight:900;margin-bottom:4px}
+.savedActionRow{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.savedSmallBtn{
+  min-height:31px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:9px;padding:5px 8px;font-size:11px;font-weight:800
+}
+.savedSmallBtn:hover{border-color:var(--accent);color:var(--accent)}
+.savedBar{width:6px;border-radius:99px;background:var(--line)}
+.savedBar.yellow{background:#f5cf42}.savedBar.green{background:#69c875}.savedBar.pink{background:#ee88a5}.savedBar.blue{background:#69aeea}
+.savedDelete{width:36px;height:36px;align-self:center;border:0;background:transparent;color:var(--muted);border-radius:10px;font-size:18px}
+.savedDelete:hover{background:var(--panel2);color:var(--danger)}
+
+.markerPalette{position:fixed;left:50%;bottom:18px;transform:translate(-50%,18px);z-index:60;width:min(calc(100vw - 24px),460px);background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 60px rgba(0,0,0,.25);padding:14px;opacity:0;pointer-events:none;transition:.18s}
+.markerPalette.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.markerHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.markerTitle{font-weight:900;color:var(--accent)}
+.markerClose{width:34px;height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;font-size:18px}
+.markerColors{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.markerColor{min-height:46px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:6px 4px;font-size:12px;font-weight:800}
+.markerColor::before{content:"";display:block;width:28px;height:10px;border-radius:99px;margin:0 auto 5px;background:var(--line)}
+.markerColor[data-color="yellow"]::before{background:#f5cf42}
+.markerColor[data-color="green"]::before{background:#69c875}
+.markerColor[data-color="pink"]::before{background:#ee88a5}
+.markerColor[data-color="blue"]::before{background:#69aeea}
+.markerColor[data-color="clear"]::before{background:linear-gradient(135deg,transparent 42%,var(--danger) 43%,var(--danger) 57%,transparent 58%)}
+
+.multiBar{
+  position:fixed;left:50%;bottom:14px;transform:translate(-50%,18px);z-index:58;
+  width:min(calc(100vw - 20px),620px);background:var(--panel);border:1px solid var(--line);
+  border-radius:20px;box-shadow:0 18px 60px rgba(0,0,0,.25);padding:11px;
+  opacity:0;pointer-events:none;transition:.18s
+}
+.multiBar.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.multiTop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.multiSummary{font-size:13px;font-weight:900;color:var(--accent);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.multiCancel{border:0;background:transparent;color:var(--muted);font-weight:800;padding:6px}
+.multiActions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.multiColor{
+  min-height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:11px;font-size:11px;font-weight:900;padding:4px
+}
+.multiColor::before{content:"";display:block;width:24px;height:8px;border-radius:99px;margin:0 auto 4px;background:var(--line)}
+.multiColor[data-color="yellow"]::before{background:#f5cf42}
+.multiColor[data-color="green"]::before{background:#69c875}
+.multiColor[data-color="pink"]::before{background:#ee88a5}
+.multiColor[data-color="blue"]::before{background:#69aeea}
+.multiColor[data-color="clear"]::before{background:linear-gradient(135deg,transparent 42%,var(--danger) 43%,var(--danger) 57%,transparent 58%)}
+
+.tagManagerScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:74;opacity:0;pointer-events:none;transition:.18s
+}
+.tagManagerScrim.show{opacity:1;pointer-events:auto}
+.tagManagerModal{
+  position:fixed;z-index:75;left:50%;top:50%;transform:translate(-50%,-46%);
+  width:min(calc(100vw - 24px),590px);max-height:min(84vh,760px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.30);
+  padding:18px;opacity:0;pointer-events:none;transition:.18s
+}
+.tagManagerModal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.tagManagerHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.tagManagerTitle{font-weight:900;font-size:20px}
+.tagManagerList{display:flex;flex-direction:column;gap:8px}
+.tagRow{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;
+  border:1px solid var(--line);border-radius:12px;padding:8px
+}
+.tagNameInput{
+  min-width:0;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 10px;outline:0
+}
+.tagNameInput:focus{border-color:var(--accent)}
+.tagRowMeta{font-size:10px;color:var(--muted);margin-top:4px}
+.tagManagerNote{font-size:11px;color:var(--muted);line-height:1.6;margin-top:10px}
+.memoScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:70;opacity:0;pointer-events:none;transition:.18s
+}
+.memoScrim.show{opacity:1;pointer-events:auto}
+.memoModal{
+  position:fixed;z-index:71;left:50%;top:50%;transform:translate(-50%,-46%);
+  width:min(calc(100vw - 24px),560px);max-height:min(84vh,720px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.30);
+  padding:18px;opacity:0;pointer-events:none;transition:.18s
+}
+.memoModal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.memoHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.memoRef{font:600 23px/1.45 "Noto Serif KR","Nanum Myeongjo",serif}
+.memoClose{width:38px;height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;font-size:20px}
+.memoVerse{background:var(--panel2);border-radius:14px;padding:12px 13px;line-height:1.7;font-family:"Noto Serif KR","Nanum Myeongjo",serif;margin-bottom:12px}
+.memoLabel{font-size:12px;color:var(--muted);font-weight:900;margin:11px 2px 6px}
+.memoInput{
+  width:100%;min-height:130px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:14px;padding:12px;resize:vertical;outline:0;line-height:1.6
+}
+.memoInput:focus,.customTagInput:focus{border-color:var(--accent)}
+.tagEditor{display:flex;flex-wrap:wrap;gap:7px}
+.tagToggle{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:7px 10px;
+  font-size:12px;font-weight:800
+}
+.tagToggle.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.customTagRow{display:flex;gap:7px;margin-top:8px}
+.customTagInput{flex:1;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:0 10px;outline:0}
+.memoActions{display:flex;justify-content:flex-end;gap:7px;margin-top:15px}
+
+.drawerScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.43);z-index:30;opacity:0;pointer-events:none;transition:.18s
+}
+.drawerScrim.show{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;z-index:31;left:0;top:0;bottom:0;width:min(92vw,430px);background:var(--panel);
+  transform:translateX(-102%);transition:.22s;box-shadow:20px 0 50px rgba(0,0,0,.2);
+  display:flex;flex-direction:column
+}
+.drawer.open{transform:none}
+.drawerHead{display:flex;align-items:center;justify-content:space-between;padding:16px 17px;border-bottom:1px solid var(--line)}
+.drawerTitle strong{font-size:21px;display:block}.drawerTitle small{color:var(--muted)}
+.drawerClose{width:42px;height:42px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;font-size:22px}
+.drawerBody{padding:13px 13px 28px;overflow:auto;overscroll-behavior:contain}
+.drawerQuick{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}
+.testamentTabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:11px;font-weight:800}
+.tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.drawerHint{font-size:13px;color:var(--muted);padding:1px 4px 10px}
+.bookGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.book{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;
+  text-align:left;padding:11px 10px;min-height:46px
+}
+.book:hover,.book.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 40%,var(--line));color:var(--accent);font-weight:900}
+.chapterView{display:none}.chapterView.show{display:block}.bookView.hide{display:none}
+.drawerBack{border:0;background:transparent;color:var(--accent);padding:8px 3px;font-weight:800}
+.chapterBookName{font:600 25px/1.4 "Noto Serif KR","Nanum Myeongjo",serif;margin:4px 3px 12px}
+.chapterGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.chapterBtn{
+  aspect-ratio:1/1;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:12px;font-weight:800
+}
+.chapterBtn:hover,.chapterBtn.current{background:var(--accent);color:#fff;border-color:var(--accent)}
+.recentBox{margin:0 0 12px;padding:10px;border-radius:14px;background:var(--panel2)}
+.recentLabel{font-size:11px;color:var(--muted);margin-bottom:5px}.recentBtn{border:0;background:transparent;color:var(--accent);font-weight:900;padding:2px 0}
+
+.footer{max-width:1080px;margin:auto;padding:0 16px 45px;color:var(--muted);font-size:12px;line-height:1.75}
+.toast{
+  position:fixed;right:16px;bottom:18px;z-index:50;background:var(--text);color:var(--bg);
+  padding:11px 14px;border-radius:12px;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s
+}
+.toast.show{opacity:1;transform:none}
+.hidden{display:none!important}
+
+
+.homePanel{
+  display:none;margin:14px 0 18px;
+}
+.homePanel.show{display:block}
+.homeGrid{
+  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:12px
+}
+.dailyCard,.planCard{
+  background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:18px;box-shadow:var(--shadow)
+}
+.dailyEyebrow{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:.08em;margin-bottom:7px}
+.dailyRef{font:600 24px/1.4 "Noto Serif KR","Nanum Myeongjo",serif;color:var(--accent);margin-bottom:9px}
+.dailyText{font:400 18px/1.8 "Noto Serif KR","Nanum Myeongjo",serif}
+.dailyActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.planHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.planTitle{font-weight:900;font-size:18px}
+.planSub{font-size:11px;color:var(--muted);margin-top:3px}
+.planSelect{height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:0 8px}
+.progressTrack{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:11px 0 8px}
+.progressFill{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s}
+.planStats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}
+.planStat{background:var(--panel2);border-radius:12px;padding:9px 7px;text-align:center}
+.planStat strong{display:block;color:var(--accent);font-size:17px}
+.planStat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.todayReadList{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:210px;overflow:auto}
+.todayReadItem{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:8px 9px
+}
+.todayReadItem.done{background:color-mix(in srgb,var(--accent-soft) 55%,var(--panel))}
+.todayReadJump{border:0;background:transparent;color:var(--text);text-align:left;flex:1;padding:0;font-weight:800}
+.todayReadCheck{
+  width:32px;height:32px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;font-weight:900
+}
+.todayReadCheck.done{background:var(--accent);color:#fff;border-color:var(--accent)}
+.readStatusBar{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  margin:8px 0 12px;padding:9px 10px;border:1px solid var(--line);background:var(--panel);
+  border-radius:13px
+}
+.readStatusText{font-size:12px;color:var(--muted)}
+.readCheckBtn{
+  min-height:36px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:6px 10px;font-size:12px;font-weight:900
+}
+.readCheckBtn.done{background:var(--accent);color:#fff;border-color:var(--accent)}
+.swipeHint{font-size:10px;color:var(--muted);text-align:center;margin-top:8px}
+.homeQuick{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px
+}
+.homeQuick .btn{min-height:40px;padding:7px 8px;font-size:12px}
+
+
+.planControls{
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:9px 0
+}
+.planDateWrap{display:flex;flex-direction:column;gap:4px}
+.planDateWrap label{font-size:10px;color:var(--muted);font-weight:800}
+.planDateInput{
+  height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 9px
+}
+.rebalanceBox{
+  margin-top:9px;border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:10px
+}
+.rebalanceTitle{font-size:12px;font-weight:900;color:var(--accent);margin-bottom:4px}
+.rebalanceText{font-size:11px;color:var(--muted);line-height:1.55}
+.calendarCard{
+  margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow)
+}
+.calendarHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.calendarTitle{font-weight:900;font-size:17px}
+.calendarTabs{display:flex;gap:6px}
+.calendarTab{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:5px 9px;font-size:11px;font-weight:800
+}
+.calendarTab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.weekCalendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.weekDay{
+  min-width:0;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:8px 5px;text-align:center
+}
+.weekDay.today{border-color:var(--accent)}
+.weekDay.done{background:color-mix(in srgb,var(--accent-soft) 60%,var(--panel))}
+.weekDow{font-size:9px;color:var(--muted)}
+.weekDate{font-size:15px;font-weight:900;margin:3px 0}
+.weekRead{font-size:9px;color:var(--muted)}
+.monthCalendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.monthDow{font-size:9px;color:var(--muted);text-align:center;padding:2px 0}
+.monthDay{
+  aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px solid var(--line);background:var(--panel);border-radius:10px;font-size:11px;position:relative
+}
+.monthDay.empty{visibility:hidden}
+.monthDay.today{border-color:var(--accent);font-weight:900}
+.monthDay.read{background:color-mix(in srgb,var(--accent-soft) 62%,var(--panel))}
+.monthDot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:3px}
+.focusBtn{
+  min-height:36px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:6px 10px;font-size:12px;font-weight:900
+}
+.focusBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+body.focus-mode .topbar,
+body.focus-mode .hero,
+body.focus-mode .quicknav,
+body.focus-mode .footer,
+body.focus-mode .panel,
+body.focus-mode .homePanel,
+body.focus-mode .readStatusBar .readStatusText,
+body.focus-mode .chapterTitleRight,
+body.focus-mode .navrow{
+  display:none!important
+}
+body.focus-mode .main{max-width:860px;padding-top:18px}
+body.focus-mode .chapterTitle{margin-top:0}
+body.focus-mode .chapterTitle h2{font-size:34px}
+body.focus-mode .verses{box-shadow:none;border-color:transparent;padding:4px 12px}
+body.focus-mode .verse{font-size:calc(var(--verse) + 2px);line-height:2.05}
+.focusExit{
+  display:none;position:fixed;right:14px;bottom:14px;z-index:90;
+  border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:10px 13px;box-shadow:var(--shadow);font-size:12px;font-weight:900
+}
+body.focus-mode .focusExit{display:block}
+
+
+.paceBadge{
+  display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--panel);
+  border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900
+}
+.paceBadge.ahead{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.paceBadge.behind{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 42%,var(--line))}
+.paceBadge.ontrack{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 38%,var(--line))}
+.planExtra{
+  display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:9px 0
+}
+.planExtraBox{background:var(--panel2);border-radius:12px;padding:9px 10px}
+.planExtraBox .k{font-size:10px;color:var(--muted);font-weight:800}
+.planExtraBox .v{font-size:14px;color:var(--accent);font-weight:900;margin-top:3px}
+.timerCard{
+  background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow);margin-top:12px
+}
+.timerTop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.timerTitle{font-weight:900;font-size:17px}
+.timerClock{font-variant-numeric:tabular-nums;font-size:26px;font-weight:900;color:var(--accent)}
+.timerSub{font-size:11px;color:var(--muted);margin-top:3px}
+.timerActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.timerStats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.timerStat{background:var(--panel2);border-radius:11px;padding:8px;text-align:center}
+.timerStat strong{display:block;color:var(--accent);font-size:16px}
+.timerStat span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.reminderRow{
+  display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:12px
+}
+.reminderLabel{font-size:10px;color:var(--muted);font-weight:800;margin-bottom:4px}
+.reminderTime{
+  width:100%;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 10px
+}
+.ttsBar{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap
+}
+.ttsBtn{
+  min-height:36px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:6px 10px;font-size:12px;font-weight:900
+}
+.ttsBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ttsRate{
+  height:36px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 8px;font-size:12px
+}
+.ttsStatus{font-size:10px;color:var(--muted)}
+
+
+.verse.tts-current{
+  border-radius:12px;
+  background:color-mix(in srgb,var(--accent-soft) 72%,var(--panel));
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+.verse.tts-current .vnum{color:var(--accent);font-weight:900}
+.mini.speak.on{color:var(--accent);background:var(--accent-soft)}
+.forecastGrid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px
+}
+.forecastBox{background:var(--panel2);border-radius:12px;padding:9px 10px}
+.forecastBox .k{font-size:10px;color:var(--muted);font-weight:800}
+.forecastBox .v{font-size:14px;color:var(--accent);font-weight:900;margin-top:3px}
+.timeChartCard{
+  margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow)
+}
+.timeChartHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.timeChartTitle{font-weight:900;font-size:17px}
+.timeChartSummary{font-size:11px;color:var(--muted);margin-top:2px}
+.chartMonthNav{display:flex;gap:6px;align-items:center}
+.chartMonthLabel{min-width:90px;text-align:center;font-size:12px;font-weight:900;color:var(--accent)}
+.chartNavBtn{
+  width:34px;height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;font-size:16px
+}
+.timeChart{
+  display:grid;grid-template-columns:repeat(31,minmax(5px,1fr));gap:3px;align-items:end;
+  height:150px;border-bottom:1px solid var(--line);padding:10px 2px 0
+}
+.timeBarWrap{height:100%;display:flex;align-items:flex-end;justify-content:center;position:relative}
+.timeBar{
+  width:100%;max-width:14px;min-height:2px;background:var(--accent);border-radius:5px 5px 0 0;
+  opacity:.8
+}
+.timeBar.zero{opacity:.15}
+.timeBar.today{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)}
+.timeChartLabels{display:grid;grid-template-columns:repeat(31,minmax(5px,1fr));gap:3px;padding-top:4px}
+.timeDayLabel{font-size:8px;color:var(--muted);text-align:center;min-width:0;overflow:hidden}
+.ttsVerseStatus{
+  display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--accent);font-weight:900
+}
+
+
+.stabilityBox{
+  margin-top:12px;border:1px solid var(--line);background:var(--panel2);border-radius:16px;padding:13px
+}
+.stabilityHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.stabilityTitle{font-weight:900;color:var(--accent)}
+.restoreMode{
+  height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:11px;padding:0 9px
+}
+.diagnosticsPanel{
+  display:none;margin-top:10px;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:10px
+}
+.diagnosticsPanel.show{display:block}
+.diagRow{
+  display:grid;grid-template-columns:22px minmax(120px,.8fr) minmax(0,1.3fr);gap:7px;align-items:start;
+  padding:7px 4px;border-bottom:1px dashed var(--line);font-size:12px
+}
+.diagRow:last-child{border-bottom:0}
+.diagIcon{font-weight:900;text-align:center}
+.diagRow.ok .diagIcon{color:var(--ok)}
+.diagRow.warn .diagIcon{color:#b98520}
+.diagRow.bad .diagIcon{color:var(--danger)}
+.diagName{font-weight:900}
+.diagDetail{color:var(--muted);word-break:break-word}
+.diagFooter{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.schemaBadge{
+  display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel);
+  border-radius:999px;padding:4px 8px;font-size:10px;color:var(--muted);font-weight:900
+}
+.searchPerf{font-size:10px;color:var(--muted);margin-left:6px}
+
+
+.readProgressWrap{
+  position:fixed;left:0;right:0;top:0;height:3px;z-index:120;
+  background:transparent;pointer-events:none
+}
+.readProgressBar{width:0;height:100%;background:var(--accent);transition:width .12s linear}
+.mobileNav{
+  display:none;position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));
+  z-index:95;background:color-mix(in srgb,var(--panel) 92%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.22);
+  padding:6px
+}
+.mobileNavGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.mobileNavBtn{
+  min-height:48px;border:0;background:transparent;color:var(--muted);border-radius:13px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:10px;font-weight:800
+}
+.mobileNavBtn .ico{font-size:18px;line-height:1}
+.mobileNavBtn.active{background:var(--accent-soft);color:var(--accent)}
+.recentBooks{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.recentBooks::-webkit-scrollbar{display:none}
+.recentBookBtn{
+  flex:0 0 auto;min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900
+}
+.recentBookBtn:hover{border-color:var(--accent);color:var(--accent)}
+.chapterDock{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+  z-index:70;display:none;gap:6px;align-items:center;
+  background:color-mix(in srgb,var(--panel) 94%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);border-radius:999px;padding:5px;box-shadow:var(--shadow)
+}
+.chapterDock.show{display:flex}
+.chapterDockBtn{
+  min-height:38px;border:0;background:transparent;color:var(--text);border-radius:999px;
+  padding:6px 12px;font-size:12px;font-weight:900
+}
+.chapterDockBtn:hover{background:var(--panel2);color:var(--accent)}
+.chapterDockTitle{font-size:11px;color:var(--muted);padding:0 4px;white-space:nowrap}
+.backTopBtn{
+  position:fixed;right:14px;bottom:78px;z-index:69;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--line);background:var(--panel);color:var(--text);box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:.18s;font-weight:900
+}
+.backTopBtn.show{opacity:1;pointer-events:auto}
+.resumeBadge{
+  display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--panel2);
+  border-radius:999px;padding:5px 9px;font-size:10px;color:var(--muted);font-weight:800
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+
+
+.searchControlBox{
+  border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:10px;margin-bottom:10px
+}
+.searchFilterRow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.searchFilterBtn{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900
+}
+.searchFilterBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.searchBookFilter{
+  min-height:34px;max-width:190px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 8px;font-size:11px
+}
+.searchHistoryWrap{display:flex;align-items:center;gap:6px;margin-top:8px;min-width:0}
+.searchHistory{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none}
+.searchHistory::-webkit-scrollbar{display:none}
+.searchHistoryBtn{
+  flex:0 0 auto;min-height:31px;border:1px solid var(--line);background:var(--panel);color:var(--muted);
+  border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800
+}
+.searchHistoryBtn:hover{color:var(--accent);border-color:var(--accent)}
+.searchHistoryClear{
+  flex:0 0 auto;min-height:31px;border:0;background:transparent;color:var(--muted);
+  border-radius:9px;padding:5px 8px;font-size:10px;font-weight:900
+}
+.searchHistoryClear:hover{background:var(--panel);color:var(--danger)}
+
+.savedLayoutRow{display:flex;gap:6px;justify-content:flex-end;margin:-2px 0 10px}
+.savedLayoutBtn{
+  min-height:32px;border:1px solid var(--line);background:var(--panel);color:var(--muted);
+  border-radius:10px;padding:5px 9px;font-size:11px;font-weight:900
+}
+.savedLayoutBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+#savedList.compact .savedEntry{padding:7px 2px;gap:8px}
+#savedList.compact .savedPreview,
+#savedList.compact .savedMeta,
+#savedList.compact .savedTags{display:none}
+#savedList.compact .groupLabel{margin-bottom:2px}
+#savedList.compact .savedTitle{margin-bottom:1px}
+#savedList.compact .savedActionRow{margin-top:4px}
+#savedList.compact .savedSmallBtn{min-height:28px;padding:3px 7px;font-size:10px}
+
+.readerPrefGrid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0
+}
+.readerPrefBox{border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:11px}
+.readerPrefHead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px}
+.readerPrefTitle{font-size:12px;font-weight:900}
+.readerPrefValue{font-size:11px;color:var(--accent);font-weight:900}
+.readerPrefBox input[type="range"]{width:100%}
+
+.tabletPane{
+  display:none;background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:12px;
+  box-shadow:var(--shadow)
+}
+.tabletPaneHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.tabletPaneTitle{font-weight:900;color:var(--accent)}
+.tabletTestament{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.tabletTestamentBtn{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;font-size:11px;font-weight:900
+}
+.tabletTestamentBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tabletBookGrid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.tabletBookBtn{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:9px;padding:5px 6px;font-size:10px;font-weight:800;text-align:left
+}
+.tabletBookBtn.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.tabletChapterTitle{font-size:11px;font-weight:900;color:var(--accent);margin:10px 0 6px}
+.tabletChapterGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.tabletChapterBtn{
+  aspect-ratio:1/1;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:8px;font-size:10px;font-weight:900
+}
+.tabletChapterBtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+@media(min-width:900px){
+  body.tablet-pane-on .main{
+    max-width:1380px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start
+  }
+  body.tablet-pane-on .tabletPane{
+    display:block;grid-column:1;grid-row:1 / span 30;position:sticky;top:82px;
+    max-height:calc(100vh - 98px);overflow:auto
+  }
+  body.tablet-pane-on .main > :not(.tabletPane){grid-column:2}
+}
+
+
+.searchQuick{
+  display:flex;gap:5px;align-items:center;margin-top:8px;flex-wrap:wrap
+}
+.searchQuickBtn{
+  min-height:30px;border:1px solid var(--line);background:var(--panel);color:var(--muted);
+  border-radius:9px;padding:4px 8px;font-size:10px;font-weight:900
+}
+.searchQuickBtn:hover{border-color:var(--accent);color:var(--accent)}
+.searchQuickBtn.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+
+.collectionRow{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 11px
+}
+.collectionSelect{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:0 8px;font-size:11px;min-width:160px
+}
+.collectionBtn{
+  min-height:34px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:10px;padding:5px 9px;font-size:11px;font-weight:900
+}
+.collectionBtn:hover{border-color:var(--accent);color:var(--accent)}
+.collectionChip{
+  display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--panel2);
+  color:var(--accent);border-radius:999px;padding:3px 7px;font-size:10px;font-weight:900
+}
+.collectionDot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+
+.collectionScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:78;opacity:0;pointer-events:none;transition:.18s
+}
+.collectionScrim.show{opacity:1;pointer-events:auto}
+.collectionModal{
+  position:fixed;z-index:79;left:50%;top:50%;transform:translate(-50%,-46%);
+  width:min(calc(100vw - 24px),560px);max-height:min(84vh,720px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.30);
+  padding:18px;opacity:0;pointer-events:none;transition:.18s
+}
+.collectionModal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.collectionHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.collectionTitle{font-size:20px;font-weight:900}
+.collectionCreate{display:flex;gap:7px;margin-bottom:12px}
+.collectionInput{
+  flex:1;min-width:0;height:40px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:11px;padding:0 10px;outline:0
+}
+.collectionInput:focus{border-color:var(--accent)}
+.collectionList{display:flex;flex-direction:column;gap:7px}
+.collectionItem{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;
+  border:1px solid var(--line);border-radius:12px;padding:8px
+}
+.collectionName{font-weight:900}
+.collectionMeta{font-size:10px;color:var(--muted);margin-top:3px}
+
+.favoriteBar{
+  display:flex;gap:6px;align-items:center;overflow-x:auto;padding:4px 0 7px;scrollbar-width:none
+}
+.favoriteBar::-webkit-scrollbar{display:none}
+.favoriteBtn{
+  flex:0 0 auto;min-height:32px;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900
+}
+.favoriteBtn:hover{border-color:var(--accent);color:var(--accent)}
+.favoriteBtn.book::before{content:"★ ";color:#d89a2b}
+.favoriteBtn.chapter::before{content:"☆ ";color:var(--accent)}
+
+.shortcutModal{
+  position:fixed;z-index:82;left:50%;top:50%;transform:translate(-50%,-46%);
+  width:min(calc(100vw - 24px),520px);max-height:80vh;overflow:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.30);
+  padding:18px;opacity:0;pointer-events:none;transition:.18s
+}
+.shortcutModal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.shortcutScrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:81;opacity:0;pointer-events:none;transition:.18s
+}
+.shortcutScrim.show{opacity:1;pointer-events:auto}
+.shortcutGrid{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center}
+.keycap{
+  display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:28px;
+  border:1px solid var(--line);border-bottom-width:2px;background:var(--panel2);border-radius:7px;
+  padding:0 7px;font-size:10px;font-weight:900;color:var(--text)
+}
+
+@media(max-width:700px){
+  body{padding-bottom:86px}
+  .mobileNav{display:block}
+  .chapterDock{bottom:84px}
+  .backTopBtn{bottom:142px}
+  .topbar{padding:9px}.topinner{gap:6px}.icon{width:47px;height:47px;flex-basis:47px;border-radius:15px}
+  .search{height:47px;padding-left:13px;font-size:15px}.searchbtn{top:4px;right:4px;width:39px;height:39px}
+  .main{padding:18px 12px 86px}.hero{padding:19px;border-radius:21px}.hero h1{font-size:27px}
+  .hero.ready{padding:15px 17px}.hero.ready h1{font-size:22px}
+  .quicknav{grid-template-columns:1.2fr .72fr;gap:7px}.quicknav .wideMobile{grid-column:span 1}
+  .chapterTitle{align-items:flex-start}.chapterTitle h2{font-size:27px}.chapterTitleRight{max-width:46%}.verses{padding:7px 11px}
+  .verse{grid-template-columns:29px 1fr 118px;gap:5px;font-size:var(--verse)}.vnum{padding-top:10px}
+  .verses.select-mode .verse{grid-template-columns:34px 1fr}.verses.select-mode .vnum{margin-left:0}
+  .multiBar{bottom:10px}.multiActions{gap:5px}.multiColor{font-size:10px;padding-left:2px;padding-right:2px}
+  .savedStats{grid-template-columns:repeat(2,1fr)}
+  .readerPrefGrid{grid-template-columns:1fr}
+  .homeGrid{grid-template-columns:1fr}
+  .dailyRef{font-size:22px}.dailyText{font-size:17px}
+  .planStats{grid-template-columns:repeat(3,1fr)}
+  .homeQuick{grid-template-columns:1fr 1fr 1fr}
+  .planControls{grid-template-columns:1fr}
+  .weekCalendar{gap:4px}.weekDay{padding:7px 3px}
+  .monthCalendar{gap:4px}
+  body.focus-mode .main{padding-left:7px;padding-right:7px}
+  body.focus-mode .verse{font-size:calc(var(--verse) + 1px)}
+  .planExtra{grid-template-columns:1fr}
+  .timerStats{grid-template-columns:repeat(3,1fr)}
+  .reminderRow{grid-template-columns:1fr}
+  .forecastGrid{grid-template-columns:1fr 1fr}
+  .timeChart{gap:2px}.timeChartLabels{gap:2px}.timeDayLabel{font-size:7px}
+  .drawer{width:92vw}.chapterGrid{grid-template-columns:repeat(5,1fr)}
+  .installCard{padding:19px 14px}.installActions .btn{flex:1 1 140px}
+}
+@media(max-width:420px){
+  .quicknav{grid-template-columns:1fr 86px}.quicknav .btn{padding-left:9px;padding-right:9px}
+  .bookGrid{grid-template-columns:1fr 1fr}
+  .chapterGrid{grid-template-columns:repeat(5,1fr)}
+}
+@media print{
+  .topbar,.hero,.quicknav,.navrow,.footer,.vtools,.panel{display:none!important}
+  .main{padding:0}.verses{border:0;box-shadow:none}.verse{grid-template-columns:35px 1fr}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topinner">
+    <button class="icon" id="menuBtn" aria-label="성경 찾기">☰</button>
+    <div class="searchwrap">
+      <input class="search" id="searchInput" placeholder="말씀 검색 또는 ‘요 3:16’" autocomplete="off">
+      <button class="searchbtn" id="searchBtn" aria-label="검색">⌕</button>
+    </div>
+    <button class="icon" id="settingsBtn" aria-label="읽기 설정" style="font-size:19px">Aa</button>
+  </div>
+</header>
+
+<main class="main">
+  <aside class="tabletPane" id="tabletPane" aria-label="태블릿 성경 탐색">
+    <div class="tabletPaneHead">
+      <div class="tabletPaneTitle">성경 탐색</div>
+      <span class="schemaBadge">2-Pane</span>
+    </div>
+    <div class="tabletTestament">
+      <button class="tabletTestamentBtn active" data-tablet-testament="old">구약</button>
+      <button class="tabletTestamentBtn" data-tablet-testament="new">신약</button>
+    </div>
+    <div class="tabletBookGrid" id="tabletBookGrid"></div>
+    <div class="tabletChapterTitle" id="tabletChapterTitle">장 선택</div>
+    <div class="tabletChapterGrid" id="tabletChapterGrid"></div>
+  </aside>
+  <section class="hero" id="hero">
+    <h1>성경전서 개역한글판</h1>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.3는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <div class="chips">
+      <span class="chip" id="bookStat">66권 구조 ✓</span>
+      <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
+      <span class="chip" id="verseStat">본문 확인 중</span>
+      <span class="chip" id="dataStat">데이터 준비 중</span>
+    </div>
+  </section>
+
+  <section class="homePanel" id="homePanel">
+    <div class="homeGrid">
+      <article class="dailyCard">
+        <div class="dailyEyebrow">오늘의 말씀</div>
+        <div class="dailyRef" id="dailyRef">말씀 준비 중</div>
+        <div class="dailyText" id="dailyText">성경 본문이 준비되면 오늘의 말씀이 표시됩니다.</div>
+        <div class="dailyActions">
+          <button class="btn primary" id="dailyGoBtn">이 말씀으로 이동</button>
+          <button class="btn" id="dailyNewBtn">다른 말씀</button>
+          <button class="btn" id="dailySaveBtn">★ 책갈피</button>
+        </div>
+      </article>
+
+      <article class="planCard">
+        <div class="planHeader">
+          <div>
+            <div class="planTitle">통독 계획</div>
+            <div class="planSub" id="planSub">읽기 계획을 선택하세요.</div>
+          </div>
+          <select class="planSelect" id="planSelect" aria-label="통독 계획">
+            <option value="365">1년</option>
+            <option value="180">180일</option>
+            <option value="90">90일</option>
+          </select>
+        </div>
+
+        <div class="planControls">
+          <div class="planDateWrap">
+            <label for="planStartDate">통독 시작일</label>
+            <input class="planDateInput" id="planStartDate" type="date">
+          </div>
+          <div class="planDateWrap">
+            <label>밀린 분량 처리</label>
+            <button class="btn" id="rebalancePlanBtn">남은 기간에 재분배</button>
+          </div>
+        </div>
+
+        <div class="rebalanceBox" id="rebalanceBox">
+          <div class="rebalanceTitle">자동 재분배</div>
+          <div class="rebalanceText" id="rebalanceText">현재 계획 상태를 계산합니다.</div>
+        </div>
+
+        <div class="planExtra">
+          <div class="planExtraBox">
+            <div class="k">목표 종료일</div>
+            <div class="v" id="planEndDate">-</div>
+          </div>
+          <div class="planExtraBox">
+            <div class="k">현재 페이스</div>
+            <div class="v"><span class="paceBadge ontrack" id="paceBadge">계획대로</span></div>
+          </div>
+        </div>
+
+        <div class="forecastGrid">
+          <div class="forecastBox">
+            <div class="k">예상 완료일</div>
+            <div class="v" id="forecastEndDate">기록 필요</div>
+          </div>
+          <div class="forecastBox">
+            <div class="k">실제 하루 평균</div>
+            <div class="v" id="actualDailyPace">0장</div>
+          </div>
+          <div class="forecastBox">
+            <div class="k">남은 기간 필요 페이스</div>
+            <div class="v" id="requiredDailyPace">0장</div>
+          </div>
+          <div class="forecastBox">
+            <div class="k">예상 차이</div>
+            <div class="v" id="forecastDelta">-</div>
+          </div>
+        </div>
+
+        <div class="progressTrack"><div class="progressFill" id="planProgressFill"></div></div>
+        <div class="planStats">
+          <div class="planStat"><strong id="planPercent">0%</strong><span>진행률</span></div>
+          <div class="planStat"><strong id="planDone">0</strong><span>읽은 장</span></div>
+          <div class="planStat"><strong id="planStreak">0일</strong><span>연속 읽기</span></div>
+        </div>
+
+        <div class="small" id="todayPlanLabel">오늘 읽을 분량</div>
+        <div class="todayReadList" id="todayReadList"></div>
+
+        <div class="homeQuick">
+          <button class="btn" id="continueReadingBtn">최근 읽기</button>
+          <button class="btn" id="openSavedHomeBtn">말씀 보관함</button>
+          <button class="btn" id="resetPlanBtn">계획 초기화</button>
+        </div>
+      </article>
+    </div>
+
+    <article class="calendarCard">
+      <div class="calendarHead">
+        <div>
+          <div class="calendarTitle">읽기 달력</div>
+          <div class="small" id="calendarSummary">읽은 날짜를 확인합니다.</div>
+        </div>
+        <div class="calendarTabs">
+          <button class="calendarTab active" data-calendar-mode="week">주간</button>
+          <button class="calendarTab" data-calendar-mode="month">월간</button>
+        </div>
+      </div>
+      <div id="readingCalendar"></div>
+    </article>
+
+    <article class="timerCard">
+      <div class="timerTop">
+        <div>
+          <div class="timerTitle">읽기 시간</div>
+          <div class="timerSub" id="timerStatus">타이머를 시작하면 오늘 읽은 시간이 저장됩니다.</div>
+        </div>
+        <div class="timerClock" id="timerClock">00:00:00</div>
+      </div>
+      <div class="timerActions">
+        <button class="btn primary" id="timerStartBtn">시작</button>
+        <button class="btn" id="timerPauseBtn">일시정지</button>
+        <button class="btn" id="timerResetBtn">오늘 타이머 초기화</button>
+      </div>
+      <div class="timerStats">
+        <div class="timerStat"><strong id="timerToday">0분</strong><span>오늘</span></div>
+        <div class="timerStat"><strong id="timerWeek">0분</strong><span>최근 7일</span></div>
+        <div class="timerStat"><strong id="timerTotal">0분</strong><span>누적</span></div>
+      </div>
+      <div class="reminderRow">
+        <div>
+          <div class="reminderLabel">매일 읽기 알림 시간</div>
+          <input class="reminderTime" id="reminderTime" type="time" value="21:00">
+        </div>
+        <button class="btn" id="downloadIcsBtn">캘린더 알림 저장</button>
+      </div>
+      <div class="small">ICS 파일을 휴대폰 캘린더에 추가하면 매일 같은 시간에 성경 읽기 알림을 받을 수 있습니다.</div>
+    </article>
+
+    <article class="timeChartCard">
+      <div class="timeChartHead">
+        <div>
+          <div class="timeChartTitle">월간 읽기 시간</div>
+          <div class="timeChartSummary" id="timeChartSummary">이번 달 읽기 시간을 표시합니다.</div>
+        </div>
+        <div class="chartMonthNav">
+          <button class="chartNavBtn" id="chartPrevMonth">‹</button>
+          <div class="chartMonthLabel" id="chartMonthLabel">-</div>
+          <button class="chartNavBtn" id="chartNextMonth">›</button>
+        </div>
+      </div>
+      <div class="timeChart" id="timeChart"></div>
+      <div class="timeChartLabels" id="timeChartLabels"></div>
+    </article>
+  </section>
+
+  <section class="panel" id="settingsPanel">
+    <h3>읽기 · 오프라인 설정</h3>
+    <div class="settingRow">
+      <button class="btn" data-theme-btn="light">밝게</button>
+      <button class="btn" data-theme-btn="sepia">세피아</button>
+      <button class="btn" data-theme-btn="dark">어둡게</button>
+    </div>
+    <div class="range">
+      <b>본문 크기</b>
+      <input id="fontRange" type="range" min="15" max="30" value="19">
+      <span id="fontValue">19px</span>
+    </div>
+    <div class="readerPrefGrid">
+      <div class="readerPrefBox">
+        <div class="readerPrefHead"><span class="readerPrefTitle">줄 간격</span><span class="readerPrefValue" id="lineHeightValue">1.95</span></div>
+        <input id="lineHeightRange" type="range" min="1.50" max="2.50" step="0.05" value="1.95">
+      </div>
+      <div class="readerPrefBox">
+        <div class="readerPrefHead"><span class="readerPrefTitle">본문 폭</span><span class="readerPrefValue" id="readerWidthValue">1080px</span></div>
+        <input id="readerWidthRange" type="range" min="620" max="1080" step="20" value="1080">
+      </div>
+    </div>
+    <div class="settingRow">
+      <button class="btn" id="tabletPaneToggle">태블릿 2분할 탐색</button>
+      <button class="btn" id="shortcutHelpBtn">키보드 단축키</button>
+    </div>
+    <div class="settingRow">
+      <button class="btn primary" id="installBtn">전체 성경 자동 복구</button>
+      <button class="btn" id="importBtn">JSON 직접 불러오기</button>
+      <input id="fileInput" type="file" accept=".json,application/json" hidden>
+    </div>
+    <div class="settingRow">
+      <button class="btn soft" id="exportBtn">완전 오프라인 HTML 저장</button>
+      <button class="btn" id="exportBookmarksBtn">보관함 백업</button>
+      <button class="btn" id="importSavedBtn">보관함 복원</button>
+      <select class="restoreMode" id="restoreMode" aria-label="보관함 복원 방식">
+        <option value="replace">복원: 기존 데이터 교체</option>
+        <option value="merge">복원: 현재 데이터와 합치기</option>
+      </select>
+      <input id="savedImportInput" type="file" accept=".json,application/json" hidden>
+    </div>
+
+    <div class="stabilityBox">
+      <div class="stabilityHead">
+        <div>
+          <div class="stabilityTitle">v0.3.3 안정성 도구</div>
+          <span class="schemaBadge">Storage Schema 4</span>
+        </div>
+        <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
+      </div>
+      <div class="settingRow">
+        <button class="btn" id="repairDataBtn">저장 데이터 안전 정리</button>
+        <button class="btn" id="clearBibleCacheBtn">본문 캐시 초기화</button>
+      </div>
+      <div class="small">형광펜·메모·태그·책갈피·통독 기록의 잘못된 중복/참조를 검사합니다. 정상 데이터는 유지합니다.</div>
+      <div class="diagnosticsPanel" id="diagnosticsPanel">
+        <div id="diagnosticsList"></div>
+        <div class="diagFooter">
+          <button class="btn" id="diagnosticsRefreshBtn">다시 점검</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">
+      <b>완전 오프라인 HTML</b>은 검증된 66권·1,189장·31,102절을 현재 파일 안에 직접 넣습니다.
+      생성된 파일은 이후 인터넷 연결이나 <code>fetch()</code>가 전혀 필요 없습니다.
+    </div>
+  </section>
+
+  <section class="panel" id="searchPanel">
+    <div class="resultMeta"><span><span id="resultSummary">검색 결과</span><span class="searchPerf" id="searchPerf"></span></span><button class="btn" id="closeSearch">닫기</button></div>
+    <div class="searchControlBox">
+      <div class="searchFilterRow">
+        <button class="searchFilterBtn active" data-search-testament="all">전체</button>
+        <button class="searchFilterBtn" data-search-testament="old">구약</button>
+        <button class="searchFilterBtn" data-search-testament="new">신약</button>
+        <select class="searchBookFilter" id="searchBookFilter" aria-label="검색 결과 성경책 필터">
+          <option value="all">모든 성경책</option>
+        </select>
+      </div>
+      <div class="searchHistoryWrap">
+        <div class="searchHistory" id="searchHistory"></div>
+        <button class="searchHistoryClear" id="clearSearchHistory">기록 삭제</button>
+      </div>
+    </div>
+    <div id="searchResults"></div>
+  </section>
+
+  <section class="panel" id="savedPanel">
+    <div class="resultMeta"><b>말씀 보관함</b><button class="btn" id="closeSaved">닫기</button></div>
+    <div class="savedTabs">
+      <button class="savedTab active" data-saved-tab="highlights">형광펜 <span class="savedCount" id="highlightCount">0</span></button>
+      <button class="savedTab" data-saved-tab="bookmarks">책갈피 <span class="savedCount" id="bookmarkCount">0</span></button>
+    </div>
+    <div class="savedLayoutRow">
+      <button class="savedLayoutBtn active" data-saved-layout="list">자세히</button>
+      <button class="savedLayoutBtn" data-saved-layout="compact">간단히</button>
+    </div>
+    <div class="collectionRow">
+      <select class="collectionSelect" id="collectionFilter" aria-label="컬렉션 필터">
+        <option value="all">모든 컬렉션</option>
+        <option value="none">미분류</option>
+      </select>
+      <button class="collectionBtn" id="manageCollectionsBtn">컬렉션 관리</button>
+      <button class="collectionBtn" id="exportMarkdownBtn">Markdown 내보내기</button>
+      <button class="collectionBtn" id="exportTextBtn">TXT 내보내기</button>
+    </div>
+    <div class="savedStats" id="savedStats">
+      <div class="statCard"><span class="statNum" id="statHighlightVerses">0</span><span class="statLabel">형광펜 절</span></div>
+      <div class="statCard"><span class="statNum" id="statGroups">0</span><span class="statLabel">말씀 묶음</span></div>
+      <div class="statCard"><span class="statNum" id="statMemos">0</span><span class="statLabel">메모</span></div>
+      <div class="statCard"><span class="statNum" id="statTags">0</span><span class="statLabel">사용 태그</span></div>
+    </div>
+    <div id="highlightSavedTools">
+      <div class="savedScopeRow">
+        <button class="scopeBtn active" data-saved-scope="all">전체</button>
+        <button class="scopeBtn" data-saved-scope="today">오늘</button>
+        <button class="scopeBtn" data-saved-scope="week">최근 7일</button>
+        <button class="scopeBtn" data-saved-scope="memo">메모 있음</button>
+      </div>
+      <div class="savedTools">
+        <div class="savedFilters">
+          <button class="filterBtn active" data-hl-filter="all">전체</button>
+          <button class="filterBtn" data-hl-filter="yellow"><span class="dot yellow"></span>노랑</button>
+          <button class="filterBtn" data-hl-filter="green"><span class="dot green"></span>초록</button>
+          <button class="filterBtn" data-hl-filter="pink"><span class="dot pink"></span>분홍</button>
+          <button class="filterBtn" data-hl-filter="blue"><span class="dot blue"></span>파랑</button>
+        </div>
+        <select class="savedSort" id="savedSort" aria-label="보관함 정렬">
+          <option value="recent">최근 저장순</option>
+          <option value="bible">성경 순</option>
+        </select>
+      </div>
+      <input class="savedSearch" id="savedSearch" placeholder="형광펜 말씀 검색 · 예: 요한복음, 사랑, 메모">
+      <div class="tagFilterRow" id="savedTagFilters"></div>
+    </div>
+    <div id="savedList"></div>
+  </section>
+
+  <div class="favoriteBar" id="favoriteBar" aria-label="즐겨찾기"></div>
+  <div class="recentBooks" id="recentBooks" aria-label="최근 본 성경책"></div>
+  <div class="quicknav">
+    <select class="select" id="bookSelect" aria-label="성경책"></select>
+    <select class="select" id="chapterSelect" aria-label="장"></select>
+    <button class="btn wideMobile" id="savedBtn">▰ 보관함</button>
+    <button class="btn wideMobile" id="randomBtn">임의 말씀</button>
+  </div>
+
+  <div id="reader"><div class="loading">성경 본문을 준비하고 있습니다…</div></div>
+</main>
+
+<footer class="footer">
+  성경전서 개역한글판 © 대한성서공회 1961 · 본문을 임의 현대화하거나 개작하지 않습니다.<br>
+  구조 검증 기준: 66권 · 1,189장 · 31,102절.
+</footer>
+
+<div class="tagManagerScrim" id="tagManagerScrim"></div>
+<section class="tagManagerModal" id="tagManagerModal" aria-hidden="true">
+  <div class="tagManagerHead">
+    <div>
+      <div class="tagManagerTitle">태그 관리</div>
+      <div class="small">태그 이름 변경, 병합, 삭제</div>
+    </div>
+    <button class="memoClose" id="tagManagerClose" aria-label="닫기">×</button>
+  </div>
+  <div class="tagManagerList" id="tagManagerList"></div>
+  <div class="tagManagerNote">
+    이름을 바꾸면 해당 태그가 사용된 모든 말씀에 자동 반영됩니다.<br>
+    이미 존재하는 이름으로 변경하면 두 태그가 하나로 병합됩니다.
+  </div>
+</section>
+
+<div class="memoScrim" id="memoScrim"></div>
+<section class="memoModal" id="memoModal" aria-hidden="true">
+  <div class="memoHead">
+    <div class="memoRef" id="memoRef">말씀 메모</div>
+    <button class="memoClose" id="memoClose" aria-label="닫기">×</button>
+  </div>
+  <div class="memoVerse" id="memoVerse"></div>
+
+  <div class="memoLabel">개인 메모</div>
+  <textarea class="memoInput" id="memoInput" placeholder="이 말씀에서 느낀 점, 기도 제목, 기억할 내용을 적어 두세요."></textarea>
+
+  <div class="memoLabel">태그</div>
+  <div class="tagEditor" id="memoTagEditor"></div>
+  <div class="customTagRow">
+    <input class="customTagInput" id="customTagInput" maxlength="20" placeholder="새 태그 추가">
+    <button class="btn" id="addCustomTag">추가</button>
+  </div>
+
+  <div class="memoActions">
+    <button class="btn danger" id="deleteMemoBtn">메모만 지우기</button>
+    <button class="btn primary" id="saveMemoBtn">저장</button>
+  </div>
+</section>
+
+<div class="collectionScrim" id="collectionScrim"></div>
+<section class="collectionModal" id="collectionModal" aria-hidden="true">
+  <div class="collectionHead">
+    <div>
+      <div class="collectionTitle">컬렉션 관리</div>
+      <div class="small">저장한 말씀을 주제별 폴더처럼 정리합니다.</div>
+    </div>
+    <button class="memoClose" id="collectionClose">×</button>
+  </div>
+  <div class="collectionCreate">
+    <input class="collectionInput" id="collectionNameInput" maxlength="30" placeholder="예: 위로받는 말씀, 가족, 암송">
+    <button class="btn primary" id="createCollectionBtn">추가</button>
+  </div>
+  <div class="collectionList" id="collectionList"></div>
+</section>
+
+<div class="shortcutScrim" id="shortcutScrim"></div>
+<section class="shortcutModal" id="shortcutModal" aria-hidden="true">
+  <div class="collectionHead">
+    <div>
+      <div class="collectionTitle">키보드 단축키</div>
+      <div class="small">PC/태블릿 키보드에서 사용합니다.</div>
+    </div>
+    <button class="memoClose" id="shortcutClose">×</button>
+  </div>
+  <div class="shortcutGrid">
+    <span class="keycap">Ctrl/⌘ K</span><span>검색창으로 이동</span>
+    <span class="keycap">Alt ←</span><span>이전 장</span>
+    <span class="keycap">Alt →</span><span>다음 장</span>
+    <span class="keycap">H</span><span>오늘 홈</span>
+    <span class="keycap">B</span><span>말씀 보관함</span>
+    <span class="keycap">F</span><span>집중 모드 켜기/끄기</span>
+    <span class="keycap">?</span><span>단축키 도움말</span>
+    <span class="keycap">Esc</span><span>열린 패널/모달 닫기</span>
+  </div>
+</section>
+
+<div class="drawerScrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="성경 찾기">
+  <div class="drawerHead">
+    <div class="drawerTitle"><strong>성경 찾기</strong><small>검색 없이 책과 장으로 이동</small></div>
+    <button class="drawerClose" id="drawerClose" aria-label="닫기">×</button>
+  </div>
+  <div class="drawerBody">
+    <div class="recentBox" id="recentBox">
+      <div class="recentLabel">최근 읽은 곳</div>
+      <button class="recentBtn" id="recentBtn">창세기 1장</button>
+    </div>
+    <div class="drawerQuick">
+      <button class="btn" id="drawerHome">⌂ 오늘</button>
+      <button class="btn" id="drawerSaved">▰ 말씀 보관함</button>
+    </div>
+    <div class="drawerQuick">
+      <button class="btn" id="drawerContinue">▶ 최근 읽기</button>
+      <button class="btn" id="drawerRandom">↝ 임의 말씀</button>
+    </div>
+
+    <div class="bookView" id="bookView">
+      <div class="testamentTabs">
+        <button class="tab active" data-testament="old">구약 39권</button>
+        <button class="tab" data-testament="new">신약 27권</button>
+      </div>
+      <div class="drawerHint">성경책을 누르면 장 목록이 열립니다.</div>
+      <div class="bookGrid" id="bookGrid"></div>
+    </div>
+
+    <div class="chapterView" id="chapterView">
+      <button class="drawerBack" id="drawerBack">← 성경책 목록</button>
+      <div class="chapterBookName" id="chapterBookName"></div>
+      <div class="drawerHint">읽을 장을 누르세요.</div>
+      <div class="chapterGrid" id="chapterGrid"></div>
+    </div>
+  </div>
+</aside>
+
+<div class="multiBar" id="multiBar" aria-hidden="true">
+  <div class="multiTop">
+    <div class="multiSummary" id="multiSummary">선택된 구절 없음</div>
+    <button class="multiCancel" id="multiCancel">선택 종료</button>
+  </div>
+  <div class="multiActions">
+    <button class="multiColor" data-multi-color="yellow">노랑</button>
+    <button class="multiColor" data-multi-color="green">초록</button>
+    <button class="multiColor" data-multi-color="pink">분홍</button>
+    <button class="multiColor" data-multi-color="blue">파랑</button>
+    <button class="multiColor" data-multi-color="clear">지우기</button>
+  </div>
+</div>
+
+<div class="markerPalette" id="markerPalette" aria-hidden="true">
+  <div class="markerHead">
+    <div class="markerTitle" id="markerRef">형광펜</div>
+    <button class="markerClose" id="markerClose" aria-label="닫기">×</button>
+  </div>
+  <div class="markerColors">
+    <button class="markerColor" data-color="yellow">노랑</button>
+    <button class="markerColor" data-color="green">초록</button>
+    <button class="markerColor" data-color="pink">분홍</button>
+    <button class="markerColor" data-color="blue">파랑</button>
+    <button class="markerColor" data-color="clear">지우기</button>
+  </div>
+</div>
+
+<div class="readProgressWrap" aria-hidden="true"><div class="readProgressBar" id="readProgressBar"></div></div>
+
+<nav class="mobileNav" id="mobileNav" aria-label="모바일 빠른 메뉴">
+  <div class="mobileNavGrid">
+    <button class="mobileNavBtn" data-mobile-nav="home"><span class="ico">⌂</span><span>오늘</span></button>
+    <button class="mobileNavBtn" data-mobile-nav="bible"><span class="ico">☰</span><span>성경</span></button>
+    <button class="mobileNavBtn" data-mobile-nav="search"><span class="ico">⌕</span><span>검색</span></button>
+    <button class="mobileNavBtn" data-mobile-nav="saved"><span class="ico">▰</span><span>보관함</span></button>
+    <button class="mobileNavBtn" data-mobile-nav="settings"><span class="ico">Aa</span><span>설정</span></button>
+  </div>
+</nav>
+
+<div class="chapterDock" id="chapterDock" aria-label="장 이동">
+  <button class="chapterDockBtn" id="dockPrev">← 이전</button>
+  <div class="chapterDockTitle" id="dockTitle">-</div>
+  <button class="chapterDockBtn" id="dockNext">다음 →</button>
+</div>
+
+<button class="backTopBtn" id="backTopBtn" aria-label="맨 위로">↑</button>
+
+<button class="focusExit" id="focusExitBtn">집중 모드 종료</button>
+<div class="toast" id="toast"></div>
+
+<!-- 완전 오프라인판을 만들면 아래 태그 안에 31,102절 전체 데이터가 자동 삽입됩니다. -->
+<script id="embeddedBible" type="application/json">[]</script>
+
+<script>
+(() => {
+'use strict';
+
+const VERSION='0.3.3';
+const APP_SCHEMA=4;
+const EXPECTED={books:66,chapters:1189,verses:31102};
+const OLD_COUNT=39;
+
+const BOOK_META=[
+["창세기",50],["출애굽기",40],["레위기",27],["민수기",36],["신명기",34],["여호수아",24],["사사기",21],["룻기",4],["사무엘상",31],["사무엘하",24],["열왕기상",22],["열왕기하",25],["역대상",29],["역대하",36],["에스라",10],["느헤미야",13],["에스더",10],["욥기",42],["시편",150],["잠언",31],["전도서",12],["아가",8],["이사야",66],["예레미야",52],["예레미야애가",5],["에스겔",48],["다니엘",12],["호세아",14],["요엘",3],["아모스",9],["오바댜",1],["요나",4],["미가",7],["나훔",3],["하박국",3],["스바냐",3],["학개",2],["스가랴",14],["말라기",4],
+["마태복음",28],["마가복음",16],["누가복음",24],["요한복음",21],["사도행전",28],["로마서",16],["고린도전서",16],["고린도후서",13],["갈라디아서",6],["에베소서",6],["빌립보서",4],["골로새서",4],["데살로니가전서",5],["데살로니가후서",3],["디모데전서",6],["디모데후서",4],["디도서",3],["빌레몬서",1],["히브리서",13],["야고보서",5],["베드로전서",5],["베드로후서",3],["요한1서",5],["요한2서",1],["요한3서",1],["유다서",1],["요한계시록",22]
+].map(([name,chapters])=>({name,chapters}));
+
+const ALIASES={
+'창':'창세기','출':'출애굽기','레':'레위기','민':'민수기','신':'신명기','수':'여호수아','삿':'사사기','룻':'룻기',
+'삼상':'사무엘상','삼하':'사무엘하','왕상':'열왕기상','왕하':'열왕기하','대상':'역대상','대하':'역대하','스':'에스라','느':'느헤미야','에':'에스더','욥':'욥기','시':'시편','잠':'잠언','전':'전도서','아':'아가','사':'이사야','렘':'예레미야','애':'예레미야애가','겔':'에스겔','단':'다니엘','호':'호세아','욜':'요엘','암':'아모스','옵':'오바댜','욘':'요나','미':'미가','나':'나훔','합':'하박국','습':'스바냐','학':'학개','슥':'스가랴','말':'말라기',
+'마':'마태복음','막':'마가복음','눅':'누가복음','요':'요한복음','행':'사도행전','롬':'로마서','고전':'고린도전서','고후':'고린도후서','갈':'갈라디아서','엡':'에베소서','빌':'빌립보서','골':'골로새서','살전':'데살로니가전서','살후':'데살로니가후서','딤전':'디모데전서','딤후':'디모데후서','딛':'디도서','몬':'빌레몬서','히':'히브리서','약':'야고보서','벧전':'베드로전서','벧후':'베드로후서','요일':'요한1서','요이':'요한2서','요삼':'요한3서','유':'유다서','계':'요한계시록'
+};
+
+/* Bolls는 전체 번역본을 한 번에 내려받는 공식 다운로드 엔드포인트를 제공.
+   jsDelivr/GitHub 데이터는 구조 교차 확인 및 fallback 용도. */
+const DATA_SOURCES=[
+  {name:'GitHub KRV 전체본',url:'https://raw.githubusercontent.com/bluesaurel/Korean-Bible-1961-KRV/main/bible_1961_krv.json',type:'structured'},
+  {name:'Bolls KRV 전체 번역본',url:'https://bolls.life/static/translations/KRV.json',type:'bolls'},
+  {name:'jsDelivr KRV',url:'https://cdn.jsdelivr.net/gh/bluesaurel/Korean-Bible-1961-KRV@main/bible_1961_krv.json',type:'structured'}
+];
+
+const BOOK_FILES=[
+'Genesis','Exodus','Leviticus','Numbers','Deuteronomy','Joshua','Judges','Ruth',
+'1Samuel','2Samuel','1Kings','2Kings','1Chronicles','2Chronicles','Ezra','Nehemiah','Esther','Job',
+'Psalms','Proverbs','Ecclesiastes','SongofSolomon','Isaiah','Jeremiah','Lamentations','Ezekiel','Daniel',
+'Hosea','Joel','Amos','Obadiah','Jonah','Micah','Nahum','Habakkuk','Zephaniah','Haggai','Zechariah','Malachi',
+'Matthew','Mark','Luke','John','Acts','Romans','1Corinthians','2Corinthians','Galatians','Ephesians',
+'Philippians','Colossians','1Thessalonians','2Thessalonians','1Timothy','2Timothy','Titus','Philemon',
+'Hebrews','James','1Peter','2Peter','1John','2John','3John','Jude','Revelation'
+];
+
+let bible=[];
+let flat=[];
+let currentBook=0;
+let currentChapter=1;
+let testament='old';
+let db=null;
+let loadPromise=null;
+let currentSource='';
+let multiSelectMode=false;
+let selectedVerseKeys=new Set();
+let savedColorFilter='all';
+let savedSortMode='recent';
+let savedSearchQuery='';
+let savedTagFilter='all';
+let savedScopeFilter='all';
+let memoTarget={type:null,id:null};
+let memoSelectedTags=new Set();
+let currentDailyVerse=null;
+let touchStartX=0,touchStartY=0,touchStartTime=0;
+let calendarMode='week';
+let focusMode=false;
+let readingTimerRunning=false;
+let readingTimerStartedAt=0;
+let readingTimerInterval=null;
+let speechState='stopped';
+let speechUtterance=null;
+let speechVerseQueue=[];
+let speechQueueIndex=-1;
+let speechCurrentVerse=null;
+let chartMonthOffset=0;
+let searchCache=new Map();
+let lastMigrationReport=null;
+let lastSelfCheck=[];
+let scrollSaveTimer=null;
+let activeView='reader';
+let currentSearchResults=[];
+let currentSearchRaw='';
+let searchTestamentFilter='all';
+let searchBookFilter='all';
+let savedLayout='list';
+let tabletTestament='old';
+let tabletSelectedBook=0;
+let collectionFilter='all';
+const DEFAULT_TAGS=['위로','기도','암송','가족'];
+
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+function toast(t){
+  const e=$('#toast');e.textContent=t;e.classList.add('show');
+  clearTimeout(toast._t);toast._t=setTimeout(()=>e.classList.remove('show'),1800);
+}
+function cleanHTMLText(s){
+  s=String(s??'');
+  if(!/[<&]/.test(s)) return s.trim();
+  const d=document.createElement('div');d.innerHTML=s;
+  return (d.textContent||d.innerText||'').trim();
+}
+function blankBible(){
+  return BOOK_META.map((m,bi)=>({
+    title:m.name,
+    chapters:Array.from({length:m.chapters},(_,i)=>({chapter:i+1,verses:[]}))
+  }));
+}
+function normalizeStructured(raw){
+  let books;
+  if(raw && !Array.isArray(raw) && Array.isArray(raw.chapters)) books=[raw];
+  else books=Array.isArray(raw)?raw:(raw?.books||raw?.bible||raw?.data||[]);
+  if(!Array.isArray(books) || !books.length) return [];
+  return books.map((b,bi)=>({
+    title:b.koreanTitle||b.korean_title||b.nameKo||b.name_ko||BOOK_META[bi]?.name||String(b.book||b.name||''),
+    chapters:(Array.isArray(b.chapters)?b.chapters:[]).map((c,ci)=>({
+      chapter:Number(c.chapter??c.number??ci+1),
+      verses:(Array.isArray(c.verses)?c.verses:[]).map((v,vi)=>({
+        verse:Number(v.verse??v.number??vi+1),
+        text:String(v.text??v.hangulText??v.content??'').trim()
+      }))
+    }))
+  }));
+}
+function normalizeBolls(rows){
+  if(!Array.isArray(rows)||!rows.length) return [];
+  const out=blankBible();
+  for(const r of rows){
+    const bi=Number(r.book)-1,ch=Number(r.chapter),v=Number(r.verse);
+    if(!Number.isInteger(bi)||bi<0||bi>=66||!ch||!v) continue;
+    const c=out[bi].chapters[ch-1]; if(!c) continue;
+    c.verses.push({verse:v,text:cleanHTMLText(r.text)});
+  }
+  out.forEach(b=>b.chapters.forEach(c=>c.verses.sort((a,b)=>a.verse-b.verse)));
+  return out;
+}
+function normalizeAny(raw){
+  if(Array.isArray(raw) && raw.length && raw[0] && !raw[0].chapters &&
+     'book' in raw[0] && 'chapter' in raw[0] && 'verse' in raw[0] && 'text' in raw[0]){
+    return normalizeBolls(raw);
+  }
+  return normalizeStructured(raw);
+}
+function stats(d){
+  let chapters=0,verses=0;
+  d.forEach(b=>{
+    chapters+=b.chapters.length;
+    b.chapters.forEach(c=>verses+=c.verses.filter(v=>v.text&&v.text!=='(없음)').length);
+  });
+  return{books:d.length,chapters,verses};
+}
+function valid(d){
+  const s=stats(d);
+  return s.books===EXPECTED.books && s.chapters===EXPECTED.chapters && s.verses===EXPECTED.verses;
+}
+function normalizeSearchText(s){
+  return String(s??'').toLowerCase().normalize('NFC').replace(/[“”‘’"'`~!@#$%^&*()_+=\[\]{}\\|;,.<>/?：·…—–-]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function buildFlat(){
+  flat=[];searchCache.clear();
+  bible.forEach((b,bi)=>b.chapters.forEach(c=>c.verses.forEach(v=>{
+    if(v.text&&v.text!=='(없음)'){
+      const norm=normalizeSearchText(v.text);
+      flat.push({
+        bi,book:b.title,ch:c.chapter,v:v.verse,text:v.text,
+        norm,normCompact:norm.replace(/\s+/g,'')
+      });
+    }
+  })));
+}
+function setReady(source){
+  const s=stats(bible);
+  $('#bookStat').textContent=`${s.books}권 ✓`;$('#bookStat').classList.add('ok');
+  $('#chapterStat').textContent=`${s.chapters.toLocaleString()}장 ✓`;$('#chapterStat').classList.add('ok');
+  $('#verseStat').textContent=`${s.verses.toLocaleString()}절 ✓`;$('#verseStat').classList.add('ok');
+  $('#dataStat').textContent=source;$('#dataStat').classList.add('ok');$('#dataStat').classList.remove('bad');
+  $('#hero').classList.add('ready');
+  if(flat.length&&!currentDailyVerse)pickDailyVerse(false);
+}
+function setBad(msg){
+  $('#verseStat').textContent='본문 미설치';$('#verseStat').classList.remove('ok');
+  $('#dataStat').textContent=msg;$('#dataStat').classList.remove('ok');$('#dataStat').classList.add('bad');
+  $('#hero').classList.remove('ready');
+}
+
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window)) return reject(new Error('IndexedDB 미지원'));
+    const r=indexedDB.open('KoreanBibleKRV_v2',1);
+    r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('store'))d.createObjectStore('store')};
+    r.onsuccess=e=>{db=e.target.result;resolve(db)};r.onerror=()=>reject(r.error);
+  });
+}
+function idbGet(k){
+  return new Promise((resolve,reject)=>{
+    if(!db)return resolve(null);const t=db.transaction('store','readonly'),r=t.objectStore('store').get(k);
+    r.onsuccess=()=>resolve(r.result??null);r.onerror=()=>reject(r.error);
+  });
+}
+function idbSet(k,v){
+  return new Promise((resolve,reject)=>{
+    if(!db)return resolve();const t=db.transaction('store','readwrite'),r=t.objectStore('store').put(v,k);
+    r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error);
+  });
+}
+function idbDelete(k){
+  return new Promise((resolve,reject)=>{
+    if(!db)return resolve();const t=db.transaction('store','readwrite'),r=t.objectStore('store').delete(k);
+    r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error);
+  });
+}
+async function fetchJSON(url,timeout=30000){
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),timeout);
+  try{
+    const r=await fetch(url,{mode:'cors',cache:'no-store',credentials:'omit',signal:ctl.signal});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  }finally{clearTimeout(timer)}
+}
+async function xhrJSON(url,timeout=30000){
+  return new Promise((resolve,reject)=>{
+    const x=new XMLHttpRequest();x.open('GET',url,true);x.timeout=timeout;x.responseType='text';
+    x.onload=()=>{if(x.status>=200&&x.status<300){try{resolve(JSON.parse(x.responseText))}catch(e){reject(e)}}else reject(new Error(`HTTP ${x.status}`))};
+    x.onerror=()=>reject(new Error('XHR network error'));x.ontimeout=()=>reject(new Error('XHR timeout'));x.send();
+  });
+}
+async function allOriginsRawJSON(target,timeout=60000){
+  const proxy='https://api.allorigins.win/raw?url='+encodeURIComponent(target);
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),timeout);
+  try{
+    const r=await fetch(proxy,{cache:'no-store',credentials:'omit',signal:ctl.signal});
+    if(!r.ok)throw new Error(`AllOrigins HTTP ${r.status}`);
+    const t=await r.text();
+    return JSON.parse(t);
+  }finally{clearTimeout(timer)}
+}
+function allOriginsJSONP(target,timeout=90000){
+  return new Promise((resolve,reject)=>{
+    const cb='__krv_cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    let done=false;
+    const cleanup=()=>{
+      if(done)return;done=true;
+      clearTimeout(timer);
+      try{delete window[cb]}catch(_){window[cb]=undefined}
+      s.remove();
+    };
+    const timer=setTimeout(()=>{cleanup();reject(new Error('JSONP timeout'))},timeout);
+    window[cb]=(payload)=>{
+      try{
+        const raw=payload && Object.prototype.hasOwnProperty.call(payload,'contents') ? payload.contents : payload;
+        const parsed=typeof raw==='string'?JSON.parse(raw):raw;
+        cleanup();resolve(parsed);
+      }catch(e){cleanup();reject(e)}
+    };
+    s.onerror=()=>{cleanup();reject(new Error('JSONP script load error'))};
+    s.src='https://api.allorigins.win/get?callback='+encodeURIComponent(cb)+'&url='+encodeURIComponent(target);
+    s.async=true;
+    document.head.appendChild(s);
+  });
+}
+async function loadOneBookRecovered(i){
+  const file=BOOK_FILES[i]+'.json';
+  const targets=[
+    'https://raw.githubusercontent.com/bluesaurel/Korean-Bible-1961-KRV/main/data/'+file,
+    'https://cdn.jsdelivr.net/gh/bluesaurel/Korean-Bible-1961-KRV@main/data/'+file
+  ];
+  let last=null;
+  for(const target of targets){
+    for(const loader of [allOriginsRawJSON,allOriginsJSONP]){
+      try{
+        const raw=await loader(target);
+        const one=normalizeAny(raw);
+        if(one.length===1 && one[0].chapters?.length){
+          one[0].title=BOOK_META[i].name;
+          return one[0];
+        }
+        throw new Error('권별 JSON 구조 불일치');
+      }catch(e){last=e}
+    }
+  }
+  throw last||new Error('권별 복구 실패');
+}
+async function loadAllBooksRecovered(){
+  const parts=new Array(66);
+  let next=0,completed=0;
+  const workers=Array.from({length:3},async()=>{
+    while(true){
+      const i=next++;
+      if(i>=66)return;
+      $('#dataStat').textContent=`복구 중 ${completed}/66권`;
+      parts[i]=await loadOneBookRecovered(i);
+      completed++;
+      $('#dataStat').textContent=`복구 중 ${completed}/66권`;
+    }
+  });
+  await Promise.all(workers);
+  const s=stats(parts);
+  if(!valid(parts))throw new Error(`권별 합본 검증 실패: ${s.books}권/${s.chapters}장/${s.verses}절`);
+  return parts;
+}
+async function loadEmbedded(){
+  try{
+    const txt=$('#embeddedBible').textContent.trim();
+    if(!txt||txt==='[]')return false;
+    const d=normalizeAny(JSON.parse(txt));
+    if(!valid(d))return false;
+    bible=d;currentSource='완전 오프라인 내장본';buildFlat();setReady(currentSource);return true;
+  }catch(e){console.warn('embedded',e);return false}
+}
+async function loadCache(){
+  try{
+    const raw=await idbGet('bible');
+    if(!raw)return false;
+    const d=normalizeAny(raw);
+    if(!valid(d)){await idbDelete('bible');return false}
+    bible=d;currentSource='오프라인 캐시';buildFlat();setReady(currentSource);return true;
+  }catch(e){console.warn('cache',e);return false}
+}
+async function installFullBible(force=false){
+  if(loadPromise&&!force)return loadPromise;
+  loadPromise=(async()=>{
+    setBad('전체 본문 복구 중…');
+    $('#reader').innerHTML='<div class="loading">개역한글 66권 전체 본문을 복구하고 있습니다…<br><small>직접 연결 → CORS 프록시 → JSONP → 권별 복구 순으로 자동 시도합니다.</small></div>';
+    const errors=[];
+
+    // 1) Normal network loaders.
+    for(const src of DATA_SOURCES){
+      for(const loader of [fetchJSON,xhrJSON]){
+        try{
+          $('#dataStat').textContent=`연결 중 · ${src.name}`;
+          const raw=await loader(src.url);
+          const d=src.type==='bolls'?normalizeBolls(raw):normalizeAny(raw);
+          const s=stats(d);
+          if(!valid(d))throw new Error(`${s.books}권/${s.chapters}장/${s.verses}절`);
+          bible=d;buildFlat();currentSource=src.name;
+          try{await idbSet('bible',compactBible())}catch(e){console.warn('cache save',e)}
+          setReady('전체 본문 설치 완료');renderReader();toast('66권 · 31,102절 설치 완료');
+          return true;
+        }catch(e){errors.push(`${src.name}/${loader.name}: ${e.message}`)}
+      }
+    }
+
+    // 2) CORS proxy and JSONP. JSONP does not rely on Fetch/XHR CORS.
+    for(const src of DATA_SOURCES){
+      for(const loader of [allOriginsRawJSON,allOriginsJSONP]){
+        try{
+          $('#dataStat').textContent=`CORS 복구 · ${src.name}`;
+          const raw=await loader(src.url);
+          const d=src.type==='bolls'?normalizeBolls(raw):normalizeAny(raw);
+          const s=stats(d);
+          if(!valid(d))throw new Error(`${s.books}권/${s.chapters}장/${s.verses}절`);
+          bible=d;buildFlat();currentSource=`복구 완료 · ${src.name}`;
+          try{await idbSet('bible',compactBible())}catch(e){console.warn('cache save',e)}
+          setReady('전체 본문 복구 완료');renderReader();showOfflineReady();toast('66권 · 31,102절 복구 완료');
+          return true;
+        }catch(e){errors.push(`${src.name}/${loader.name}: ${e.message}`)}
+      }
+    }
+
+    // 3) Last resort: 66 smaller JSON files, three at a time.
+    try{
+      $('#dataStat').textContent='권별 복구 시작';
+      const d=await loadAllBooksRecovered();
+      bible=d;buildFlat();currentSource='66권 권별 복구';
+      try{await idbSet('bible',compactBible())}catch(e){console.warn('cache save',e)}
+      setReady('66권 복구 완료');renderReader();showOfflineReady();toast('66권 · 31,102절 복구 완료');
+      return true;
+    }catch(e){errors.push(`66권 권별 복구: ${e.message}`)}
+
+    setBad('자동 복구 실패');
+    showInstallCard(errors.at(-1)||'네트워크 연결 실패');
+    return false;
+  })().finally(()=>loadPromise=null);
+  return loadPromise;
+}
+
+function showOfflineReady(){
+  let box=document.getElementById('offlineReadyBox');
+  if(box)return;
+  box=document.createElement('div');
+  box.id='offlineReadyBox';
+  box.className='notice';
+  box.innerHTML='<b>✓ 31,102절 검증 완료</b><br>이제 <button class="btn soft" id="offlineNowBtn" style="margin-top:8px">완전 오프라인 HTML 만들기</button> 를 한 번 눌러 저장해 두면 이후에는 네트워크가 전혀 필요 없습니다.';
+  const hero=document.getElementById('hero');
+  hero.insertAdjacentElement('afterend',box);
+  document.getElementById('offlineNowBtn').onclick=exportCompleteHTML;
+}
+
+function compactBible(){
+  return bible.map((b,bi)=>({
+    koreanTitle:BOOK_META[bi].name,
+    chapters:b.chapters.map(c=>({
+      chapter:c.chapter,
+      verses:c.verses.map(v=>({verse:v.verse,text:v.text}))
+    }))
+  }));
+}
+function showInstallCard(err=''){
+  $('#reader').innerHTML=`
+    <div class="installCard">
+      <h2>성경 본문 복구가 필요합니다</h2>
+      <p>책·장 탐색 UI는 이미 준비되어 있습니다.<br>v0.3.3은 CORS 프록시와 JSONP, 66권 분할 복구까지 자동으로 시도합니다.</p>
+      <div class="installActions">
+        <button class="btn primary" id="cardInstall">전체 성경 자동 복구</button>
+        <button class="btn" id="cardImport">JSON 파일 선택</button>
+      </div>
+      <div class="small">Android의 <code>content://</code> 환경에서 일반 Fetch/XHR가 차단돼도<br>
+      JSONP와 권별 복구 경로가 추가로 동작합니다. JSON 직접 불러오기는 최종 수동 복구용입니다.</div>
+      ${err?`<div class="notice error"><small>${esc(err)}</small></div>`:''}
+    </div>`;
+  $('#cardInstall').onclick=()=>installFullBible(true);
+  $('#cardImport').onclick=()=>$('#fileInput').click();
+}
+
+
+function getPlanSettings(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-reading-plan-v1')||'null');
+    if(x&&[90,180,365].includes(Number(x.days)))return x;
+  }catch(_){}
+  return{days:365,startDate:new Date().toISOString().slice(0,10),rebalanceFrom:null};
+}
+function savePlanSettings(x){localStorage.setItem('krv-reading-plan-v1',JSON.stringify(x))}
+function getReadChapters(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-read-chapters-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveReadChapters(x){localStorage.setItem('krv-read-chapters-v1',JSON.stringify(x))}
+function chapterKey(bi,ch){return `${bi}-${ch}`}
+function allChapterRefs(){
+  const out=[];
+  BOOK_META.forEach((b,bi)=>{
+    for(let ch=1;ch<=b.chapters;ch++)out.push({bi,ch,key:chapterKey(bi,ch)});
+  });
+  return out;
+}
+function totalChapterCount(){return 1189}
+function dateOnly(d=new Date()){return d.toISOString().slice(0,10)}
+function daysBetween(a,b){
+  const A=new Date(a+'T00:00:00'),B=new Date(b+'T00:00:00');
+  return Math.floor((B-A)/(24*60*60*1000));
+}
+function planDayIndex(settings=getPlanSettings()){
+  const i=daysBetween(settings.startDate,dateOnly())+1;
+  return Math.max(1,Math.min(Number(settings.days),i));
+}
+function planRangeForDay(day,days){
+  const total=totalChapterCount();
+  const start=Math.floor((day-1)*total/days);
+  const end=Math.floor(day*total/days);
+  return{start,end};
+}
+function planRefsForDay(day,settings=getPlanSettings()){
+  const refs=allChapterRefs(),r=planRangeForDay(day,Number(settings.days));
+  return refs.slice(r.start,r.end);
+}
+function remainingUnreadRefs(){
+  const reads=getReadChapters();
+  return allChapterRefs().filter(r=>!reads[r.key]);
+}
+function remainingPlanDays(settings=getPlanSettings()){
+  const used=Math.max(0,daysBetween(settings.startDate,dateOnly()));
+  return Math.max(1,Number(settings.days)-used);
+}
+function redistributedRefsForToday(settings=getPlanSettings()){
+  const unread=remainingUnreadRefs(),daysLeft=remainingPlanDays(settings);
+  if(!unread.length)return[];
+  const perDay=Math.max(1,Math.ceil(unread.length/daysLeft));
+  return unread.slice(0,perDay);
+}
+function getTodayPlanRefs(settings=getPlanSettings()){
+  if(settings.rebalanceFrom)return redistributedRefsForToday(settings);
+  return planRefsForDay(planDayIndex(settings),settings);
+}
+function planStatusSummary(settings=getPlanSettings()){
+  const unread=remainingUnreadRefs(),daysLeft=remainingPlanDays(settings);
+  if(!unread.length)return '전체 1,189장을 모두 읽었습니다.';
+  const recommended=Math.max(1,Math.ceil(unread.length/daysLeft));
+  const original=planRefsForDay(planDayIndex(settings),settings).length;
+  if(settings.rebalanceFrom)return `재분배 적용 중 · 남은 ${unread.length}장 / ${daysLeft}일 · 하루 약 ${recommended}장`;
+  const todayOriginal=planRefsForDay(planDayIndex(settings),settings);
+  const missed=todayOriginal.filter(r=>!getReadChapters()[r.key]).length;
+  return `남은 ${unread.length}장 / ${daysLeft}일 · 오늘 기본 ${original}장 · 필요 시 재분배 가능`;
+}
+function rebalanceReadingPlan(){
+  const s=getPlanSettings();
+  s.rebalanceFrom=dateOnly();
+  savePlanSettings(s);
+  renderHome();
+  toast('남은 분량을 남은 기간에 재분배했습니다');
+}
+function clearRebalanceIfPlanChanged(s){
+  s.rebalanceFrom=null;return s;
+}
+function readCountsByDate(){
+  const counts={};
+  for(const v of Object.values(getReadChapters())){
+    const d=v?.date;if(d)counts[d]=(counts[d]||0)+1;
+  }
+  return counts;
+}
+function dateKeyLocal(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function startOfWeek(d=new Date()){
+  const x=new Date(d);const day=x.getDay();x.setDate(x.getDate()-day);x.setHours(0,0,0,0);return x;
+}
+function renderReadingCalendar(){
+  const host=$('#readingCalendar');if(!host)return;
+  const counts=readCountsByDate(),today=dateKeyLocal(new Date());
+  $$('[data-calendar-mode]').forEach(x=>x.classList.toggle('active',x.dataset.calendarMode===calendarMode));
+
+  if(calendarMode==='week'){
+    const s=startOfWeek(),names=['일','월','화','수','목','금','토'];
+    const days=[];
+    for(let i=0;i<7;i++){
+      const d=new Date(s);d.setDate(s.getDate()+i);
+      const key=dateKeyLocal(d),count=counts[key]||0;
+      days.push(`<div class="weekDay ${key===today?'today':''} ${count?'done':''}">
+        <div class="weekDow">${names[i]}</div>
+        <div class="weekDate">${d.getDate()}</div>
+        <div class="weekRead">${count?count+'장':'-'}</div>
+      </div>`);
+    }
+    host.innerHTML=`<div class="weekCalendar">${days.join('')}</div>`;
+    const weekCount=Object.entries(counts).filter(([k])=>{
+      const d=new Date(k+'T00:00:00');return d>=s&&d<new Date(s.getTime()+7*86400000)
+    }).reduce((a,[,n])=>a+n,0);
+    $('#calendarSummary').textContent=`이번 주 ${weekCount}장 읽음`;
+  }else{
+    const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+    const first=new Date(y,m,1),last=new Date(y,m+1,0),offset=first.getDay();
+    const names=['일','월','화','수','목','금','토'];
+    const cells=names.map(n=>`<div class="monthDow">${n}</div>`);
+    for(let i=0;i<offset;i++)cells.push('<div class="monthDay empty"></div>');
+    let monthCount=0,readDays=0;
+    for(let day=1;day<=last.getDate();day++){
+      const d=new Date(y,m,day),key=dateKeyLocal(d),count=counts[key]||0;
+      monthCount+=count;if(count)readDays++;
+      cells.push(`<div class="monthDay ${key===today?'today':''} ${count?'read':''}" title="${count?count+'장 읽음':'읽기 기록 없음'}">
+        <div>${day}</div>${count?'<div class="monthDot"></div>':''}
+      </div>`);
+    }
+    host.innerHTML=`<div class="monthCalendar">${cells.join('')}</div>`;
+    $('#calendarSummary').textContent=`${y}년 ${m+1}월 · ${readDays}일 / ${monthCount}장 읽음`;
+  }
+}
+function markChapterRead(bi,ch,done=true){
+  const reads=getReadChapters(),k=chapterKey(bi,ch);
+  if(done)reads[k]={readAt:Date.now(),date:dateOnly()};
+  else delete reads[k];
+  saveReadChapters(reads);
+  renderReadStatus();
+  renderHome();
+}
+function isChapterRead(bi,ch){return !!getReadChapters()[chapterKey(bi,ch)]}
+
+function planEndDate(settings=getPlanSettings()){
+  const d=new Date(settings.startDate+'T00:00:00');
+  d.setDate(d.getDate()+Number(settings.days)-1);
+  return dateKeyLocal(d);
+}
+function expectedChaptersByToday(settings=getPlanSettings()){
+  const elapsed=Math.max(0,Math.min(Number(settings.days),daysBetween(settings.startDate,dateOnly())+1));
+  return Math.floor(elapsed*totalChapterCount()/Number(settings.days));
+}
+function paceState(settings=getPlanSettings()){
+  const done=Object.keys(getReadChapters()).length,expected=expectedChaptersByToday(settings),delta=done-expected;
+  if(delta>=2)return{kind:'ahead',label:`${delta}장 앞섬`};
+  if(delta<=-2)return{kind:'behind',label:`${Math.abs(delta)}장 밀림`};
+  return{kind:'ontrack',label:'계획대로'};
+}
+
+function readingPaceMetrics(settings=getPlanSettings()){
+  const reads=getReadChapters(),done=Object.keys(reads).length;
+  const elapsed=Math.max(1,daysBetween(settings.startDate,dateOnly())+1);
+  const avg=done/elapsed;
+  const remaining=Math.max(0,totalChapterCount()-done);
+  const daysLeft=remainingPlanDays(settings);
+  const required=remaining/daysLeft;
+  let forecastDate=null,forecastDeltaDays=null;
+  if(avg>0&&remaining>0){
+    const d=new Date();d.setHours(0,0,0,0);
+    d.setDate(d.getDate()+Math.ceil(remaining/avg));
+    forecastDate=dateKeyLocal(d);
+    forecastDeltaDays=daysBetween(planEndDate(settings),forecastDate);
+  }else if(remaining===0){
+    forecastDate=dateOnly();forecastDeltaDays=daysBetween(planEndDate(settings),forecastDate);
+  }
+  return{done,elapsed,avg,remaining,daysLeft,required,forecastDate,forecastDeltaDays};
+}
+function chartTargetMonth(){
+  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+chartMonthOffset);return d;
+}
+function renderTimeChart(){
+  const host=$('#timeChart'),labels=$('#timeChartLabels');if(!host||!labels)return;
+  const data=getReadingTime(),d=chartTargetMonth(),y=d.getFullYear(),m=d.getMonth();
+  const last=new Date(y,m+1,0).getDate(),today=dateOnly();
+  const vals=[],days=[];
+  for(let day=1;day<=last;day++){
+    const key=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    let sec=Number(data[key]||0);
+    if(key===today&&readingTimerRunning)sec+=Math.max(0,Math.floor((Date.now()-readingTimerStartedAt)/1000));
+    vals.push(sec);days.push({day,key});
+  }
+  const max=Math.max(1,...vals),total=vals.reduce((a,b)=>a+b,0),active=vals.filter(v=>v>0).length;
+  host.style.gridTemplateColumns=`repeat(${last},minmax(5px,1fr))`;
+  labels.style.gridTemplateColumns=`repeat(${last},minmax(5px,1fr))`;
+  host.innerHTML=days.map((x,i)=>{
+    const pct=Math.max(vals[i]>0?3:1,Math.round(vals[i]/max*100));
+    return `<div class="timeBarWrap" title="${x.day}일 · ${fmtMinutes(vals[i])}">
+      <div class="timeBar ${vals[i]?'':'zero'} ${x.key===today?'today':''}" style="height:${pct}%"></div>
+    </div>`;
+  }).join('');
+  labels.innerHTML=days.map(x=>`<div class="timeDayLabel">${x.day===1||x.day%5===0||x.day===last?x.day:''}</div>`).join('');
+  $('#chartMonthLabel').textContent=`${y}.${String(m+1).padStart(2,'0')}`;
+  $('#timeChartSummary').textContent=`${active}일 · ${fmtMinutes(total)} 읽음`;
+  $('#chartNextMonth').disabled=chartMonthOffset>=0;
+}
+function getReadingTime(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-reading-time-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveReadingTime(x){localStorage.setItem('krv-reading-time-v1',JSON.stringify(x))}
+function secondsToday(){
+  const data=getReadingTime();let sec=Number(data[dateOnly()]||0);
+  if(readingTimerRunning)sec+=Math.max(0,Math.floor((Date.now()-readingTimerStartedAt)/1000));
+  return sec;
+}
+function addReadingSeconds(date,sec){
+  const data=getReadingTime();data[date]=Math.max(0,Number(data[date]||0)+Math.max(0,Math.floor(sec)));
+  saveReadingTime(data);
+}
+function commitRunningTimer(){
+  if(!readingTimerRunning||!readingTimerStartedAt)return;
+  const sec=Math.max(0,Math.floor((Date.now()-readingTimerStartedAt)/1000));
+  if(sec>0)addReadingSeconds(dateOnly(),sec);
+  readingTimerStartedAt=Date.now();
+}
+function startReadingTimer(){
+  if(readingTimerRunning)return;
+  readingTimerRunning=true;readingTimerStartedAt=Date.now();
+  if(!readingTimerInterval)readingTimerInterval=setInterval(renderTimer,1000);
+  renderTimer();toast('읽기 타이머를 시작했습니다');
+}
+function pauseReadingTimer(){
+  if(!readingTimerRunning)return;
+  const sec=Math.max(0,Math.floor((Date.now()-readingTimerStartedAt)/1000));
+  if(sec>0)addReadingSeconds(dateOnly(),sec);
+  readingTimerRunning=false;readingTimerStartedAt=0;
+  renderTimer();toast('읽기 시간을 저장했습니다');
+}
+function resetTodayTimer(){
+  if(!confirm('오늘 저장된 읽기 시간을 0으로 초기화할까요?'))return;
+  readingTimerRunning=false;readingTimerStartedAt=0;
+  const data=getReadingTime();delete data[dateOnly()];saveReadingTime(data);renderTimer();toast('오늘 읽기 시간을 초기화했습니다');
+}
+function fmtHms(sec){
+  sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  return [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+}
+function fmtMinutes(sec){return Math.round(sec/60)+'분'}
+function renderTimer(){
+  const clock=$('#timerClock');if(!clock)return;
+  const data=getReadingTime(),today=secondsToday();
+  const now=new Date(),weekStart=dayStart()-6*86400000;
+  let week=0,total=0;
+  for(const [d,s] of Object.entries(data)){
+    const val=Number(s||0);total+=val;
+    const ts=new Date(d+'T00:00:00').getTime();
+    if(ts>=weekStart)week+=val;
+  }
+  if(readingTimerRunning){
+    const extra=Math.max(0,Math.floor((Date.now()-readingTimerStartedAt)/1000));
+    week+=extra;total+=extra;
+  }
+  clock.textContent=fmtHms(today);
+  $('#timerToday').textContent=fmtMinutes(today);
+  $('#timerWeek').textContent=fmtMinutes(week);
+  $('#timerTotal').textContent=fmtMinutes(total);
+  $('#timerStatus').textContent=readingTimerRunning?'읽기 시간 기록 중…':'타이머를 시작하면 오늘 읽은 시간이 저장됩니다.';
+  $('#timerStartBtn').disabled=readingTimerRunning;
+  $('#timerPauseBtn').disabled=!readingTimerRunning;
+  if($('#homePanel')?.classList.contains('show'))renderTimeChart();
+}
+function escapeIcsText(s){
+  return String(s).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+function buildReadingReminderIcs(){
+  const time=$('#reminderTime').value||'21:00';
+  localStorage.setItem('krv-reminder-time',time);
+  const [hh,mm]=time.split(':').map(Number),now=new Date();
+  const start=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hh,mm,0);
+  if(start<=now)start.setDate(start.getDate()+1);
+  const pad=n=>String(n).padStart(2,'0');
+  const local=`${start.getFullYear()}${pad(start.getMonth()+1)}${pad(start.getDate())}T${pad(start.getHours())}${pad(start.getMinutes())}00`;
+  const uidv=`krv-${Date.now()}@koreanbible.local`;
+  const ics=[
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//KoreanBible Reader//KR//EN',
+    'CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    `UID:${uidv}`,`DTSTART:${local}`,'RRULE:FREQ=DAILY',
+    `SUMMARY:${escapeIcsText('성경 읽기')}`,
+    `DESCRIPTION:${escapeIcsText('KoreanBible Reader 통독 계획을 확인하고 오늘 분량을 읽으세요.')}`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_Daily_Reading_Reminder.ics';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1200);
+  toast('캘린더 알림 파일을 저장했습니다');
+}
+function restoreReminderTime(){
+  const t=localStorage.getItem('krv-reminder-time');if(t&&$('#reminderTime'))$('#reminderTime').value=t;
+}
+function getTtsRate(){return Number(localStorage.getItem('krv-tts-rate')||'1')}
+function setTtsRate(v){localStorage.setItem('krv-tts-rate',String(v));if(speechState!=='stopped'){stopSpeech();toast('음성 속도를 변경했습니다. 다시 재생해 주세요')}}
+function chooseKoreanVoice(){
+  if(!('speechSynthesis' in window))return null;
+  const voices=speechSynthesis.getVoices();
+  return voices.find(v=>/^ko([-_]|$)/i.test(v.lang))||voices.find(v=>/korean/i.test(v.name))||null;
+}
+function clearSpeechHighlight(){
+  $$('.verse.tts-current').forEach(x=>x.classList.remove('tts-current'));
+  $$('.mini.speak.on').forEach(x=>x.classList.remove('on'));
+  speechCurrentVerse=null;
+}
+function highlightSpeechVerse(vn){
+  clearSpeechHighlight();
+  speechCurrentVerse=vn;
+  const row=document.getElementById(`v-${vn}`);
+  if(row){
+    row.classList.add('tts-current');
+    row.querySelector('.mini.speak')?.classList.add('on');
+    row.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+function updateTtsStatus(msg){
+  const e=$('#ttsStatus');if(e)e.textContent=msg;
+  const play=$('#ttsPlayBtn');if(play)play.classList.toggle('active',speechState==='playing');
+  const pause=$('#ttsPauseBtn');if(pause)pause.textContent=speechState==='paused'?'▶ 계속':'Ⅱ 일시정지';
+}
+function buildChapterSpeechQueue(startVerse=null){
+  const c=chapterData();if(!c)return[];
+  let verses=c.verses.filter(v=>v.text&&v.text!=='(없음)');
+  if(startVerse!=null)verses=verses.filter(v=>v.verse>=startVerse);
+  return verses.map(v=>({verse:v.verse,text:`${v.verse}절. ${v.text}`}));
+}
+function speakQueueItem(){
+  if(!('speechSynthesis' in window))return;
+  if(speechQueueIndex<0||speechQueueIndex>=speechVerseQueue.length){
+    speechState='stopped';speechUtterance=null;clearSpeechHighlight();updateTtsStatus('읽기 완료');return;
+  }
+  const item=speechVerseQueue[speechQueueIndex];
+  highlightSpeechVerse(item.verse);
+  const u=new SpeechSynthesisUtterance(item.text);speechUtterance=u;u.lang='ko-KR';u.rate=getTtsRate();
+  const voice=chooseKoreanVoice();if(voice)u.voice=voice;
+  u.onstart=()=>{speechState='playing';updateTtsStatus(`${item.verse}절 읽는 중…`)};
+  u.onend=()=>{
+    if(speechState==='stopped')return;
+    speechQueueIndex++;
+    if(speechQueueIndex<speechVerseQueue.length)speakQueueItem();
+    else{speechState='stopped';speechUtterance=null;clearSpeechHighlight();updateTtsStatus('읽기 완료')}
+  };
+  u.onerror=()=>{speechState='stopped';speechUtterance=null;clearSpeechHighlight();updateTtsStatus('음성 읽기 오류')};
+  speechSynthesis.speak(u);
+}
+function speakCurrentChapter(){
+  if(!('speechSynthesis' in window)){toast('이 브라우저는 음성 읽기를 지원하지 않습니다');return}
+  stopSpeech();
+  speechVerseQueue=buildChapterSpeechQueue();
+  if(!speechVerseQueue.length)return;
+  speechQueueIndex=0;speechState='playing';speakQueueItem();
+}
+function speakSingleVerse(vn){
+  if(!('speechSynthesis' in window)){toast('이 브라우저는 음성 읽기를 지원하지 않습니다');return}
+  stopSpeech();
+  const c=chapterData(),v=c?.verses.find(x=>x.verse===vn);
+  if(!v||!v.text)return;
+  speechVerseQueue=[{verse:vn,text:`${vn}절. ${v.text}`}];
+  speechQueueIndex=0;speechState='playing';speakQueueItem();
+}
+function toggleSpeechPause(){
+  if(!('speechSynthesis' in window))return;
+  if(speechState==='playing'){speechSynthesis.pause();speechState='paused';updateTtsStatus(`${speechCurrentVerse||''}절 일시정지`)}
+  else if(speechState==='paused'){speechSynthesis.resume();speechState='playing';updateTtsStatus(`${speechCurrentVerse||''}절 읽는 중…`)}
+}
+function stopSpeech(){
+  if('speechSynthesis' in window)speechSynthesis.cancel();
+  speechState='stopped';speechUtterance=null;speechVerseQueue=[];speechQueueIndex=-1;clearSpeechHighlight();updateTtsStatus('한국어 음성 읽기');
+}
+function readingStreak(){
+  const reads=getReadChapters(),dates=new Set(Object.values(reads).map(x=>x?.date).filter(Boolean));
+  let streak=0,d=new Date();
+  for(let i=0;i<400;i++){
+    const key=dateOnly(d);
+    if(dates.has(key)){streak++;d.setDate(d.getDate()-1);continue}
+    if(i===0){d.setDate(d.getDate()-1);continue}
+    break;
+  }
+  return streak;
+}
+function seededIndex(seed,max){
+  let h=2166136261;
+  for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}
+  return Math.abs(h>>>0)%Math.max(1,max);
+}
+function pickDailyVerse(forceNew=false){
+  if(!flat.length){currentDailyVerse=null;return null}
+  const key='krv-daily-verse-v1';
+  if(!forceNew){
+    try{
+      const x=JSON.parse(localStorage.getItem(key)||'null');
+      if(x?.date===dateOnly()){
+        const r=flat.find(v=>v.bi===x.bi&&v.ch===x.ch&&v.v===x.v);
+        if(r){currentDailyVerse=r;return r}
+      }
+    }catch(_){}
+  }
+  const seed=forceNew?dateOnly()+'-'+Date.now():dateOnly();
+  const r=flat[seededIndex(seed,flat.length)];
+  if(r){
+    currentDailyVerse=r;
+    localStorage.setItem(key,JSON.stringify({date:dateOnly(),bi:r.bi,ch:r.ch,v:r.v}));
+  }
+  return r;
+}
+function showHome(){
+  setActiveView('home');
+  $('#homePanel').classList.add('show');
+  $('#settingsPanel').classList.remove('show');
+  $('#searchPanel').classList.remove('show');
+  $('#savedPanel').classList.remove('show');
+  renderHome();
+  closeDrawer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function hideHome(){$('#homePanel').classList.remove('show')}
+function renderHome(){
+  if(!$('#homePanel'))return;
+  const settings=getPlanSettings(),reads=getReadChapters();
+  $('#planSelect').value=String(settings.days);
+
+  const doneCount=Object.keys(reads).length;
+  const pct=Math.min(100,Math.round(doneCount/totalChapterCount()*100));
+  $('#planProgressFill').style.width=pct+'%';
+  $('#planPercent').textContent=pct+'%';
+  $('#planDone').textContent=doneCount.toLocaleString();
+  $('#planStreak').textContent=readingStreak()+'일';
+
+  const day=planDayIndex(settings);
+  const refs=getTodayPlanRefs(settings);
+  const todayDone=refs.filter(r=>reads[r.key]).length;
+  $('#planSub').textContent=`${settings.days}일 계획 · ${day}일차${settings.rebalanceFrom?' · 재분배':''}`;
+  $('#planStartDate').value=settings.startDate;
+  $('#planEndDate').textContent=planEndDate(settings);
+  const pace=paceState(settings),badge=$('#paceBadge');
+  badge.textContent=pace.label;badge.className=`paceBadge ${pace.kind}`;
+  const metrics=readingPaceMetrics(settings);
+  $('#forecastEndDate').textContent=metrics.forecastDate||'기록 필요';
+  $('#actualDailyPace').textContent=`${metrics.avg.toFixed(metrics.avg<10?1:0)}장/일`;
+  $('#requiredDailyPace').textContent=`${metrics.required.toFixed(metrics.required<10?1:0)}장/일`;
+  $('#forecastDelta').textContent=metrics.forecastDeltaDays==null?'-':
+    (metrics.forecastDeltaDays===0?'목표일과 동일':
+     metrics.forecastDeltaDays<0?`${Math.abs(metrics.forecastDeltaDays)}일 빠름`:`${metrics.forecastDeltaDays}일 늦음`);
+  $('#rebalanceText').textContent=planStatusSummary(settings);
+  $('#todayPlanLabel').textContent=`오늘 읽을 분량 · ${todayDone}/${refs.length}장`;
+
+  $('#todayReadList').innerHTML=refs.length?refs.map(r=>{
+    const done=!!reads[r.key];
+    return `<div class="todayReadItem ${done?'done':''}">
+      <button class="todayReadJump" data-plan-bi="${r.bi}" data-plan-ch="${r.ch}">${BOOK_META[r.bi].name} ${r.ch}장</button>
+      <button class="todayReadCheck ${done?'done':''}" data-plan-check="${r.key}" data-plan-bi="${r.bi}" data-plan-ch="${r.ch}">${done?'✓':'○'}</button>
+    </div>`;
+  }).join(''):'<div class="notice">오늘 읽을 분량이 없습니다.</div>';
+
+  $$('[data-plan-bi]').forEach(x=>{
+    if(x.classList.contains('todayReadJump'))x.onclick=()=>{hideHome();selectLocation(+x.dataset.planBi,+x.dataset.planCh)};
+  });
+  $$('[data-plan-check]').forEach(x=>x.onclick=()=>markChapterRead(+x.dataset.planBi,+x.dataset.planCh,!isChapterRead(+x.dataset.planBi,+x.dataset.planCh)));
+
+  if(flat.length){
+    const r=currentDailyVerse||pickDailyVerse(false);
+    if(r){
+      $('#dailyRef').textContent=`${r.book} ${r.ch}:${r.v}`;
+      $('#dailyText').textContent=r.text;
+      $('#dailyGoBtn').disabled=false;$('#dailySaveBtn').disabled=false;
+    }
+  }else{
+    $('#dailyRef').textContent='본문 설치 필요';
+    $('#dailyText').textContent='성경 본문이 준비되면 오늘의 말씀이 표시됩니다.';
+    $('#dailyGoBtn').disabled=true;$('#dailySaveBtn').disabled=true;
+  }
+  renderReadingCalendar();
+  renderTimer();
+  renderTimeChart();
+}
+function renderReadStatus(){
+  const old=document.getElementById('readStatusBar');if(old)old.remove();
+  if(!bible.length)return;
+  const title=document.querySelector('.chapterTitle');if(!title)return;
+  const done=isChapterRead(currentBook,currentChapter);
+  const bar=document.createElement('div');bar.className='readStatusBar';bar.id='readStatusBar';
+  bar.innerHTML=`<div class="readStatusText">${BOOK_META[currentBook].name} ${currentChapter}장 · ${done?'읽음 완료':'아직 읽지 않음'} <span class="swipeHint">←/→ 스와이프로 장 이동</span></div>
+    <div class="ttsBar">
+      <button class="ttsBtn ${speechState==='playing'?'active':''}" id="ttsPlayBtn">▶ 음성</button>
+      <button class="ttsBtn" id="ttsPauseBtn">${speechState==='paused'?'▶ 계속':'Ⅱ 일시정지'}</button>
+      <button class="ttsBtn" id="ttsStopBtn">■ 정지</button>
+      <select class="ttsRate" id="ttsRate">
+        <option value="0.8">0.8×</option>
+        <option value="0.9">0.9×</option>
+        <option value="1">1.0×</option>
+        <option value="1.1">1.1×</option>
+        <option value="1.2">1.2×</option>
+      </select>
+      <span class="ttsStatus" id="ttsStatus">${'speechSynthesis' in window?'한국어 음성 읽기':'이 브라우저는 음성 읽기를 지원하지 않습니다'}</span>
+      <button class="focusBtn ${focusMode?'active':''}" id="focusModeBtn">${focusMode?'집중 모드 종료':'집중 모드'}</button>
+      <button class="readCheckBtn ${done?'done':''}" id="chapterReadBtn">${done?'✓ 읽음 취소':'✓ 이 장 읽음'}</button>
+    </div>`;
+  title.insertAdjacentElement('afterend',bar);
+  $('#chapterReadBtn').onclick=()=>markChapterRead(currentBook,currentChapter,!done);
+  $('#focusModeBtn').onclick=()=>setFocusMode(!focusMode);
+  $('#ttsRate').value=String(getTtsRate());
+  $('#ttsRate').onchange=e=>setTtsRate(Number(e.target.value));
+  $('#ttsPlayBtn').onclick=speakCurrentChapter;
+  $('#ttsPauseBtn').onclick=toggleSpeechPause;
+  $('#ttsStopBtn').onclick=stopSpeech;
+}
+function resetReadingPlan(){
+  if(!confirm('통독 진행 기록을 초기화할까요? 형광펜·메모·책갈피는 삭제되지 않습니다.'))return;
+  localStorage.removeItem('krv-read-chapters-v1');
+  const s=getPlanSettings();s.startDate=dateOnly();s.rebalanceFrom=null;savePlanSettings(s);
+  renderHome();renderReadStatus();toast('통독 계획을 초기화했습니다');
+}
+function changePlanDays(days){
+  const s=getPlanSettings();s.days=Number(days);s.startDate=dateOnly();clearRebalanceIfPlanChanged(s);savePlanSettings(s);
+  renderHome();toast(`${days}일 통독 계획으로 변경했습니다`);
+}
+function changePlanStartDate(value){
+  if(!value)return;
+  const s=getPlanSettings();s.startDate=value;clearRebalanceIfPlanChanged(s);savePlanSettings(s);
+  renderHome();toast(`통독 시작일을 ${value}로 변경했습니다`);
+}
+
+function setFocusMode(on){
+  focusMode=!!on;
+  document.body.classList.toggle('focus-mode',focusMode);
+  $('#chapterDock')?.classList.toggle('show',!focusMode&&activeView==='reader'&&bible.length);
+  $('#mobileNav')?.classList.toggle('hidden',focusMode);
+  const btn=document.getElementById('focusModeBtn');
+  if(btn){btn.classList.toggle('active',focusMode);btn.textContent=focusMode?'집중 모드 종료':'집중 모드'}
+  localStorage.setItem('krv-focus-mode',focusMode?'1':'0');
+}
+function restoreFocusMode(){
+  focusMode=localStorage.getItem('krv-focus-mode')==='1';
+  document.body.classList.toggle('focus-mode',focusMode);
+  $('#mobileNav')?.classList.toggle('hidden',focusMode);
+}
+function bindSwipeNavigation(){
+  const reader=$('#reader');
+  reader.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1||multiSelectMode)return;
+    touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;touchStartTime=Date.now();
+  },{passive:true});
+  reader.addEventListener('touchend',e=>{
+    if(multiSelectMode||!touchStartTime||!e.changedTouches?.length)return;
+    const dx=e.changedTouches[0].clientX-touchStartX,dy=e.changedTouches[0].clientY-touchStartY,dt=Date.now()-touchStartTime;
+    touchStartTime=0;
+    if(dt>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.5)return;
+    if(dx<0){exitMultiSelect();nextChapter()}else{exitMultiSelect();prevChapter()}
+  },{passive:true});
+}
+
+
+function getFavoriteBooks(){
+  try{
+    const a=JSON.parse(localStorage.getItem('krv-favorite-books-v1')||'[]');
+    return Array.isArray(a)?[...new Set(a.map(Number).filter(Number.isInteger).filter(x=>BOOK_META[x]))]:[];
+  }catch(_){return[]}
+}
+function getFavoriteChapters(){
+  try{
+    const a=JSON.parse(localStorage.getItem('krv-favorite-chapters-v1')||'[]');
+    return Array.isArray(a)?[...new Set(a.map(String).filter(validChapterStorageKey))]:[];
+  }catch(_){return[]}
+}
+function isFavoriteBook(bi){return getFavoriteBooks().includes(Number(bi))}
+function isFavoriteChapter(bi,ch){return getFavoriteChapters().includes(chapterKey(bi,ch))}
+function toggleFavoriteBook(bi){
+  let a=getFavoriteBooks();
+  if(a.includes(bi)){a=a.filter(x=>x!==bi);toast(`${BOOK_META[bi].name} 즐겨찾기 해제`)}
+  else{a.unshift(bi);toast(`${BOOK_META[bi].name} 즐겨찾기 추가`)}
+  localStorage.setItem('krv-favorite-books-v1',JSON.stringify(a.slice(0,30)));
+  renderFavoriteBar();renderReader();
+}
+function toggleFavoriteChapter(bi,ch){
+  const key=chapterKey(bi,ch);let a=getFavoriteChapters();
+  if(a.includes(key)){a=a.filter(x=>x!==key);toast(`${BOOK_META[bi].name} ${ch}장 즐겨찾기 해제`)}
+  else{a.unshift(key);toast(`${BOOK_META[bi].name} ${ch}장 즐겨찾기 추가`)}
+  localStorage.setItem('krv-favorite-chapters-v1',JSON.stringify(a.slice(0,80)));
+  renderFavoriteBar();renderReader();
+}
+function renderFavoriteBar(){
+  const host=$('#favoriteBar');if(!host)return;
+  const books=getFavoriteBooks(),chapters=getFavoriteChapters();
+  const parts=[];
+  books.forEach(bi=>parts.push(`<button class="favoriteBtn book" data-fav-book="${bi}">${esc(BOOK_META[bi].name)}</button>`));
+  chapters.forEach(key=>{
+    const [bi,ch]=key.split('-').map(Number);
+    parts.push(`<button class="favoriteBtn chapter" data-fav-ch="${esc(key)}">${esc(BOOK_META[bi].name)} ${ch}장</button>`);
+  });
+  host.innerHTML=parts.length?parts.join(''):'<span class="resumeBadge">☆ 책/장을 즐겨찾기에 추가하면 여기에 표시됩니다</span>';
+  $$('[data-fav-book]').forEach(x=>x.onclick=()=>selectLocation(+x.dataset.favBook,1));
+  $$('[data-fav-ch]').forEach(x=>x.onclick=()=>{const [bi,ch]=x.dataset.favCh.split('-').map(Number);selectLocation(bi,ch)});
+}
+function getRecentBooks(){
+  try{
+    const a=JSON.parse(localStorage.getItem('krv-recent-books-v1')||'[]');
+    return Array.isArray(a)?a.map(Number).filter(Number.isInteger).filter(x=>BOOK_META[x]).slice(0,8):[];
+  }catch(_){return[]}
+}
+function pushRecentBook(bi){
+  let a=getRecentBooks().filter(x=>x!==bi);
+  a.unshift(bi);a=a.slice(0,8);
+  localStorage.setItem('krv-recent-books-v1',JSON.stringify(a));
+  renderRecentBooks();
+}
+function renderRecentBooks(){
+  const host=$('#recentBooks');if(!host)return;
+  const a=getRecentBooks();
+  host.innerHTML=a.length?a.map(bi=>`<button class="recentBookBtn" data-recent-book="${bi}">${esc(BOOK_META[bi].name)}</button>`).join(''):
+    '<span class="resumeBadge">최근 본 성경책이 여기에 표시됩니다</span>';
+  $$('[data-recent-book]').forEach(x=>x.onclick=()=>selectLocation(+x.dataset.recentBook,1));
+}
+function getScrollPositions(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-scroll-pos-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveScrollPositionNow(){
+  if(!bible.length||activeView!=='reader')return;
+  const positions=getScrollPositions(),key=chapterKey(currentBook,currentChapter);
+  positions[key]=Math.max(0,Math.round(window.scrollY));
+  const keys=Object.keys(positions);
+  if(keys.length>180){
+    for(const k of keys.slice(0,keys.length-180))delete positions[k];
+  }
+  localStorage.setItem('krv-scroll-pos-v1',JSON.stringify(positions));
+}
+function scheduleScrollSave(){
+  if(scrollSaveTimer)clearTimeout(scrollSaveTimer);
+  scrollSaveTimer=setTimeout(saveScrollPositionNow,220);
+}
+function restoreChapterScroll(bi,ch){
+  const y=Number(getScrollPositions()[chapterKey(bi,ch)]||0);
+  if(y>0){
+    requestAnimationFrame(()=>setTimeout(()=>window.scrollTo({top:y,behavior:'auto'}),30));
+    return true;
+  }
+  return false;
+}
+function updateReadingProgress(){
+  const bar=$('#readProgressBar');if(!bar)return;
+  const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+  const pct=Math.max(0,Math.min(100,window.scrollY/max*100));
+  bar.style.width=pct.toFixed(1)+'%';
+  $('#backTopBtn')?.classList.toggle('show',window.scrollY>500);
+}
+function updateActiveMobileNav(view=activeView){
+  $$('[data-mobile-nav]').forEach(x=>x.classList.toggle('active',x.dataset.mobileNav===view));
+}
+function setActiveView(view){
+  activeView=view;
+  updateActiveMobileNav(view);
+  const dock=$('#chapterDock');
+  if(dock)dock.classList.toggle('show',view==='reader'&&bible.length&&!focusMode);
+}
+function updateChapterDock(){
+  const t=$('#dockTitle');if(t)t.textContent=`${BOOK_META[currentBook]?.name||''} ${currentChapter}장`;
+  setActiveView(activeView);
+}
+function openSearchView(){
+  setActiveView('search');
+  $('#searchPanel').classList.add('show');
+  $('#savedPanel').classList.remove('show');
+  $('#settingsPanel').classList.remove('show');
+  $('#searchInput').focus();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openSettingsView(){
+  setActiveView('settings');
+  $('#settingsPanel').classList.add('show');
+  $('#searchPanel').classList.remove('show');
+  $('#savedPanel').classList.remove('show');
+  runSelfCheck(false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function buildSelectors(){
+  $('#bookSelect').innerHTML=BOOK_META.map((b,i)=>`<option value="${i}">${esc(b.name)}</option>`).join('');
+  $('#bookSelect').onchange=()=>selectLocation(Number($('#bookSelect').value),1);
+  fillChapterSelect();
+}
+function fillChapterSelect(){
+  const count=BOOK_META[currentBook].chapters;
+  $('#chapterSelect').innerHTML=Array.from({length:count},(_,i)=>`<option value="${i+1}">${i+1}장</option>`).join('');
+  $('#chapterSelect').value=String(currentChapter);
+  $('#chapterSelect').onchange=()=>selectLocation(currentBook,Number($('#chapterSelect').value));
+}
+function restoreLocation(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-last')||'null');
+    if(x&&BOOK_META[x.bi]&&x.ch>=1&&x.ch<=BOOK_META[x.bi].chapters){currentBook=x.bi;currentChapter=x.ch}
+  }catch(_){}
+}
+function saveLocation(){
+  localStorage.setItem('krv-last',JSON.stringify({bi:currentBook,ch:currentChapter}));
+  updateRecent();
+}
+function selectLocation(bi,ch,verse=null,close=true){
+  if(!BOOK_META[bi]||ch<1||ch>BOOK_META[bi].chapters)return;
+  saveScrollPositionNow();
+  stopSpeech();
+  multiSelectMode=false;selectedVerseKeys.clear();updateMultiBar();
+  currentBook=bi;currentChapter=ch;saveLocation();pushRecentBook(bi);setActiveView('reader');renderTabletPane(bi);
+  $('#bookSelect').value=String(bi);fillChapterSelect();$('#chapterSelect').value=String(ch);
+  if(close)closeDrawer();
+  if(!bible.length){showInstallCard();return}
+  renderReader();
+  if(verse){
+    requestAnimationFrame(()=>{
+      const el=document.getElementById(`v-${verse}`);
+      if(!el)return;
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.classList.remove('jumpFlash');
+      void el.offsetWidth;
+      el.classList.add('jumpFlash');
+      setTimeout(()=>el.classList.remove('jumpFlash'),1500);
+    });
+  }else if(!restoreChapterScroll(bi,ch))window.scrollTo({top:0,behavior:'smooth'});
+}
+function chapterData(){
+  return bible[currentBook]?.chapters.find(c=>c.chapter===currentChapter)||null;
+}
+function renderReader(){
+  hideHome();setActiveView('reader');pushRecentBook(currentBook);
+  if(!bible.length){showInstallCard();return}
+  const c=chapterData(),b=bible[currentBook];if(!c){showInstallCard('장 데이터를 찾지 못했습니다.');return}
+  const marks=getBookmarks(),highlights=getHighlights(),visible=c.verses.filter(v=>v.text&&v.text!=='(없음)');
+  $('#reader').innerHTML=`
+    <div class="chapterTitle">
+      <h2>${esc(BOOK_META[currentBook].name)} ${currentChapter}장</h2>
+      <div class="chapterTitleRight">
+        <span class="count">${visible.length}절</span>
+        <button class="chapterAction" id="favoriteBookBtn">${isFavoriteBook(currentBook)?'★ 책':'☆ 책'}</button>
+        <button class="chapterAction" id="favoriteChapterBtn">${isFavoriteChapter(currentBook,currentChapter)?'★ 장':'☆ 장'}</button>
+        <button class="chapterAction ${multiSelectMode?'active':''}" id="multiSelectBtn">${multiSelectMode?'선택 종료':'여러 절 칠하기'}</button>
+      </div>
+    </div>
+    <div class="verses ${multiSelectMode?'select-mode':''}" id="versesBox">${visible.map(v=>{
+      const key=`${currentBook}-${currentChapter}-${v.verse}`;
+      const hi=highlights[key],color=hi?.color||'',selected=selectedVerseKeys.has(key);
+      return `<div class="verse ${selected?'selected':''}" id="v-${v.verse}" data-key="${key}" data-verse="${v.verse}">
+        <div class="vnum">${multiSelectMode?(selected?'✓':v.verse):v.verse}</div>
+        <div class="vtext ${color?`hl-${color}`:''}">${esc(v.text)}</div>
+        <div class="vtools">
+          <button class="mini speak" data-v="${v.verse}" title="이 절 음성 읽기">🔊</button>
+          <button class="mini marker ${color?'on':''}" data-key="${key}" data-v="${v.verse}" title="형광펜">▰</button>
+          <button class="mini copy" data-v="${v.verse}" title="이 절 복사">⧉</button>
+          <button class="mini star ${marks.includes(key)?'on':''}" data-key="${key}" title="책갈피">★</button>
+        </div>
+      </div>`;
+    }).join('')}</div>
+    <div class="navrow"><button class="btn" id="prevBtn">← 이전 장</button><button class="btn" id="nextBtn">다음 장 →</button></div>`;
+  $$('.speak').forEach(x=>x.onclick=e=>{e.stopPropagation();speakSingleVerse(Number(x.dataset.v))});
+  $$('.marker').forEach(x=>x.onclick=e=>{e.stopPropagation();openMarkerPalette(x.dataset.key,Number(x.dataset.v))});
+  $$('.star').forEach(x=>x.onclick=e=>{e.stopPropagation();toggleBookmark(x.dataset.key)});
+  $$('.copy').forEach(x=>x.onclick=e=>{e.stopPropagation();copyVerse(Number(x.dataset.v))});
+  $$('#versesBox .verse').forEach(row=>row.onclick=e=>{
+    if(!multiSelectMode||e.target.closest('.vtools'))return;
+    toggleSelectedVerse(row.dataset.key);
+  });
+  $('#favoriteBookBtn').onclick=()=>toggleFavoriteBook(currentBook);
+  $('#favoriteChapterBtn').onclick=()=>toggleFavoriteChapter(currentBook,currentChapter);
+  $('#multiSelectBtn').onclick=toggleMultiSelectMode;
+  $('#prevBtn').onclick=()=>{exitMultiSelect();prevChapter()};
+  $('#nextBtn').onclick=()=>{exitMultiSelect();nextChapter()};
+  updateMultiBar();
+  renderReadStatus();
+  updateChapterDock();
+  updateReadingProgress();
+  document.title=`${BOOK_META[currentBook].name} ${currentChapter}장 · 한글 성경`;
+  saveLocation();
+}
+
+function toggleMultiSelectMode(){
+  if(!bible.length)return;
+  multiSelectMode=!multiSelectMode;
+  selectedVerseKeys.clear();
+  renderReader();
+}
+function exitMultiSelect(){
+  multiSelectMode=false;
+  selectedVerseKeys.clear();
+  updateMultiBar();
+}
+function toggleSelectedVerse(key){
+  if(selectedVerseKeys.has(key))selectedVerseKeys.delete(key);else selectedVerseKeys.add(key);
+  const row=document.querySelector(`.verse[data-key="${CSS.escape(key)}"]`);
+  if(row){
+    row.classList.toggle('selected',selectedVerseKeys.has(key));
+    const n=Number(row.dataset.verse);
+    const vn=row.querySelector('.vnum');
+    if(vn)vn.textContent=selectedVerseKeys.has(key)?'✓':String(n);
+  }
+  updateMultiBar();
+}
+function selectedRangeLabel(){
+  const refs=[...selectedVerseKeys].map(refFromKey).sort((a,b)=>a.bi-b.bi||a.ch-b.ch||a.v-b.v);
+  if(!refs.length)return '구절을 눌러 선택하세요';
+  const first=refs[0],last=refs[refs.length-1];
+  if(first.bi===last.bi&&first.ch===last.ch){
+    return refs.length===1?first.title:`${BOOK_META[first.bi].name} ${first.ch}장 ${first.v}-${last.v}절 · ${refs.length}개 선택`;
+  }
+  return `${refs.length}개 구절 선택`;
+}
+function updateMultiBar(){
+  const bar=$('#multiBar');if(!bar)return;
+  bar.classList.toggle('show',multiSelectMode);
+  bar.setAttribute('aria-hidden',multiSelectMode?'false':'true');
+  $('#multiSummary').textContent=selectedRangeLabel();
+}
+function applyMultiHighlight(color){
+  if(!selectedVerseKeys.size){toast('먼저 구절을 선택해 주세요');return}
+  const keys=[...selectedVerseKeys].sort((a,b)=>bibleOrderForKey(a)-bibleOrderForKey(b));
+  const h=getHighlights(),now=Date.now();
+  for(const key of keys){
+    if(color==='clear'){delete h[key];removeKeyFromGroups(key)}
+    else h[key]={color,savedAt:now};
+  }
+  if(color!=='clear'&&keys.length>=2){
+    const groups=getHighlightGroups();
+    for(const key of keys){
+      for(const [id,g] of Object.entries(groups)){
+        if(Array.isArray(g?.keys)&&g.keys.includes(key)){
+          g.keys=g.keys.filter(k=>k!==key);
+          if(g.keys.length<2)delete groups[id];
+        }
+      }
+    }
+    const id=uid('grp');
+    groups[id]={keys,color,savedAt:now,note:'',tags:[]};
+    saveHighlightGroups(groups);
+  }
+  const count=keys.length;
+  saveHighlights(h);
+  selectedVerseKeys.clear();
+  renderReader();
+  toast(color==='clear'?`${count}개 구절 형광펜 삭제`:(count>=2?`${groupTitle(keys)} 묶음 저장`:`${count}개 구절 형광펜 저장`));
+}
+function prevChapter(){
+  if(currentChapter>1)selectLocation(currentBook,currentChapter-1);
+  else if(currentBook>0)selectLocation(currentBook-1,BOOK_META[currentBook-1].chapters);
+}
+function nextChapter(){
+  if(currentChapter<BOOK_META[currentBook].chapters)selectLocation(currentBook,currentChapter+1);
+  else if(currentBook<65)selectLocation(currentBook+1,1);
+}
+
+function openDrawer(){
+  $('#drawer').classList.add('open');$('#scrim').classList.add('show');
+  showBookView();renderBookGrid();updateRecent();
+}
+function closeDrawer(){$('#drawer').classList.remove('open');$('#scrim').classList.remove('show')}
+function showBookView(){
+  $('#bookView').classList.remove('hide');$('#chapterView').classList.remove('show');
+}
+function showChapterView(bi){
+  currentBook=bi;
+  $('#chapterBookName').textContent=BOOK_META[bi].name;
+  $('#bookView').classList.add('hide');$('#chapterView').classList.add('show');
+  const n=BOOK_META[bi].chapters;
+  $('#chapterGrid').innerHTML=Array.from({length:n},(_,i)=>{
+    const ch=i+1,cur=(bi===currentBook&&ch===currentChapter)?' current':'';
+    return `<button class="chapterBtn${cur}" data-ch="${ch}">${ch}</button>`;
+  }).join('');
+  $$('#chapterGrid .chapterBtn').forEach(x=>x.onclick=()=>selectLocation(bi,Number(x.dataset.ch)));
+}
+function renderBookGrid(){
+  const start=testament==='old'?0:39,end=testament==='old'?39:66;
+  $('#bookGrid').innerHTML=BOOK_META.slice(start,end).map((b,j)=>{
+    const i=start+j;return `<button class="book ${i===currentBook?'active':''}" data-bi="${i}">${esc(b.name)}</button>`;
+  }).join('');
+  $$('#bookGrid .book').forEach(x=>x.onclick=()=>showChapterView(Number(x.dataset.bi)));
+  $$('[data-testament]').forEach(x=>x.classList.toggle('active',x.dataset.testament===testament));
+}
+function updateRecent(){
+  $('#recentBtn').textContent=`${BOOK_META[currentBook].name} ${currentChapter}장`;
+}
+
+
+function safeParseJSON(value,fallback){
+  try{return JSON.parse(value)}catch(_){return fallback}
+}
+function safeStorageSet(key,value){
+  try{localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value));return true}
+  catch(e){console.warn('Storage write failed',key,e);return false}
+}
+function validVerseStorageKey(key){
+  const m=String(key).match(/^(\d+)-(\d+)-(\d+)$/);if(!m)return false;
+  const bi=+m[1],ch=+m[2],v=+m[3];
+  if(!BOOK_META[bi]||ch<1||ch>BOOK_META[bi].chapters||v<1)return false;
+  if(bible.length){
+    const c=bible[bi]?.chapters?.find(x=>x.chapter===ch);
+    if(c&&!c.verses?.some(x=>x.verse===v&&x.text&&x.text!=='(없음)'))return false;
+  }
+  return true;
+}
+function validChapterStorageKey(key){
+  const m=String(key).match(/^(\d+)-(\d+)$/);if(!m)return false;
+  const bi=+m[1],ch=+m[2];
+  return !!BOOK_META[bi]&&ch>=1&&ch<=BOOK_META[bi].chapters;
+}
+function normalizeUserSnapshot(source=null){
+  const src=source||{
+    bookmarks:safeParseJSON(localStorage.getItem('krv-bookmarks')||'[]',[]),
+    highlights:safeParseJSON(localStorage.getItem('krv-highlights-v1')||'{}',{}),
+    highlightGroups:safeParseJSON(localStorage.getItem('krv-highlight-groups-v1')||'{}',{}),
+    verseNotes:safeParseJSON(localStorage.getItem('krv-verse-notes-v1')||'{}',{}),
+    customTags:safeParseJSON(localStorage.getItem('krv-custom-tags-v1')||'[]',[]),
+    readingPlan:safeParseJSON(localStorage.getItem('krv-reading-plan-v1')||'null',null),
+    readChapters:safeParseJSON(localStorage.getItem('krv-read-chapters-v1')||'{}',{}),
+    readingTime:safeParseJSON(localStorage.getItem('krv-reading-time-v1')||'{}',{}),
+    reminderTime:localStorage.getItem('krv-reminder-time')||'21:00',
+    recentBooks:safeParseJSON(localStorage.getItem('krv-recent-books-v1')||'[]',[]),
+    scrollPositions:safeParseJSON(localStorage.getItem('krv-scroll-pos-v1')||'{}',{}),
+    collections:safeParseJSON(localStorage.getItem('krv-collections-v1')||'{}',{}),
+    collectionMap:safeParseJSON(localStorage.getItem('krv-collection-map-v1')||'{}',{}),
+    favoriteBooks:safeParseJSON(localStorage.getItem('krv-favorite-books-v1')||'[]',[]),
+    favoriteChapters:safeParseJSON(localStorage.getItem('krv-favorite-chapters-v1')||'[]',[])
+  };
+
+  let issues=0;
+  const bookmarks=[];
+  for(const k of Array.isArray(src.bookmarks)?src.bookmarks:[]){
+    if(validVerseStorageKey(k)&&!bookmarks.includes(k))bookmarks.push(k);else issues++;
+  }
+
+  const highlights={};
+  const colors=new Set(['yellow','green','pink','blue']);
+  const rawH=src.highlights&&typeof src.highlights==='object'&&!Array.isArray(src.highlights)?src.highlights:{};
+  for(const [k,v0] of Object.entries(rawH)){
+    if(!validVerseStorageKey(k)){issues++;continue}
+    let v=v0;
+    if(typeof v==='string'){v={color:v,savedAt:0};issues++}
+    if(!v||typeof v!=='object'){issues++;continue}
+    const color=colors.has(v.color)?v.color:'yellow';
+    if(color!==v.color)issues++;
+    highlights[k]={color,savedAt:Number.isFinite(Number(v.savedAt))?Math.max(0,Number(v.savedAt)):0};
+  }
+
+  const groups={};
+  const rawG=src.highlightGroups&&typeof src.highlightGroups==='object'&&!Array.isArray(src.highlightGroups)?src.highlightGroups:{};
+  for(const [id,g] of Object.entries(rawG)){
+    if(!g||typeof g!=='object'){issues++;continue}
+    const keys=[...new Set((Array.isArray(g.keys)?g.keys:[]).filter(k=>highlights[k]&&validVerseStorageKey(k)))];
+    if(keys.length<2){issues++;continue}
+    const tags=[...new Set((Array.isArray(g.tags)?g.tags:[]).map(x=>String(x).trim()).filter(Boolean))].slice(0,30);
+    groups[id]={
+      keys,color:colors.has(g.color)?g.color:(highlights[keys[0]]?.color||'yellow'),
+      savedAt:Math.max(0,Number(g.savedAt)||0),note:String(g.note||'').slice(0,10000),tags,
+      editedAt:Math.max(0,Number(g.editedAt)||0)
+    };
+  }
+
+  const notes={};
+  const rawN=src.verseNotes&&typeof src.verseNotes==='object'&&!Array.isArray(src.verseNotes)?src.verseNotes:{};
+  for(const [k,n] of Object.entries(rawN)){
+    if(!validVerseStorageKey(k)||!n||typeof n!=='object'){issues++;continue}
+    const note=String(n.note||'').slice(0,10000);
+    const tags=[...new Set((Array.isArray(n.tags)?n.tags:[]).map(x=>String(x).trim()).filter(Boolean))].slice(0,30);
+    if(note||tags.length)notes[k]={note,tags,editedAt:Math.max(0,Number(n.editedAt)||0)};
+  }
+
+  const customTags=[...new Set((Array.isArray(src.customTags)?src.customTags:[]).map(x=>String(x).trim()).filter(Boolean))]
+    .map(x=>x.slice(0,20)).slice(0,50);
+
+  let readingPlan=src.readingPlan&&typeof src.readingPlan==='object'?{...src.readingPlan}:getPlanSettings();
+  if(![90,180,365].includes(Number(readingPlan.days))){readingPlan.days=365;issues++}
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(readingPlan.startDate||''))){readingPlan.startDate=dateOnly();issues++}
+  readingPlan.days=Number(readingPlan.days);
+  readingPlan.rebalanceFrom=/^\d{4}-\d{2}-\d{2}$/.test(String(readingPlan.rebalanceFrom||''))?readingPlan.rebalanceFrom:null;
+
+  const readChapters={};
+  const rawR=src.readChapters&&typeof src.readChapters==='object'&&!Array.isArray(src.readChapters)?src.readChapters:{};
+  for(const [k,v] of Object.entries(rawR)){
+    if(!validChapterStorageKey(k)){issues++;continue}
+    const readAt=Math.max(0,Number(v?.readAt)||0);
+    const date=/^\d{4}-\d{2}-\d{2}$/.test(String(v?.date||''))?v.date:(readAt?dateOnly(new Date(readAt)):dateOnly());
+    readChapters[k]={readAt,date};
+  }
+
+  const readingTime={};
+  const rawT=src.readingTime&&typeof src.readingTime==='object'&&!Array.isArray(src.readingTime)?src.readingTime:{};
+  for(const [d,s] of Object.entries(rawT)){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Number(s))||Number(s)<0){issues++;continue}
+    readingTime[d]=Math.floor(Number(s));
+  }
+
+  const reminderTime=/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(String(src.reminderTime||''))?src.reminderTime:'21:00';
+
+  const recentBooks=[...new Set((Array.isArray(src.recentBooks)?src.recentBooks:[]).map(Number).filter(Number.isInteger).filter(x=>BOOK_META[x]))].slice(0,8);
+  const scrollPositions={};
+  const rawS=src.scrollPositions&&typeof src.scrollPositions==='object'&&!Array.isArray(src.scrollPositions)?src.scrollPositions:{};
+  for(const [k,v] of Object.entries(rawS)){
+    if(validChapterStorageKey(k)&&Number.isFinite(Number(v))&&Number(v)>=0)scrollPositions[k]=Math.round(Number(v));
+    else issues++;
+  }
+
+  const collections={};
+  const rawC=src.collections&&typeof src.collections==='object'&&!Array.isArray(src.collections)?src.collections:{};
+  for(const [id,c] of Object.entries(rawC)){
+    if(!c||typeof c!=='object'){issues++;continue}
+    const name=String(c.name||'').trim().slice(0,30);
+    if(!name){issues++;continue}
+    collections[id]={name,createdAt:Math.max(0,Number(c.createdAt)||0),editedAt:Math.max(0,Number(c.editedAt)||0)};
+  }
+
+  const collectionMap={};
+  const rawCM=src.collectionMap&&typeof src.collectionMap==='object'&&!Array.isArray(src.collectionMap)?src.collectionMap:{};
+  for(const [k,cid] of Object.entries(rawCM)){
+    const validTarget=/^(?:verse:\d+-\d+-\d+|group:[^:]+)$/.test(k);
+    if(validTarget&&collections[cid])collectionMap[k]=cid;else issues++;
+  }
+
+  const favoriteBooks=[...new Set((Array.isArray(src.favoriteBooks)?src.favoriteBooks:[]).map(Number).filter(Number.isInteger).filter(x=>BOOK_META[x]))].slice(0,30);
+  const favoriteChapters=[...new Set((Array.isArray(src.favoriteChapters)?src.favoriteChapters:[]).map(String).filter(validChapterStorageKey))].slice(0,80);
+
+  return{
+    clean:{bookmarks,highlights,highlightGroups:groups,verseNotes:notes,customTags,readingPlan,readChapters,readingTime,reminderTime,recentBooks,scrollPositions,collections,collectionMap,favoriteBooks,favoriteChapters},
+    issues
+  };
+}
+function persistUserSnapshot(s){
+  safeStorageSet('krv-bookmarks',s.bookmarks);
+  safeStorageSet('krv-highlights-v1',s.highlights);
+  safeStorageSet('krv-highlight-groups-v1',s.highlightGroups);
+  safeStorageSet('krv-verse-notes-v1',s.verseNotes);
+  safeStorageSet('krv-custom-tags-v1',s.customTags);
+  safeStorageSet('krv-reading-plan-v1',s.readingPlan);
+  safeStorageSet('krv-read-chapters-v1',s.readChapters);
+  safeStorageSet('krv-reading-time-v1',s.readingTime);
+  safeStorageSet('krv-reminder-time',s.reminderTime);
+  safeStorageSet('krv-recent-books-v1',s.recentBooks||[]);
+  safeStorageSet('krv-scroll-pos-v1',s.scrollPositions||{});
+  safeStorageSet('krv-collections-v1',s.collections||{});
+  safeStorageSet('krv-collection-map-v1',s.collectionMap||{});
+  safeStorageSet('krv-favorite-books-v1',s.favoriteBooks||[]);
+  safeStorageSet('krv-favorite-chapters-v1',s.favoriteChapters||[]);
+}
+function runDataMigrations(){
+  const before=Number(localStorage.getItem('krv-schema-version')||0);
+  const normalized=normalizeUserSnapshot();
+  persistUserSnapshot(normalized.clean);
+  safeStorageSet('krv-schema-version',String(APP_SCHEMA));
+  lastMigrationReport={from:before,to:APP_SCHEMA,issues:normalized.issues};
+  return lastMigrationReport;
+}
+function repairUserData(showMessage=true){
+  const normalized=normalizeUserSnapshot();
+  persistUserSnapshot(normalized.clean);
+  safeStorageSet('krv-schema-version',String(APP_SCHEMA));
+  if(bible.length)renderReader();
+  if($('#savedPanel')?.classList.contains('show'))renderSaved();
+  if(showMessage)toast(normalized.issues?`${normalized.issues}개 데이터 항목을 안전 정리했습니다`:'저장 데이터가 정상입니다');
+  return normalized.issues;
+}
+function backupManifest(snapshot){
+  return{
+    bookmarks:snapshot.bookmarks.length,
+    highlights:Object.keys(snapshot.highlights).length,
+    groups:Object.keys(snapshot.highlightGroups).length,
+    notes:Object.keys(snapshot.verseNotes).length,
+    customTags:snapshot.customTags.length,
+    readChapters:Object.keys(snapshot.readChapters).length,
+    readingDays:Object.keys(snapshot.readingTime).length,
+    recentBooks:(snapshot.recentBooks||[]).length,
+    scrollPositions:Object.keys(snapshot.scrollPositions||{}).length,
+    collections:Object.keys(snapshot.collections||{}).length,
+    favoriteBooks:(snapshot.favoriteBooks||[]).length,
+    favoriteChapters:(snapshot.favoriteChapters||[]).length
+  };
+}
+function mergeSnapshots(current,incoming){
+  const out=typeof structuredClone==='function'?structuredClone(current):JSON.parse(JSON.stringify(current));
+  out.bookmarks=[...new Set([...(incoming.bookmarks||[]),...(current.bookmarks||[])])];
+  out.highlights={...(current.highlights||{}),...(incoming.highlights||{})};
+  out.highlightGroups={...(current.highlightGroups||{}),...(incoming.highlightGroups||{})};
+  out.verseNotes={...(current.verseNotes||{}),...(incoming.verseNotes||{})};
+  out.customTags=[...new Set([...(current.customTags||[]),...(incoming.customTags||[])])].slice(0,50);
+  out.readChapters={...(current.readChapters||{}),...(incoming.readChapters||{})};
+  out.readingTime={...(current.readingTime||{})};
+  for(const [d,s] of Object.entries(incoming.readingTime||{}))out.readingTime[d]=Math.max(Number(out.readingTime[d]||0),Number(s||0));
+  out.readingPlan=current.readingPlan||incoming.readingPlan;
+  out.reminderTime=current.reminderTime||incoming.reminderTime||'21:00';
+  out.recentBooks=[...new Set([...(current.recentBooks||[]),...(incoming.recentBooks||[])])].slice(0,8);
+  out.scrollPositions={...(incoming.scrollPositions||{}),...(current.scrollPositions||{})};
+  out.collections={...(current.collections||{}),...(incoming.collections||{})};
+  out.collectionMap={...(current.collectionMap||{}),...(incoming.collectionMap||{})};
+  out.favoriteBooks=[...new Set([...(current.favoriteBooks||[]),...(incoming.favoriteBooks||[])])].slice(0,30);
+  out.favoriteChapters=[...new Set([...(current.favoriteChapters||[]),...(incoming.favoriteChapters||[])])].slice(0,80);
+  return normalizeUserSnapshot(out).clean;
+}
+async function clearBibleCache(){
+  if(!confirm('본문 IndexedDB 캐시만 초기화할까요? 형광펜·메모·태그·통독 기록은 유지됩니다.'))return;
+  try{await idbDelete('bible')}catch(e){console.warn(e)}
+  searchCache.clear();
+  toast('본문 캐시를 초기화했습니다. 내장본이 없으면 다시 본문 연결이 필요합니다');
+  runSelfCheck(true);
+}
+function diagItem(status,name,detail){
+  return{status,name,detail};
+}
+async function runSelfCheck(showPanel=true){
+  const checks=[];
+  const chapterMeta=BOOK_META.reduce((a,b)=>a+b.chapters,0);
+  checks.push(diagItem(BOOK_META.length===66&&chapterMeta===1189?'ok':'bad','성경 구조 메타',`${BOOK_META.length}권 · ${chapterMeta.toLocaleString()}장`));
+
+  if(bible.length){
+    const s=stats(bible);
+    checks.push(diagItem(valid(bible)?'ok':'bad','본문 무결성',`${s.books}권 · ${s.chapters.toLocaleString()}장 · ${s.verses.toLocaleString()}절`));
+    checks.push(diagItem(flat.length===EXPECTED.verses?'ok':'warn','검색 인덱스',`${flat.length.toLocaleString()}절 인덱싱`));
+  }else{
+    checks.push(diagItem('warn','본문 상태','현재 메모리에 전체 본문이 로드되지 않음'));
+    checks.push(diagItem('warn','검색 인덱스','본문 로드 후 생성'));
+  }
+
+  let storageOK=false;
+  try{
+    const k='__krv_selftest__';localStorage.setItem(k,'1');storageOK=localStorage.getItem(k)==='1';localStorage.removeItem(k);
+  }catch(_){}
+  checks.push(diagItem(storageOK?'ok':'bad','로컬 저장소',storageOK?'읽기/쓰기 정상':'저장 권한 또는 용량 문제'));
+
+  checks.push(diagItem('indexedDB' in window?'ok':'warn','IndexedDB','indexedDB' in window?(db?'연결됨':'지원됨 · 연결 대기'):'브라우저 미지원'));
+  checks.push(diagItem('speechSynthesis' in window?'ok':'warn','한국어 TTS','speechSynthesis' in window?'Web Speech API 사용 가능':'브라우저 미지원'));
+
+  const normalized=normalizeUserSnapshot();
+  checks.push(diagItem(normalized.issues===0?'ok':'warn','사용자 데이터',normalized.issues===0?'참조/형식 정상':`${normalized.issues}개 정리 가능 항목`));
+
+  const schema=Number(localStorage.getItem('krv-schema-version')||0);
+  checks.push(diagItem(schema===APP_SCHEMA?'ok':'warn','저장 스키마',`현재 ${schema||0} → 앱 기준 ${APP_SCHEMA}`));
+
+  if(navigator.storage?.estimate){
+    try{
+      const e=await navigator.storage.estimate();
+      const used=e.usage||0,quota=e.quota||0;
+      const mb=n=>(n/1024/1024).toFixed(1)+'MB';
+      checks.push(diagItem('ok','브라우저 저장 공간',`${mb(used)} 사용 / ${quota?mb(quota):'한도 확인 불가'}`));
+    }catch(_){}
+  }
+
+  lastSelfCheck=checks;
+  const list=$('#diagnosticsList');
+  if(list){
+    list.innerHTML=checks.map(c=>`<div class="diagRow ${c.status}">
+      <div class="diagIcon">${c.status==='ok'?'✓':c.status==='warn'?'!':'×'}</div>
+      <div class="diagName">${esc(c.name)}</div>
+      <div class="diagDetail">${esc(c.detail)}</div>
+    </div>`).join('');
+  }
+  if(showPanel)$('#diagnosticsPanel')?.classList.add('show');
+  return checks;
+}
+function getBookmarks(){try{return JSON.parse(localStorage.getItem('krv-bookmarks')||'[]')}catch(_){return[]}}
+function getHighlights(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-highlights-v1')||'{}');
+    if(!x||typeof x!=='object'||Array.isArray(x))return{};
+    for(const [k,v] of Object.entries(x)){
+      if(typeof v==='string')x[k]={color:v,savedAt:0};
+      else if(!v||typeof v!=='object')delete x[k];
+    }
+    return x;
+  }catch(_){return{}}
+}
+function saveHighlights(x){localStorage.setItem('krv-highlights-v1',JSON.stringify(x))}
+function getHighlightGroups(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-highlight-groups-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveHighlightGroups(x){localStorage.setItem('krv-highlight-groups-v1',JSON.stringify(x))}
+function getVerseNotes(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-verse-notes-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveVerseNotes(x){localStorage.setItem('krv-verse-notes-v1',JSON.stringify(x))}
+function getCustomTags(){
+  try{
+    const a=JSON.parse(localStorage.getItem('krv-custom-tags-v1')||'[]');
+    return Array.isArray(a)?a.filter(x=>typeof x==='string'&&x.trim()):[];
+  }catch(_){return[]}
+}
+function saveCustomTags(a){
+  const clean=[...new Set(a.map(x=>String(x).trim()).filter(Boolean))].slice(0,50);
+  localStorage.setItem('krv-custom-tags-v1',JSON.stringify(clean));
+}
+function allKnownTags(){
+  const notes=getVerseNotes(),groups=getHighlightGroups();
+  const s=new Set([...DEFAULT_TAGS,...getCustomTags()]);
+  Object.values(notes).forEach(n=>(n?.tags||[]).forEach(t=>s.add(t)));
+  Object.values(groups).forEach(g=>(g?.tags||[]).forEach(t=>s.add(t)));
+  return [...s].filter(Boolean);
+}
+function usedTagCounts(){
+  const counts={};
+  const add=t=>{if(t)counts[t]=(counts[t]||0)+1};
+  Object.values(getVerseNotes()).forEach(n=>(n?.tags||[]).forEach(add));
+  Object.values(getHighlightGroups()).forEach(g=>(g?.tags||[]).forEach(add));
+  return counts;
+}
+function replaceTagEverywhere(oldTag,newTag){
+  if(!oldTag||!newTag||oldTag===newTag)return;
+  const normalize=a=>[...new Set((a||[]).map(t=>t===oldTag?newTag:t).filter(Boolean))];
+  const notes=getVerseNotes(),groups=getHighlightGroups();
+  Object.values(notes).forEach(n=>{n.tags=normalize(n?.tags)});
+  Object.values(groups).forEach(g=>{g.tags=normalize(g?.tags)});
+  saveVerseNotes(notes);saveHighlightGroups(groups);
+  const custom=getCustomTags().map(t=>t===oldTag?newTag:t);
+  saveCustomTags([...new Set(custom)]);
+}
+function deleteTagEverywhere(tag){
+  if(!tag)return;
+  const notes=getVerseNotes(),groups=getHighlightGroups();
+  Object.values(notes).forEach(n=>{n.tags=(n?.tags||[]).filter(t=>t!==tag)});
+  Object.values(groups).forEach(g=>{g.tags=(g?.tags||[]).filter(t=>t!==tag)});
+  saveVerseNotes(notes);saveHighlightGroups(groups);
+  saveCustomTags(getCustomTags().filter(t=>t!==tag));
+  if(savedTagFilter===tag)savedTagFilter='all';
+}
+function dayStart(ts=Date.now()){
+  const d=new Date(ts);d.setHours(0,0,0,0);return d.getTime();
+}
+function inSavedScope(savedAt,hasMemo){
+  if(savedScopeFilter==='memo')return !!hasMemo;
+  if(savedScopeFilter==='today')return (savedAt||0)>=dayStart();
+  if(savedScopeFilter==='week')return (savedAt||0)>=dayStart()-6*24*60*60*1000;
+  return true;
+}
+function uid(prefix='g'){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function refFromKey(key){
+  const [bi,ch,v]=String(key).split('-').map(Number);
+  return{bi,ch,v,title:`${BOOK_META[bi]?.name||'성경'} ${ch}장 ${v}절`};
+}
+function verseFromKey(key){
+  const r=refFromKey(key);
+  const c=bible[r.bi]?.chapters.find(x=>x.chapter===r.ch);
+  const vv=c?.verses.find(x=>x.verse===r.v);
+  return{...r,text:vv?.text||''};
+}
+function groupTitle(keys){
+  const refs=(keys||[]).map(refFromKey).sort((a,b)=>a.bi-b.bi||a.ch-b.ch||a.v-b.v);
+  if(!refs.length)return '말씀 묶음';
+  const f=refs[0],l=refs[refs.length-1];
+  if(refs.every(r=>r.bi===f.bi&&r.ch===f.ch)){
+    return refs.length===1?f.title:`${BOOK_META[f.bi].name} ${f.ch}장 ${f.v}-${l.v}절`;
+  }
+  return `${refs.length}개 말씀 묶음`;
+}
+function groupText(keys){
+  return (keys||[]).map(k=>verseFromKey(k).text).filter(Boolean).join(' ');
+}
+function removeKeyFromGroups(key){
+  const groups=getHighlightGroups();let changed=false;
+  for(const [id,g] of Object.entries(groups)){
+    if(!Array.isArray(g?.keys)||!g.keys.includes(key))continue;
+    g.keys=g.keys.filter(k=>k!==key);changed=true;
+    if(g.keys.length<2)delete groups[id];
+  }
+  if(changed)saveHighlightGroups(groups);
+}
+function openMarkerPalette(key,vn){
+  const r=refFromKey(key);
+  $('#markerPalette').dataset.key=key;
+  $('#markerRef').textContent=r.title;
+  $('#markerPalette').classList.add('show');
+  $('#markerPalette').setAttribute('aria-hidden','false');
+}
+function closeMarkerPalette(){
+  $('#markerPalette').classList.remove('show');
+  $('#markerPalette').setAttribute('aria-hidden','true');
+  delete $('#markerPalette').dataset.key;
+}
+function applyHighlight(key,color){
+  const h=getHighlights();
+  if(color==='clear'){
+    if(h[key])delete h[key];
+    removeKeyFromGroups(key);
+    saveHighlights(h);closeMarkerPalette();renderReader();toast('형광펜을 지웠습니다');return;
+  }
+  h[key]={color,savedAt:Date.now()};
+  saveHighlights(h);closeMarkerPalette();renderReader();toast(`${refFromKey(key).title} 저장`);
+}
+function toggleBookmark(key){
+  let a=getBookmarks(),i=a.indexOf(key);
+  if(i>=0)a.splice(i,1);else a.unshift(key);
+  localStorage.setItem('krv-bookmarks',JSON.stringify(a));renderReader();toast(i>=0?'책갈피 해제':'책갈피 저장');
+}
+let savedTab='highlights';
+function showSaved(tab='highlights'){
+  savedTab=tab;setActiveView('saved');
+  closeDrawer();
+  $('#savedPanel').classList.add('show');
+  $('#searchPanel').classList.remove('show');
+  renderSaved();
+}
+function closeSaved(){$('#savedPanel').classList.remove('show');setActiveView('reader')}
+function bibleOrderForKey(key){
+  const r=refFromKey(key);return r.bi*1000000+r.ch*1000+r.v;
+}
+function colorLabel(color){
+  return color==='yellow'?'노랑':color==='green'?'초록':color==='pink'?'분홍':'파랑';
+}
+function buildHighlightSavedItems(){
+  const hs=getHighlights(),groups=getHighlightGroups(),notes=getVerseNotes();
+  const groupedKeys=new Set(),items=[];
+
+  for(const [id,g] of Object.entries(groups)){
+    const keys=(g?.keys||[]).filter(k=>hs[k]);
+    if(keys.length<2)continue;
+    keys.forEach(k=>groupedKeys.add(k));
+    const sorted=keys.sort((a,b)=>bibleOrderForKey(a)-bibleOrderForKey(b));
+    items.push({
+      type:'group',id,keys:sorted,title:groupTitle(sorted),text:groupText(sorted),
+      color:g.color||hs[sorted[0]]?.color||'yellow',savedAt:g.savedAt||0,
+      note:g.note||'',tags:Array.isArray(g.tags)?g.tags:[],hasMemo:!!(g.note||'').trim(),
+      order:bibleOrderForKey(sorted[0])
+    });
+  }
+
+  for(const [key,val] of Object.entries(hs)){
+    if(groupedKeys.has(key))continue;
+    const r=verseFromKey(key),n=notes[key]||{};
+    items.push({
+      type:'verse',id:key,keys:[key],title:r.title,text:r.text,color:val?.color||'yellow',
+      savedAt:val?.savedAt||0,note:n.note||'',tags:Array.isArray(n.tags)?n.tags:[],hasMemo:!!(n.note||'').trim(),
+      order:bibleOrderForKey(key)
+    });
+  }
+  return items;
+}
+function renderSavedTagFilters(){
+  const tags=allKnownTags(),host=$('#savedTagFilters');
+  if(!host)return;
+  host.innerHTML=[
+    `<button class="tagFilterBtn ${savedTagFilter==='all'?'active':''}" data-tag-filter="all">모든 태그</button>`,
+    ...tags.map(t=>`<button class="tagFilterBtn ${savedTagFilter===t?'active':''}" data-tag-filter="${esc(t)}">${esc(t)}</button>`),
+    `<button class="tagManageBtn" id="openTagManager">⚙ 태그 관리</button>`
+  ].join('');
+  $$('[data-tag-filter]').forEach(x=>x.onclick=()=>{savedTagFilter=x.dataset.tagFilter;renderSaved()});
+  $('#openTagManager').onclick=openTagManager;
+}
+
+
+function getCollections(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-collections-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveCollections(x){localStorage.setItem('krv-collections-v1',JSON.stringify(x))}
+function getCollectionMap(){
+  try{
+    const x=JSON.parse(localStorage.getItem('krv-collection-map-v1')||'{}');
+    return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+  }catch(_){return{}}
+}
+function saveCollectionMap(x){localStorage.setItem('krv-collection-map-v1',JSON.stringify(x))}
+function collectionId(){return 'col_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function renderCollectionFilter(){
+  const sel=$('#collectionFilter');if(!sel)return;
+  const cols=getCollections();
+  sel.innerHTML='<option value="all">모든 컬렉션</option><option value="none">미분류</option>'+
+    Object.entries(cols).sort((a,b)=>(a[1].name||'').localeCompare(b[1].name||'','ko')).map(([id,c])=>
+      `<option value="${esc(id)}">${esc(c.name||'이름 없음')}</option>`).join('');
+  if(collectionFilter!=='all'&&collectionFilter!=='none'&&!cols[collectionFilter])collectionFilter='all';
+  sel.value=collectionFilter;
+}
+function itemCollectionId(item){
+  return getCollectionMap()[`${item.type}:${item.id}`]||null;
+}
+function itemCollectionHtml(item){
+  const cid=itemCollectionId(item),c=cid?getCollections()[cid]:null;
+  return c?`<div class="savedTags"><span class="collectionChip"><span class="collectionDot"></span>${esc(c.name)}</span></div>`:'';
+}
+function collectionAssignSelect(item){
+  const cols=getCollections(),current=itemCollectionId(item)||'';
+  const opts=['<option value="">컬렉션 없음</option>',...Object.entries(cols).map(([id,c])=>`<option value="${esc(id)}" ${id===current?'selected':''}>${esc(c.name)}</option>`)].join('');
+  return `<select class="savedSort" data-assign-collection-type="${item.type}" data-assign-collection-id="${item.id}">${opts}</select>`;
+}
+function assignCollection(type,id,cid){
+  const map=getCollectionMap(),key=`${type}:${id}`;
+  if(cid)map[key]=cid;else delete map[key];
+  saveCollectionMap(map);renderSaved();
+}
+function createCollection(){
+  const input=$('#collectionNameInput'),name=(input?.value||'').trim();if(!name)return;
+  const cols=getCollections();
+  if(Object.values(cols).some(c=>(c.name||'').toLowerCase()===name.toLowerCase())){toast('같은 이름의 컬렉션이 있습니다');return}
+  cols[collectionId()]={name,createdAt:Date.now()};
+  saveCollections(cols);input.value='';renderCollectionManager();renderCollectionFilter();renderSaved();toast('컬렉션을 추가했습니다');
+}
+function renameCollection(id){
+  const cols=getCollections(),c=cols[id];if(!c)return;
+  const name=prompt('새 컬렉션 이름',c.name||'');if(name==null)return;
+  const clean=name.trim();if(!clean)return;
+  c.name=clean;c.editedAt=Date.now();saveCollections(cols);renderCollectionManager();renderCollectionFilter();renderSaved();
+}
+function deleteCollection(id){
+  const cols=getCollections(),c=cols[id];if(!c)return;
+  if(!confirm(`'${c.name}' 컬렉션을 삭제할까요?\n저장된 말씀 자체는 삭제되지 않습니다.`))return;
+  delete cols[id];saveCollections(cols);
+  const map=getCollectionMap();
+  for(const k of Object.keys(map))if(map[k]===id)delete map[k];
+  saveCollectionMap(map);
+  if(collectionFilter===id)collectionFilter='all';
+  renderCollectionManager();renderCollectionFilter();renderSaved();toast('컬렉션을 삭제했습니다');
+}
+function collectionUsage(id){
+  return Object.values(getCollectionMap()).filter(x=>x===id).length;
+}
+function renderCollectionManager(){
+  const cols=getCollections(),host=$('#collectionList');if(!host)return;
+  host.innerHTML=Object.keys(cols).length?Object.entries(cols).map(([id,c])=>`<div class="collectionItem">
+    <div><div class="collectionName">${esc(c.name||'이름 없음')}</div><div class="collectionMeta">${collectionUsage(id)}개 말씀</div></div>
+    <button class="savedSmallBtn" data-rename-collection="${id}">이름 변경</button>
+    <button class="savedSmallBtn danger" data-delete-collection="${id}">삭제</button>
+  </div>`).join(''):'<div class="notice">아직 컬렉션이 없습니다.</div>';
+  $$('[data-rename-collection]').forEach(x=>x.onclick=()=>renameCollection(x.dataset.renameCollection));
+  $$('[data-delete-collection]').forEach(x=>x.onclick=()=>deleteCollection(x.dataset.deleteCollection));
+}
+function openCollectionManager(){
+  renderCollectionManager();
+  $('#collectionScrim').classList.add('show');$('#collectionModal').classList.add('show');
+  $('#collectionModal').setAttribute('aria-hidden','false');
+}
+function closeCollectionManager(){
+  $('#collectionScrim').classList.remove('show');$('#collectionModal').classList.remove('show');
+  $('#collectionModal').setAttribute('aria-hidden','true');
+}
+function savedExportItems(){
+  return buildHighlightSavedItems();
+}
+function exportSavedMarkdown(){
+  const items=savedExportItems(),cols=getCollections(),map=getCollectionMap();
+  const lines=['# KoreanBible Reader 말씀 보관함','',`내보낸 날짜: ${new Date().toLocaleString('ko-KR')}`,''];
+  for(const item of items){
+    const cid=map[`${item.type}:${item.id}`],c=cid?cols[cid]:null;
+    lines.push(`## ${item.title}`);
+    if(c)lines.push(`- 컬렉션: ${c.name}`);
+    if(item.tags?.length)lines.push(`- 태그: ${item.tags.join(', ')}`);
+    if(item.note)lines.push(`- 메모: ${item.note}`);
+    lines.push('',item.text||'','');
+  }
+  downloadTextFile('KoreanBible_Saved_Library.md',lines.join('\n'),'text/markdown;charset=utf-8');
+}
+function exportSavedText(){
+  const items=savedExportItems(),cols=getCollections(),map=getCollectionMap();
+  const lines=['KoreanBible Reader 말씀 보관함','='.repeat(32),''];
+  for(const item of items){
+    const cid=map[`${item.type}:${item.id}`],c=cid?cols[cid]:null;
+    lines.push(`[${item.title}]`);
+    if(c)lines.push(`컬렉션: ${c.name}`);
+    if(item.tags?.length)lines.push(`태그: ${item.tags.join(', ')}`);
+    if(item.note)lines.push(`메모: ${item.note}`);
+    lines.push(item.text||'','');
+  }
+  downloadTextFile('KoreanBible_Saved_Library.txt',lines.join('\n'),'text/plain;charset=utf-8');
+}
+function downloadTextFile(name,text,type){
+  const blob=new Blob([text],{type});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1200);
+  toast(`${name} 저장 완료`);
+}
+function loadSavedLayout(){
+  const x=localStorage.getItem('krv-saved-layout');
+  savedLayout=x==='compact'?'compact':'list';
+}
+function setSavedLayout(mode){
+  savedLayout=mode==='compact'?'compact':'list';
+  localStorage.setItem('krv-saved-layout',savedLayout);
+  renderSaved();
+}
+function applySavedLayout(){
+  const host=$('#savedList');if(host)host.classList.toggle('compact',savedLayout==='compact');
+  $$('[data-saved-layout]').forEach(x=>x.classList.toggle('active',x.dataset.savedLayout===savedLayout));
+}
+function renderSaved(){
+  const hs=getHighlights(),bm=getBookmarks();
+  const groups=getHighlightGroups(),notes=getVerseNotes(),tags=allKnownTags();
+  $('#highlightCount').textContent=Object.keys(hs).length;
+  $('#bookmarkCount').textContent=bm.length;
+  $('#statHighlightVerses').textContent=Object.keys(hs).length;
+  $('#statGroups').textContent=Object.values(groups).filter(g=>(g?.keys||[]).length>=2).length;
+  $('#statMemos').textContent=
+    Object.values(notes).filter(n=>(n?.note||'').trim()).length+
+    Object.values(groups).filter(g=>(g?.note||'').trim()).length;
+  $('#statTags').textContent=tags.length;
+  $$('[data-saved-tab]').forEach(x=>x.classList.toggle('active',x.dataset.savedTab===savedTab));
+  $('#highlightSavedTools').classList.toggle('hidden',savedTab!=='highlights');
+  applySavedLayout();
+
+  renderCollectionFilter();
+  if(savedTab==='highlights'){
+    let items=buildHighlightSavedItems();
+    if(collectionFilter!=='all'){
+      const map=getCollectionMap();
+      items=items.filter(item=>{
+        const cid=map[`${item.type}:${item.id}`]||null;
+        return collectionFilter==='none'?!cid:cid===collectionFilter;
+      });
+    }
+    items=items.filter(x=>inSavedScope(x.savedAt,x.hasMemo));
+    if(savedColorFilter!=='all')items=items.filter(x=>x.color===savedColorFilter);
+
+    const q=savedSearchQuery.trim().toLowerCase();
+    if(q){
+      items=items.filter(x=>
+        x.title.toLowerCase().includes(q)||
+        (x.text||'').toLowerCase().includes(q)||
+        (x.note||'').toLowerCase().includes(q)||
+        (x.tags||[]).some(t=>String(t).toLowerCase().includes(q))
+      );
+    }
+
+    if(savedTagFilter!=='all')items=items.filter(x=>(x.tags||[]).includes(savedTagFilter));
+    if(savedSortMode==='bible')items.sort((a,b)=>a.order-b.order);
+    else items.sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+
+    $$('[data-hl-filter]').forEach(x=>x.classList.toggle('active',x.dataset.hlFilter===savedColorFilter));
+    $$('[data-saved-scope]').forEach(x=>x.classList.toggle('active',x.dataset.savedScope===savedScopeFilter));
+    $('#savedSort').value=savedSortMode;
+    $('#savedSearch').value=savedSearchQuery;
+    renderSavedTagFilters();
+
+    $('#savedList').innerHTML=items.length?items.map(item=>{
+      const tagHtml=(item.tags||[]).length?`<div class="savedTags">${item.tags.map(t=>`<span class="tagChip">${esc(t)}</span>`).join('')}</div>`:'';
+      return `<div class="savedEntry">
+        <div class="savedBar ${item.color}"></div>
+        <div>
+          <button class="savedJump" data-jump-type="${item.type}" data-jump-id="${item.id}">
+            ${item.type==='group'?'<div class="groupLabel">말씀 묶음</div>':''}
+            <div class="savedTitle">${esc(item.title)}</div>
+            <div class="savedPreview">${item.text?esc(item.text):'해당 구절로 이동'}</div>
+            <div class="savedMeta">${colorLabel(item.color)} 형광펜</div>
+            ${item.note?'<div class="memoBadge">✎ 메모 있음</div>':''}
+            ${tagHtml}
+            ${itemCollectionHtml(item)}
+          </button>
+          <div class="savedActionRow">
+            <button class="savedSmallBtn" data-edit-type="${item.type}" data-edit-id="${item.id}">✎ 메모·태그</button>
+            ${collectionAssignSelect(item)}
+            ${item.type==='group'?`<button class="savedSmallBtn" data-ungroup="${item.id}">묶음 해제</button>`:''}
+          </div>
+        </div>
+        <button class="savedDelete" data-delete-type="${item.type}" data-delete-id="${item.id}" title="삭제">×</button>
+      </div>`;
+    }).join(''):'<div class="notice">현재 조건에 맞는 저장된 말씀이 없습니다.</div>';
+
+    $$('[data-jump-id]').forEach(x=>x.onclick=()=>{
+      const type=x.dataset.jumpType,id=x.dataset.jumpId;
+      const key=type==='group'?getHighlightGroups()[id]?.keys?.[0]:id;
+      if(!key)return;
+      const r=refFromKey(key);closeSaved();selectLocation(r.bi,r.ch,r.v);
+    });
+    $$('[data-edit-id]').forEach(x=>x.onclick=()=>openMemoEditor(x.dataset.editType,x.dataset.editId));
+    $$('[data-assign-collection-id]').forEach(x=>x.onchange=()=>assignCollection(x.dataset.assignCollectionType,x.dataset.assignCollectionId,x.value));
+    $$('[data-ungroup]').forEach(x=>x.onclick=()=>{
+      const groups=getHighlightGroups();delete groups[x.dataset.ungroup];saveHighlightGroups(groups);
+      renderSaved();toast('말씀 묶음을 해제했습니다');
+    });
+    $$('[data-delete-id]').forEach(x=>x.onclick=e=>{
+      e.stopPropagation();
+      const type=x.dataset.deleteType,id=x.dataset.deleteId;
+      if(type==='group'){
+        const groups=getHighlightGroups(),g=groups[id],h=getHighlights();
+        (g?.keys||[]).forEach(k=>delete h[k]);
+        delete groups[id];saveHighlightGroups(groups);saveHighlights(h);
+      }else{
+        const h=getHighlights(),notes=getVerseNotes();
+        delete h[id];delete notes[id];removeKeyFromGroups(id);
+        saveHighlights(h);saveVerseNotes(notes);
+      }
+      if(bible.length)renderReader();renderSaved();toast('저장된 말씀을 삭제했습니다');
+    });
+  }else{
+    $('#savedTagFilters').innerHTML='';
+    $('#savedList').innerHTML=bm.length?bm.map(key=>{
+      const r=verseFromKey(key);
+      return `<div class="savedEntry">
+        <div class="savedBar"></div>
+        <button class="savedJump" data-key="${key}">
+          <div class="savedTitle">${esc(r.title)}</div>
+          <div class="savedPreview">${r.text?esc(r.text):'해당 구절로 이동'}</div>
+          <div class="savedMeta">책갈피</div>
+        </button>
+        <button class="savedDelete" data-delete-bookmark="${key}" title="책갈피 삭제">×</button>
+      </div>`;
+    }).join(''):'<div class="notice">저장된 책갈피가 없습니다.</div>';
+    $$('#savedList .savedJump').forEach(x=>x.onclick=()=>{
+      const r=refFromKey(x.dataset.key);closeSaved();selectLocation(r.bi,r.ch,r.v);
+    });
+    $$('[data-delete-bookmark]').forEach(x=>x.onclick=e=>{
+      e.stopPropagation();let a=getBookmarks().filter(k=>k!==x.dataset.deleteBookmark);
+      localStorage.setItem('krv-bookmarks',JSON.stringify(a));
+      if(bible.length)renderReader();renderSaved();toast('책갈피를 삭제했습니다');
+    });
+  }
+}
+function memoDataFor(type,id){
+  if(type==='group'){
+    const g=getHighlightGroups()[id];if(!g)return null;
+    return{title:groupTitle(g.keys||[]),text:groupText(g.keys||[]),note:g.note||'',tags:Array.isArray(g.tags)?g.tags:[]};
+  }
+  const r=verseFromKey(id),n=getVerseNotes()[id]||{};
+  return{title:r.title,text:r.text,note:n.note||'',tags:Array.isArray(n.tags)?n.tags:[]};
+}
+function openMemoEditor(type,id){
+  const d=memoDataFor(type,id);if(!d)return;
+  memoTarget={type,id};memoSelectedTags=new Set(d.tags||[]);
+  $('#memoRef').textContent=d.title;$('#memoVerse').textContent=d.text||'';
+  $('#memoInput').value=d.note||'';$('#customTagInput').value='';
+  renderMemoTags();
+  $('#memoScrim').classList.add('show');$('#memoModal').classList.add('show');
+  $('#memoModal').setAttribute('aria-hidden','false');
+}
+function closeMemoEditor(){
+  $('#memoScrim').classList.remove('show');$('#memoModal').classList.remove('show');
+  $('#memoModal').setAttribute('aria-hidden','true');
+  memoTarget={type:null,id:null};memoSelectedTags.clear();
+}
+function renderMemoTags(){
+  const tags=allKnownTags();
+  $('#memoTagEditor').innerHTML=tags.map(t=>`<button class="tagToggle ${memoSelectedTags.has(t)?'active':''}" data-memo-tag="${esc(t)}">${esc(t)}</button>`).join('');
+  $$('[data-memo-tag]').forEach(x=>x.onclick=()=>{
+    const t=x.dataset.memoTag;
+    if(memoSelectedTags.has(t))memoSelectedTags.delete(t);else memoSelectedTags.add(t);
+    renderMemoTags();
+  });
+}
+function addCustomTag(){
+  const t=$('#customTagInput').value.trim();if(!t)return;
+  const a=getCustomTags();if(!a.includes(t)){a.push(t);saveCustomTags(a)}
+  memoSelectedTags.add(t);$('#customTagInput').value='';renderMemoTags();
+}
+function saveMemoEditor(){
+  const {type,id}=memoTarget;if(!type||!id)return;
+  const note=$('#memoInput').value.trim(),tags=[...memoSelectedTags],now=Date.now();
+  if(type==='group'){
+    const groups=getHighlightGroups();if(!groups[id])return;
+    groups[id].note=note;groups[id].tags=tags;groups[id].editedAt=now;saveHighlightGroups(groups);
+  }else{
+    const notes=getVerseNotes();
+    if(note||tags.length)notes[id]={note,tags,editedAt:now};else delete notes[id];
+    saveVerseNotes(notes);
+  }
+  closeMemoEditor();renderSaved();toast('메모와 태그를 저장했습니다');
+}
+function deleteMemoOnly(){
+  const {type,id}=memoTarget;if(!type||!id)return;
+  if(type==='group'){
+    const groups=getHighlightGroups();if(groups[id]){groups[id].note='';groups[id].editedAt=Date.now();saveHighlightGroups(groups)}
+  }else{
+    const notes=getVerseNotes();
+    if(notes[id]){
+      notes[id].note='';
+      if(!(notes[id].tags||[]).length)delete notes[id];
+      saveVerseNotes(notes);
+    }
+  }
+  $('#memoInput').value='';toast('메모를 지웠습니다');
+}
+function openTagManager(){
+  renderTagManager();
+  $('#tagManagerScrim').classList.add('show');
+  $('#tagManagerModal').classList.add('show');
+  $('#tagManagerModal').setAttribute('aria-hidden','false');
+}
+function closeTagManager(){
+  $('#tagManagerScrim').classList.remove('show');
+  $('#tagManagerModal').classList.remove('show');
+  $('#tagManagerModal').setAttribute('aria-hidden','true');
+}
+function renderTagManager(){
+  const tags=allKnownTags(),counts=usedTagCounts();
+  $('#tagManagerList').innerHTML=tags.length?tags.map(t=>{
+    const isDefault=DEFAULT_TAGS.includes(t),count=counts[t]||0;
+    return `<div class="tagRow" data-tag-row="${esc(t)}">
+      <div>
+        <input class="tagNameInput" value="${esc(t)}" data-tag-name="${esc(t)}" ${isDefault?'data-default-tag="1"':''}>
+        <div class="tagRowMeta">${isDefault?'기본 태그 · ':''}${count}개 말씀에서 사용</div>
+      </div>
+      <button class="savedSmallBtn" data-rename-tag="${esc(t)}">저장</button>
+      <button class="savedSmallBtn danger" data-delete-tag="${esc(t)}">삭제</button>
+    </div>`;
+  }).join(''):'<div class="notice">관리할 태그가 없습니다.</div>';
+
+  $$('[data-rename-tag]').forEach(btn=>btn.onclick=()=>{
+    const oldTag=btn.dataset.renameTag;
+    const input=document.querySelector(`[data-tag-name="${CSS.escape(oldTag)}"]`);
+    const newTag=(input?.value||'').trim();
+    if(!newTag){toast('태그 이름을 입력해 주세요');return}
+    if(newTag===oldTag){toast('변경된 내용이 없습니다');return}
+    replaceTagEverywhere(oldTag,newTag);
+    if(DEFAULT_TAGS.includes(oldTag)&&!getCustomTags().includes(newTag)){
+      const a=getCustomTags();a.push(newTag);saveCustomTags(a);
+    }
+    if(savedTagFilter===oldTag)savedTagFilter=newTag;
+    renderTagManager();renderSaved();toast(`태그를 '${newTag}'로 변경했습니다`);
+  });
+
+  $$('[data-delete-tag]').forEach(btn=>btn.onclick=()=>{
+    const tag=btn.dataset.deleteTag;
+    if(!confirm(`'${tag}' 태그를 모든 저장된 말씀에서 제거할까요?`))return;
+    deleteTagEverywhere(tag);
+    renderTagManager();renderSaved();toast(`'${tag}' 태그를 삭제했습니다`);
+  });
+}
+
+function copyVerse(vn){
+  const v=chapterData()?.verses.find(x=>x.verse===vn);if(!v)return;
+  const t=`${BOOK_META[currentBook].name} ${currentChapter}:${vn} ${v.text}`;
+  copyText(t,'구절을 복사했습니다');
+}
+function copyText(t,msg){
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(t).then(()=>toast(msg)).catch(()=>fallbackCopy(t,msg));
+  else fallbackCopy(t,msg);
+}
+function fallbackCopy(t,msg){
+  const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');toast(msg)}catch(_){alert(t)}finally{ta.remove()}
+}
+
+function parseReference(q){
+  const z=q.trim().replace(/\s+/g,' ').replace(/장/g,'').replace(/절/g,'').replace(/：/g,':');
+  const names=[...Object.keys(ALIASES),...BOOK_META.map(b=>b.name)].sort((a,b)=>b.length-a.length);
+  for(const n of names){
+    if(!z.startsWith(n))continue;
+    const title=ALIASES[n]||n,bi=BOOK_META.findIndex(b=>b.name===title);if(bi<0)continue;
+    const rest=z.slice(n.length).trim();if(!rest)return{bi,ch:1,v:null};
+    const m=rest.match(/^(\d+)(?:\s*[:.]\s*(\d+))?$/);
+    if(m)return{bi,ch:+m[1],v:m[2]?+m[2]:null};
+  }
+  return null;
+}
+function highlight(text,q){
+  let out=esc(text);
+  for(const p of q.split(/\s+/).filter(Boolean).sort((a,b)=>b.length-a.length)){
+    const safe=p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    out=out.replace(new RegExp(`(${safe})`,'gi'),'<mark>$1</mark>');
+  }
+  return out;
+}
+
+function getSearchHistory(){
+  try{
+    const a=JSON.parse(localStorage.getItem('krv-search-history-v1')||'[]');
+    return Array.isArray(a)?a.map(String).map(x=>x.trim()).filter(Boolean).slice(0,12):[];
+  }catch(_){return[]}
+}
+function pushSearchHistory(q){
+  q=String(q||'').trim();if(!q)return;
+  let a=getSearchHistory().filter(x=>x!==q);a.unshift(q);a=a.slice(0,12);
+  localStorage.setItem('krv-search-history-v1',JSON.stringify(a));
+  renderSearchHistory();
+}
+function renderSearchHistory(){
+  const host=$('#searchHistory');if(!host)return;
+  const a=getSearchHistory();
+  host.innerHTML=a.length?a.map(q=>`<button class="searchHistoryBtn" data-search-history="${esc(q)}">${esc(q)}</button>`).join(''):
+    '<span class="small" style="margin:0">최근 검색 없음</span>';
+  $$('[data-search-history]').forEach(x=>x.onclick=()=>{
+    $('#searchInput').value=x.dataset.searchHistory;doSearch();
+  });
+}
+function clearSearchHistory(){
+  localStorage.removeItem('krv-search-history-v1');renderSearchHistory();toast('검색 기록을 삭제했습니다');
+}
+function buildSearchBookFilter(){
+  const sel=$('#searchBookFilter');if(!sel)return;
+  sel.innerHTML='<option value="all">모든 성경책</option>'+BOOK_META.map((b,bi)=>`<option value="${bi}">${esc(b.name)}</option>`).join('');
+  sel.value=searchBookFilter;
+}
+function filteredSearchResults(){
+  let r=currentSearchResults;
+  if(searchTestamentFilter==='old')r=r.filter(x=>x.bi<39);
+  else if(searchTestamentFilter==='new')r=r.filter(x=>x.bi>=39);
+  if(searchBookFilter!=='all')r=r.filter(x=>x.bi===Number(searchBookFilter));
+  return r;
+}
+function renderSearchResults(){
+  const res=filteredSearchResults(),raw=currentSearchRaw;
+  $$('[data-search-testament]').forEach(x=>x.classList.toggle('active',x.dataset.searchTestament===searchTestamentFilter));
+  if($('#searchBookFilter'))$('#searchBookFilter').value=searchBookFilter;
+  const suffix=(searchTestamentFilter!=='all'||searchBookFilter!=='all')?` · 필터 ${res.length}/${currentSearchResults.length}`:'';
+  $('#resultSummary').textContent=raw?`‘${raw}’ · ${res.length===500?'500+':res.length}절${suffix}`:'검색 결과';
+  const bookmarks=getBookmarks(),highlights=getHighlights();
+  $('#searchResults').innerHTML=res.length?res.map(x=>{
+    const key=`${x.bi}-${x.ch}-${x.v}`;
+    return `<div class="result" data-bi="${x.bi}" data-ch="${x.ch}" data-v="${x.v}">
+      <div class="ref">${esc(x.book)} ${x.ch}:${x.v}</div>
+      <div class="rtext">${highlight(x.text,raw)}</div>
+      <div class="searchQuick">
+        <button class="searchQuickBtn ${bookmarks.includes(key)?'on':''}" data-search-bookmark="${key}">★ 책갈피</button>
+        <button class="searchQuickBtn ${highlights[key]?'on':''}" data-search-highlight="${key}">▰ 노랑 형광펜</button>
+        <button class="searchQuickBtn" data-search-open="${key}">본문 열기</button>
+      </div>
+    </div>`;
+  }).join(''):'<div class="notice">현재 필터에 맞는 검색 결과가 없습니다.</div>';
+  $$('[data-search-open]').forEach(x=>x.onclick=e=>{
+    e.stopPropagation();const r=refFromKey(x.dataset.searchOpen);selectLocation(r.bi,r.ch,r.v);$('#searchPanel').classList.remove('show');
+  });
+  $$('[data-search-bookmark]').forEach(x=>x.onclick=e=>{
+    e.stopPropagation();const key=x.dataset.searchBookmark;let a=getBookmarks();
+    if(a.includes(key))a=a.filter(k=>k!==key);else a.unshift(key);
+    localStorage.setItem('krv-bookmarks',JSON.stringify(a));renderSearchResults();toast(a.includes(key)?'책갈피 저장':'책갈피 해제');
+  });
+  $$('[data-search-highlight]').forEach(x=>x.onclick=e=>{
+    e.stopPropagation();const key=x.dataset.searchHighlight,h=getHighlights();
+    if(h[key])delete h[key];else h[key]={color:'yellow',savedAt:Date.now()};
+    saveHighlights(h);renderSearchResults();toast(h[key]?'노랑 형광펜 저장':'형광펜 해제');
+  });
+  $$('#searchResults .result').forEach(x=>x.onclick=e=>{
+    if(e.target.closest('.searchQuick'))return;
+    selectLocation(+x.dataset.bi,+x.dataset.ch,+x.dataset.v);$('#searchPanel').classList.remove('show');
+  });
+}
+async function doSearch(){
+  const raw=$('#searchInput').value.trim();if(!raw)return;
+  const ref=parseReference(raw);
+  if(ref&&BOOK_META[ref.bi]&&ref.ch>=1&&ref.ch<=BOOK_META[ref.bi].chapters){
+    pushSearchHistory(raw);selectLocation(ref.bi,ref.ch,ref.v);return;
+  }
+  if(!bible.length){const ok=await installFullBible();if(!ok)return}
+
+  const started=performance.now();
+  const q=normalizeSearchText(raw),compact=q.replace(/\s+/g,'');
+  const tokens=q.split(/\s+/).filter(Boolean);
+  const cacheKey=q;
+  const cacheHit=searchCache.has(cacheKey);
+  let res=searchCache.get(cacheKey);
+
+  if(!res){
+    const rows=[];
+    for(const x of flat){
+      const phrase=x.norm.includes(q);
+      const compactMatch=compact.length>=2&&x.normCompact.includes(compact);
+      const tokenMatch=tokens.length&&tokens.every(t=>x.norm.includes(t));
+      if(!phrase&&!compactMatch&&!tokenMatch)continue;
+      const rank=phrase?0:(compactMatch?1:2);
+      rows.push({x,rank});
+      if(rows.length>1500)break;
+    }
+    rows.sort((a,b)=>a.rank-b.rank||a.x.bi-b.x.bi||a.x.ch-b.x.ch||a.x.v-b.x.v);
+    res=rows.slice(0,500).map(r=>r.x);
+    searchCache.set(cacheKey,res);
+    if(searchCache.size>40)searchCache.delete(searchCache.keys().next().value);
+  }
+
+  currentSearchRaw=raw;
+  currentSearchResults=res;
+  pushSearchHistory(raw);
+
+  const elapsed=performance.now()-started;
+  setActiveView('search');
+  $('#searchPanel').classList.add('show');$('#savedPanel').classList.remove('show');
+  $('#searchPerf').textContent=`${elapsed.toFixed(elapsed<10?1:0)}ms${cacheHit?' · 캐시':''}`;
+  renderSearchResults();
+}
+function randomVerse(){
+  if(!flat.length){installFullBible();return}
+  const r=flat[Math.floor(Math.random()*flat.length)];selectLocation(r.bi,r.ch,r.v);
+}
+
+async function importFile(file){
+  try{
+    const raw=JSON.parse(await file.text()),d=normalizeAny(raw),s=stats(d);
+    if(!valid(d))throw new Error(`구조 검증 실패: ${s.books}권 / ${s.chapters}장 / ${s.verses}절`);
+    bible=d;buildFlat();currentSource='직접 불러온 전체 본문';
+    try{await idbSet('bible',compactBible())}catch(e){console.warn(e)}
+    setReady(currentSource);renderReader();toast('31,102절 불러오기 완료');
+  }catch(e){alert('성경 JSON을 불러올 수 없습니다.\n'+e.message)}
+}
+function exportCompleteHTML(){
+  if(!valid(bible)){alert('66권 · 1,189장 · 31,102절 검증이 완료된 뒤 만들 수 있습니다.');return}
+  const data=JSON.stringify(compactBible()).replace(/<\/script/gi,'<\\/script');
+  const clone=document.documentElement.cloneNode(true);
+  const emb=clone.querySelector('#embeddedBible');emb.textContent=data;
+  clone.querySelector('#dataStat').textContent='완전 오프라인 내장본';
+  clone.querySelector('#dataStat').classList.add('ok');
+  clone.querySelector('#hero').classList.add('ready');
+  const out='<!doctype html>\n'+clone.outerHTML;
+  const blob=new Blob([out],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.3_COMPLETE_OFFLINE.html';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast('완전 오프라인 HTML 생성 완료');
+}
+function exportBookmarks(){
+  const snapshot=normalizeUserSnapshot().clean;
+  const payload={
+    schemaVersion:APP_SCHEMA,
+    appVersion:VERSION,
+    exportedAt:new Date().toISOString(),
+    manifest:backupManifest(snapshot),
+    uiPrefs:getUiPrefs(),
+    ...snapshot
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.3.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
+}
+async function importSavedLibrary(file){
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||typeof data!=='object'||Array.isArray(data))throw new Error('올바른 보관함 JSON 객체가 아닙니다.');
+    if(data.schemaVersion&&Number(data.schemaVersion)>APP_SCHEMA){
+      throw new Error(`이 백업은 더 새로운 스키마(${data.schemaVersion})입니다. 현재 앱 스키마는 ${APP_SCHEMA}입니다.`);
+    }
+
+    const incomingRaw={
+      bookmarks:data.bookmarks,
+      highlights:data.highlights,
+      highlightGroups:data.highlightGroups,
+      verseNotes:data.verseNotes,
+      customTags:data.customTags,
+      readingPlan:data.readingPlan,
+      readChapters:data.readChapters,
+      readingTime:data.readingTime,
+      reminderTime:data.reminderTime,
+      recentBooks:data.recentBooks,
+      scrollPositions:data.scrollPositions,
+      collections:data.collections,
+      collectionMap:data.collectionMap,
+      favoriteBooks:data.favoriteBooks,
+      favoriteChapters:data.favoriteChapters
+    };
+    const normalized=normalizeUserSnapshot(incomingRaw);
+    const mode=$('#restoreMode')?.value||'replace';
+
+    if(mode==='replace'){
+      if(!confirm(`현재 보관함 데이터를 백업 파일로 교체할까요?\n\n형광펜 ${Object.keys(normalized.clean.highlights).length}개 · 책갈피 ${normalized.clean.bookmarks.length}개`))return;
+      persistUserSnapshot(normalized.clean);
+    }else{
+      const current=normalizeUserSnapshot().clean;
+      persistUserSnapshot(mergeSnapshots(current,normalized.clean));
+    }
+
+    safeStorageSet('krv-schema-version',String(APP_SCHEMA));
+    applyImportedUiPrefs(data.uiPrefs);
+    applyPrefs();buildSearchBookFilter();renderSearchHistory();
+    savedTagFilter='all';savedScopeFilter='all';savedColorFilter='all';savedSearchQuery='';
+    restoreReminderTime();renderFavoriteBar();renderRecentBooks();renderCollectionFilter();
+    if(bible.length)renderReader();
+    if($('#savedPanel').classList.contains('show'))renderSaved();
+    renderHome();
+    const result=normalizeUserSnapshot().clean;
+    toast(`${mode==='merge'?'병합':'복원'} 완료 · 형광펜 ${Object.keys(result.highlights).length}개 · 책갈피 ${result.bookmarks.length}개`);
+    runSelfCheck(false);
+  }catch(e){alert('보관함을 복원할 수 없습니다.\n'+e.message)}
+}
+
+
+function setLineHeight(v,save=true){
+  const n=Math.max(1.5,Math.min(2.5,Number(v)||1.95));
+  document.documentElement.style.setProperty('--verse-line',String(n));
+  if($('#lineHeightRange'))$('#lineHeightRange').value=String(n);
+  if($('#lineHeightValue'))$('#lineHeightValue').textContent=n.toFixed(2);
+  if(save)localStorage.setItem('krv-line-height',String(n));
+}
+function setReaderWidth(v,save=true){
+  const n=Math.max(620,Math.min(1080,Math.round(Number(v)||1080)));
+  document.documentElement.style.setProperty('--reader-width',n+'px');
+  if($('#readerWidthRange'))$('#readerWidthRange').value=String(n);
+  if($('#readerWidthValue'))$('#readerWidthValue').textContent=n+'px';
+  if(save)localStorage.setItem('krv-reader-width',String(n));
+}
+function tabletPaneEnabled(){
+  const saved=localStorage.getItem('krv-tablet-pane');
+  if(saved==null)return window.innerWidth>=900;
+  return saved==='1';
+}
+function applyTabletPaneState(save=false,on=null){
+  const enabled=on==null?tabletPaneEnabled():!!on;
+  document.body.classList.toggle('tablet-pane-on',enabled);
+  const btn=$('#tabletPaneToggle');
+  if(btn){
+    btn.classList.toggle('soft',enabled);
+    btn.textContent=enabled?'태블릿 2분할 탐색 · 켜짐':'태블릿 2분할 탐색 · 꺼짐';
+  }
+  if(save)localStorage.setItem('krv-tablet-pane',enabled?'1':'0');
+  renderTabletPane(currentBook);
+}
+function renderTabletPane(selectedBook=currentBook){
+  if(!$('#tabletBookGrid'))return;
+  tabletSelectedBook=BOOK_META[selectedBook]?selectedBook:0;
+  tabletTestament=tabletSelectedBook<39?'old':'new';
+  $$('[data-tablet-testament]').forEach(x=>x.classList.toggle('active',x.dataset.tabletTestament===tabletTestament));
+  const start=tabletTestament==='old'?0:39,end=tabletTestament==='old'?39:66;
+  $('#tabletBookGrid').innerHTML=BOOK_META.slice(start,end).map((b,i)=>{
+    const bi=start+i;
+    return `<button class="tabletBookBtn ${bi===tabletSelectedBook?'active':''}" data-tablet-book="${bi}">${esc(b.name)}</button>`;
+  }).join('');
+  $$('[data-tablet-book]').forEach(x=>x.onclick=()=>renderTabletPane(+x.dataset.tabletBook));
+
+  const meta=BOOK_META[tabletSelectedBook];
+  $('#tabletChapterTitle').textContent=`${meta.name} · 장 선택`;
+  $('#tabletChapterGrid').innerHTML=Array.from({length:meta.chapters},(_,i)=>i+1).map(ch=>
+    `<button class="tabletChapterBtn ${tabletSelectedBook===currentBook&&ch===currentChapter?'active':''}" data-tablet-ch="${ch}">${ch}</button>`
+  ).join('');
+  $$('[data-tablet-ch]').forEach(x=>x.onclick=()=>selectLocation(tabletSelectedBook,+x.dataset.tabletCh));
+}
+function getUiPrefs(){
+  return{
+    theme:localStorage.getItem('krv-theme')||'light',
+    font:localStorage.getItem('krv-font')||'19',
+    lineHeight:localStorage.getItem('krv-line-height')||'1.95',
+    readerWidth:localStorage.getItem('krv-reader-width')||'1080',
+    tabletPane:localStorage.getItem('krv-tablet-pane'),
+    savedLayout:localStorage.getItem('krv-saved-layout')||'list',
+    searchHistory:getSearchHistory()
+  };
+}
+function applyImportedUiPrefs(p){
+  if(!p||typeof p!=='object')return;
+  if(['light','sepia','dark'].includes(p.theme))localStorage.setItem('krv-theme',p.theme);
+  if(Number(p.font)>=15&&Number(p.font)<=30)localStorage.setItem('krv-font',String(p.font));
+  if(Number(p.lineHeight)>=1.5&&Number(p.lineHeight)<=2.5)localStorage.setItem('krv-line-height',String(p.lineHeight));
+  if(Number(p.readerWidth)>=620&&Number(p.readerWidth)<=1080)localStorage.setItem('krv-reader-width',String(p.readerWidth));
+  if(p.tabletPane==='0'||p.tabletPane==='1')localStorage.setItem('krv-tablet-pane',p.tabletPane);
+  if(p.savedLayout==='compact'||p.savedLayout==='list')localStorage.setItem('krv-saved-layout',p.savedLayout);
+  if(Array.isArray(p.searchHistory))localStorage.setItem('krv-search-history-v1',JSON.stringify(p.searchHistory.slice(0,12)));
+}
+function applyPrefs(){
+  const theme=localStorage.getItem('krv-theme')||'light';
+  document.documentElement.dataset.theme=theme;
+  const f=localStorage.getItem('krv-font')||'19';
+  document.documentElement.style.setProperty('--verse',f+'px');
+  $('#fontRange').value=f;$('#fontValue').textContent=f+'px';
+  setLineHeight(localStorage.getItem('krv-line-height')||'1.95',false);
+  setReaderWidth(localStorage.getItem('krv-reader-width')||'1080',false);
+  loadSavedLayout();
+  applyTabletPaneState(false);
+}
+
+function isTypingTarget(el){
+  return !!el&&(el.matches?.('input,textarea,select,[contenteditable="true"]')||el.closest?.('input,textarea,select,[contenteditable="true"]'));
+}
+function openShortcutHelp(){
+  $('#shortcutScrim').classList.add('show');$('#shortcutModal').classList.add('show');
+  $('#shortcutModal').setAttribute('aria-hidden','false');
+}
+function closeShortcutHelp(){
+  $('#shortcutScrim').classList.remove('show');$('#shortcutModal').classList.remove('show');
+  $('#shortcutModal').setAttribute('aria-hidden','true');
+}
+function bindKeyboardShortcuts(){
+  document.addEventListener('keydown',e=>{
+    const typing=isTypingTarget(e.target);
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
+      e.preventDefault();openSearchView();return;
+    }
+    if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();prevChapter();return}
+    if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();nextChapter();return}
+    if(typing)return;
+    const k=e.key.toLowerCase();
+    if(k==='h'){e.preventDefault();showHome()}
+    else if(k==='b'){e.preventDefault();showSaved('highlights')}
+    else if(k==='f'){e.preventDefault();setFocusMode(!focusMode)}
+    else if(e.key==='?'){e.preventDefault();openShortcutHelp()}
+  });
+}
+function bind(){
+  $('#menuBtn').onclick=openDrawer;$('#drawerClose').onclick=closeDrawer;$('#scrim').onclick=()=>{closeDrawer();closeMarkerPalette()};
+  $$('[data-mobile-nav]').forEach(x=>x.onclick=()=>{
+    const v=x.dataset.mobileNav;
+    if(v==='home')showHome();
+    else if(v==='bible')openDrawer();
+    else if(v==='search')openSearchView();
+    else if(v==='saved')showSaved('highlights');
+    else if(v==='settings')openSettingsView();
+  });
+  $('#dockPrev').onclick=()=>{saveScrollPositionNow();prevChapter()};
+  $('#dockNext').onclick=()=>{saveScrollPositionNow();nextChapter()};
+  $('#backTopBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  window.addEventListener('scroll',()=>{updateReadingProgress();scheduleScrollSave()},{passive:true});
+  $('#drawerHome').onclick=showHome;$('#drawerContinue').onclick=()=>{closeDrawer();selectLocation(currentBook,currentChapter)};
+  $('#drawerBack').onclick=showBookView;
+  $$('[data-testament]').forEach(x=>x.onclick=()=>{testament=x.dataset.testament;renderBookGrid()});
+  $('#recentBtn').onclick=()=>{selectLocation(currentBook,currentChapter);closeDrawer()};
+  $('#drawerSaved').onclick=()=>showSaved('highlights');$('#drawerRandom').onclick=()=>{closeDrawer();randomVerse()};
+  $('#savedBtn').onclick=()=>showSaved('highlights');$('#randomBtn').onclick=randomVerse;
+  $('#planSelect').onchange=e=>changePlanDays(e.target.value);
+  $('#planStartDate').onchange=e=>changePlanStartDate(e.target.value);
+  $('#timerStartBtn').onclick=startReadingTimer;
+  $('#timerPauseBtn').onclick=pauseReadingTimer;
+  $('#timerResetBtn').onclick=resetTodayTimer;
+  $('#downloadIcsBtn').onclick=buildReadingReminderIcs;
+  $('#reminderTime').onchange=e=>localStorage.setItem('krv-reminder-time',e.target.value);
+  $('#chartPrevMonth').onclick=()=>{chartMonthOffset--;renderTimeChart()};
+  $('#chartNextMonth').onclick=()=>{if(chartMonthOffset<0){chartMonthOffset++;renderTimeChart()}};
+  $('#rebalancePlanBtn').onclick=rebalanceReadingPlan;
+  $$('[data-calendar-mode]').forEach(x=>x.onclick=()=>{calendarMode=x.dataset.calendarMode;renderReadingCalendar()});
+  $('#resetPlanBtn').onclick=resetReadingPlan;
+  $('#continueReadingBtn').onclick=()=>{hideHome();selectLocation(currentBook,currentChapter)};
+  $('#openSavedHomeBtn').onclick=()=>showSaved('highlights');
+  $('#dailyGoBtn').onclick=()=>{if(currentDailyVerse){hideHome();selectLocation(currentDailyVerse.bi,currentDailyVerse.ch,currentDailyVerse.v)}};
+  $('#dailyNewBtn').onclick=()=>{pickDailyVerse(true);renderHome()};
+  $('#focusExitBtn').onclick=()=>setFocusMode(false);
+  $('#dailySaveBtn').onclick=()=>{
+    if(!currentDailyVerse)return;
+    const key=`${currentDailyVerse.bi}-${currentDailyVerse.ch}-${currentDailyVerse.v}`;
+    let a=getBookmarks();if(!a.includes(key))a.unshift(key);
+    localStorage.setItem('krv-bookmarks',JSON.stringify(a));toast('오늘의 말씀을 책갈피에 저장했습니다');
+  };
+  $('#closeSaved').onclick=closeSaved;
+  $$('[data-saved-tab]').forEach(x=>x.onclick=()=>{savedTab=x.dataset.savedTab;renderSaved()});
+  $$('[data-hl-filter]').forEach(x=>x.onclick=()=>{savedColorFilter=x.dataset.hlFilter;renderSaved()});
+  $$('[data-saved-scope]').forEach(x=>x.onclick=()=>{savedScopeFilter=x.dataset.savedScope;renderSaved()});
+  $('#savedSort').onchange=e=>{savedSortMode=e.target.value;renderSaved()};
+  $('#savedSearch').oninput=e=>{savedSearchQuery=e.target.value;renderSaved()};
+  $('#markerClose').onclick=closeMarkerPalette;
+  $$('.markerColor').forEach(x=>x.onclick=()=>{const key=$('#markerPalette').dataset.key;if(key)applyHighlight(key,x.dataset.color)});
+  $('#multiCancel').onclick=()=>{exitMultiSelect();renderReader()};
+  $$('[data-multi-color]').forEach(x=>x.onclick=()=>applyMultiHighlight(x.dataset.multiColor));
+  $('#memoClose').onclick=closeMemoEditor;$('#memoScrim').onclick=closeMemoEditor;
+  $('#tagManagerClose').onclick=closeTagManager;$('#tagManagerScrim').onclick=closeTagManager;
+  $('#saveMemoBtn').onclick=saveMemoEditor;$('#deleteMemoBtn').onclick=deleteMemoOnly;
+  $('#addCustomTag').onclick=addCustomTag;
+  $('#customTagInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCustomTag()}});
+  $('#settingsBtn').onclick=()=>{
+    const p=$('#settingsPanel');
+    if(p.classList.contains('show')){p.classList.remove('show');setActiveView('reader')}
+    else openSettingsView();
+  };
+  $('#selfCheckBtn').onclick=()=>runSelfCheck(true);
+  $('#diagnosticsRefreshBtn').onclick=()=>runSelfCheck(true);
+  $('#repairDataBtn').onclick=()=>{repairUserData(true);runSelfCheck(true)};
+  $('#clearBibleCacheBtn').onclick=clearBibleCache;
+  $('#searchBtn').onclick=doSearch;$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});
+  $$('[data-search-testament]').forEach(x=>x.onclick=()=>{
+    searchTestamentFilter=x.dataset.searchTestament;
+    if(searchBookFilter!=='all'){
+      const bi=Number(searchBookFilter);
+      if((searchTestamentFilter==='old'&&bi>=39)||(searchTestamentFilter==='new'&&bi<39))searchBookFilter='all';
+    }
+    renderSearchResults();
+  });
+  $('#searchBookFilter').onchange=e=>{
+    searchBookFilter=e.target.value;
+    if(searchBookFilter!=='all')searchTestamentFilter=Number(searchBookFilter)<39?'old':'new';
+    renderSearchResults();
+  };
+  $('#clearSearchHistory').onclick=clearSearchHistory;
+  $$('[data-saved-layout]').forEach(x=>x.onclick=()=>setSavedLayout(x.dataset.savedLayout));
+  $('#collectionFilter').onchange=e=>{collectionFilter=e.target.value;renderSaved()};
+  $('#manageCollectionsBtn').onclick=openCollectionManager;
+  $('#collectionClose').onclick=closeCollectionManager;$('#collectionScrim').onclick=closeCollectionManager;
+  $('#createCollectionBtn').onclick=createCollection;
+  $('#collectionNameInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();createCollection()}});
+  $('#exportMarkdownBtn').onclick=exportSavedMarkdown;
+  $('#exportTextBtn').onclick=exportSavedText;
+  $('#shortcutHelpBtn').onclick=openShortcutHelp;
+  $('#shortcutClose').onclick=closeShortcutHelp;$('#shortcutScrim').onclick=closeShortcutHelp;
+  $('#lineHeightRange').oninput=e=>setLineHeight(e.target.value,true);
+  $('#readerWidthRange').oninput=e=>setReaderWidth(e.target.value,true);
+  $('#tabletPaneToggle').onclick=()=>applyTabletPaneState(true,!document.body.classList.contains('tablet-pane-on'));
+  $$('[data-tablet-testament]').forEach(x=>x.onclick=()=>{
+    tabletTestament=x.dataset.tabletTestament;
+    renderTabletPane(tabletTestament==='old'?0:39);
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMarkerPalette();closeDrawer();closeSaved();closeMemoEditor();closeTagManager();closeCollectionManager();closeShortcutHelp();if(multiSelectMode){exitMultiSelect();renderReader()}}});
+  $('#closeSearch').onclick=()=>{$('#searchPanel').classList.remove('show');setActiveView('reader')};
+  $$('[data-theme-btn]').forEach(x=>x.onclick=()=>{const t=x.dataset.themeBtn;document.documentElement.dataset.theme=t;localStorage.setItem('krv-theme',t)});
+  $('#fontRange').oninput=e=>{const v=e.target.value;document.documentElement.style.setProperty('--verse',v+'px');$('#fontValue').textContent=v+'px';localStorage.setItem('krv-font',v)};
+  $('#installBtn').onclick=()=>installFullBible(true);
+  $('#importBtn').onclick=()=>$('#fileInput').click();
+  $('#fileInput').onchange=e=>{const f=e.target.files?.[0];if(f)importFile(f);e.target.value=''};
+  $('#exportBtn').onclick=exportCompleteHTML;$('#exportBookmarksBtn').onclick=exportBookmarks;
+  $('#importSavedBtn').onclick=()=>$('#savedImportInput').click();
+  $('#savedImportInput').onchange=e=>{const f=e.target.files?.[0];if(f)importSavedLibrary(f);e.target.value=''};
+}
+async function start(){
+  runDataMigrations();
+  applyPrefs();restoreLocation();restoreFocusMode();buildSelectors();buildSearchBookFilter();updateRecent();bind();bindKeyboardShortcuts();bindSwipeNavigation();renderBookGrid();renderFavoriteBar();renderRecentBooks();renderSearchHistory();renderTabletPane(currentBook);updateActiveMobileNav('home');
+  restoreReminderTime();
+  renderTimer();
+  if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=()=>{}}
+  window.addEventListener('beforeunload',()=>{commitRunningTimer();stopSpeech()});
+  try{await openDB()}catch(e){console.warn('IndexedDB',e)}
+  if(await loadEmbedded()){repairUserData(false);showHome();runSelfCheck(false);return}
+  if(await loadCache()){repairUserData(false);showHome();runSelfCheck(false);return}
+  const ok=await installFullBible();
+  if(ok){repairUserData(false);showHome();runSelfCheck(false)}
+}
+start();
+})();
+</script>
+</body>
+</html>
