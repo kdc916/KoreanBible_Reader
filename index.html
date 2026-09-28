@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="krv-build-mode" content="source-template">
+<meta name="krv-build-mode" content="static-same-origin-json">
 <meta name="theme-color" content="#f4efe5">
 <title>한글 성경 · 개역한글 1961</title>
 <style>
@@ -921,7 +921,7 @@ body.focus-mode .focusExit{display:block}
   </aside>
   <section class="hero" id="hero">
     <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.6는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.7는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1124,7 +1124,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.6 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.7 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1408,7 +1408,7 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.6';
+const VERSION='0.3.7';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
 const OLD_COUNT=39;
@@ -1553,12 +1553,15 @@ function normalizeAny(raw){
   return normalizeStructured(raw);
 }
 function stats(d){
-  let chapters=0,verses=0;
+  let chapters=0,verses=0,readableVerses=0;
   d.forEach(b=>{
     chapters+=b.chapters.length;
-    b.chapters.forEach(c=>verses+=c.verses.filter(v=>v.text&&v.text!=='(없음)').length);
+    b.chapters.forEach(c=>{
+      verses+=c.verses.length;
+      readableVerses+=c.verses.filter(v=>v.text&&v.text!=='(없음)').length;
+    });
   });
-  return{books:d.length,chapters,verses};
+  return{books:d.length,chapters,verses,readableVerses};
 }
 function valid(d){
   const s=stats(d);
@@ -1848,6 +1851,36 @@ async function quickBootCurrentBook(){
   backgroundLoadFullBible();
   return true;
 }
+
+async function loadStaticRepoBible(){
+  try{
+    $('#dataStat').textContent='같은 저장소 성경 JSON 불러오는 중…';
+    $('#dataStat').classList.remove('bad');
+
+    const raw=await fetchJSONFast('./bible_1961_krv.json',45000,'force-cache');
+    const d=normalizeAny(raw);
+    const s=stats(d);
+
+    if(!valid(d)){
+      throw new Error(`구조 불일치 · ${s.books}권 / ${s.chapters}장 / ${s.verses}절`);
+    }
+
+    bible=d;
+    partialBibleMode=false;
+    buildFlat();
+    currentSource='GitHub Pages 같은 저장소 JSON';
+
+    try{await idbSet('bible',compactBible())}
+    catch(e){console.warn('full bible cache save',e)}
+
+    setReady('GitHub Pages 같은 저장소 JSON');
+    return true;
+  }catch(e){
+    console.warn('static repo bible load failed',e);
+    fullBibleFailure=e.message;
+    return false;
+  }
+}
 async function loadEmbedded(){
   try{
     const txt=$('#embeddedBible').textContent.trim();
@@ -1951,21 +1984,23 @@ function compactBible(){
 function showInstallCard(err=''){
   $('#reader').innerHTML=`
     <div class="installCard">
-      <h2>성경 본문 연결이 필요합니다</h2>
-      <p>v0.3.6부터는 페이지를 열자마자 몇 분씩 자동 복구하지 않습니다.<br>
-      GitHub Pages에 <code>bible_1961_krv.json</code> 또는 <code>data/*.json</code>이 함께 있으면 같은 저장소에서 빠르게 읽습니다.</p>
+      <h2>성경 JSON 파일이 필요합니다</h2>
+      <p>v0.3.7은 GitHub Actions를 사용하지 않습니다.<br>
+      저장소 루트에서 <code>index.html</code>과 <code>bible_1961_krv.json</code> 두 파일을 같은 위치에 두면 됩니다.</p>
       <div class="installActions">
-        <button class="btn primary" id="cardInstall">전체 본문 빠르게 연결</button>
-        <button class="btn" id="cardSlow">느린 호환 복구</button>
-        <button class="btn" id="cardImport">JSON 파일 선택</button>
+        <button class="btn primary" id="cardRetryStatic">JSON 다시 확인</button>
+        <button class="btn" id="cardImport">내 기기 JSON 선택</button>
       </div>
       <div class="small">
-        권장: GitHub Actions 빌드로 31,102절을 <b>index.html 안에 미리 내장</b>하면 실행 시 복구 과정 자체가 없어집니다.
+        GitHub Pages는 <b>Deploy from a branch → main / (root)</b>로 설정하세요.
+        정상 배포에서는 CORS·프록시·JSONP·Actions 빌드가 필요 없습니다.
       </div>
       ${err?`<div class="notice error"><small>${esc(err)}</small></div>`:''}
     </div>`;
-  $('#cardInstall').onclick=()=>installFullBible(true,false);
-  $('#cardSlow').onclick=()=>installFullBible(true,true);
+  $('#cardRetryStatic').onclick=async()=>{
+    if(await loadStaticRepoBible()){showHome();runSelfCheck(false)}
+    else toast('bible_1961_krv.json을 찾지 못했습니다');
+  };
   $('#cardImport').onclick=()=>$('#fileInput').click();
 }
 
@@ -3095,7 +3130,7 @@ async function runSelfCheck(showPanel=true){
   if(bible.length){
     const s=stats(bible);
     checks.push(diagItem(valid(bible)?'ok':'bad','본문 무결성',`${s.books}권 · ${s.chapters.toLocaleString()}장 · ${s.verses.toLocaleString()}절`));
-    checks.push(diagItem(flat.length===EXPECTED.verses?'ok':'warn','검색 인덱스',`${flat.length.toLocaleString()}절 인덱싱`));
+    checks.push(diagItem(flat.length===s.readableVerses?'ok':'warn','검색 인덱스',`${flat.length.toLocaleString()}절 인덱싱 · 구조 ${s.verses.toLocaleString()}절`));
   }else{
     checks.push(diagItem('warn','본문 상태','현재 메모리에 전체 본문이 로드되지 않음'));
     checks.push(diagItem('warn','검색 인덱스','본문 로드 후 생성'));
@@ -3812,9 +3847,9 @@ async function doSearch(){
     pushSearchHistory(raw);selectLocation(ref.bi,ref.ch,ref.v);return;
   }
   if(!valid(bible)){
-    const ok=await installFullBible(false,false);
+    const ok=await loadStaticRepoBible();
     if(!ok){
-      alert('전체 검색에는 66권 전체 본문이 필요합니다.\nGitHub Pages 빌드에서 본문을 미리 내장하면 즉시 검색할 수 있습니다.');
+      alert('전체 검색에는 저장소 루트의 bible_1961_krv.json이 필요합니다.');
       return;
     }
   }
@@ -3877,7 +3912,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.6_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.7_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -3892,7 +3927,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.6.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.7.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
@@ -4159,7 +4194,7 @@ function bind(){
   $('#closeSearch').onclick=()=>{$('#searchPanel').classList.remove('show');setActiveView('reader')};
   $$('[data-theme-btn]').forEach(x=>x.onclick=()=>{const t=x.dataset.themeBtn;document.documentElement.dataset.theme=t;localStorage.setItem('krv-theme',t)});
   $('#fontRange').oninput=e=>{const v=e.target.value;document.documentElement.style.setProperty('--verse',v+'px');$('#fontValue').textContent=v+'px';localStorage.setItem('krv-font',v)};
-  $('#installBtn').onclick=()=>installFullBible(true,false);
+  $('#installBtn').onclick=async()=>{if(await loadStaticRepoBible())showHome();else showInstallCard(fullBibleFailure)};
   $('#importBtn').onclick=()=>$('#fileInput').click();
   $('#fileInput').onchange=e=>{const f=e.target.files?.[0];if(f)importFile(f);e.target.value=''};
   $('#exportBtn').onclick=exportCompleteHTML;$('#exportBookmarksBtn').onclick=exportBookmarks;
@@ -4173,25 +4208,28 @@ async function start(){
   renderTimer();
   if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=()=>{}}
   window.addEventListener('beforeunload',()=>{commitRunningTimer();stopSpeech()});
+
   try{await openDB()}catch(e){console.warn('IndexedDB',e)}
 
-  // 1) Build-time embedded full Bible: fastest and preferred for GitHub Pages.
-  if(await loadEmbedded()){repairUserData(false);showHome();runSelfCheck(false);return}
+  // 1) Optional fully embedded copy.
+  if(await loadEmbedded()){
+    repairUserData(false);showHome();runSelfCheck(false);return;
+  }
 
-  // 2) Previous full offline cache.
-  if(await loadCache()){repairUserData(false);showHome();runSelfCheck(false);return}
+  // 2) Previous full offline cache — fastest on repeat visits.
+  if(await loadCache()){
+    repairUserData(false);showHome();runSelfCheck(false);return;
+  }
 
-  // 3) Fast boot: load only the last/current book from same-origin data/*.json.
-  //    The user can read immediately while the full local JSON is checked in background.
-  const quick=await quickBootCurrentBook();
-  if(quick){repairUserData(false);runSelfCheck(false);return}
+  // 3) v0.3.7 default: one same-origin JSON beside index.html.
+  // No GitHub Actions, no CORS proxy, no JSONP, no 66-book recovery loop.
+  if(await loadStaticRepoBible()){
+    repairUserData(false);showHome();runSelfCheck(false);return;
+  }
 
-  // 4) No endless auto recovery. Check same-origin full JSON in background,
-  //    otherwise show explicit recovery choices.
-  showInstallCard('같은 저장소의 data/*.json 또는 bible_1961_krv.json을 찾지 못했습니다.');
-  backgroundLoadFullBible().then(ok=>{
-    if(ok&&activeView==='reader')renderReader();
-  });
+  showInstallCard(
+    '저장소 루트에 bible_1961_krv.json 파일이 없습니다. index.html과 같은 위치에 업로드해 주세요.'
+  );
 }
 start();
 })();
