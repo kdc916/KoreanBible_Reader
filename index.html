@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="krv-build-mode" content="static-same-origin-json">
 <meta name="theme-color" content="#f4efe5">
-<title>한글 성경 · 개역한글 1961</title>
+<title>한글 성경</title>
 <style>
 :root{
   --bg:#f4efe5;--panel:#fffdf8;--panel2:#ece4d6;--text:#25221d;--muted:#777067;
@@ -921,8 +921,8 @@ body.focus-mode .focusExit{display:block}
     <div class="tabletChapterGrid" id="tabletChapterGrid"></div>
   </aside>
   <section class="hero" id="hero">
-    <h1>성경전서 개역한글판</h1>
-    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.10는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
+    <h1 id="translationHeroTitle">성경전서 개역한글판</h1>
+    <p class="intro">검색하지 않아도 됩니다. 왼쪽 <b>☰ → 구약/신약 → 성경책 → 장</b>으로 바로 이동합니다. v0.3.11는 검색·보관함·본문 읽기 UI를 정리한 사용성 패치입니다.</p>
     <div class="chips">
       <span class="chip" id="bookStat">66권 구조 ✓</span>
       <span class="chip" id="chapterStat">1,189장 구조 ✓</span>
@@ -1081,7 +1081,7 @@ body.focus-mode .focusExit{display:block}
   </section>
 
   <section class="panel" id="settingsPanel">
-    <h3>읽기 · 오프라인 설정</h3>
+    <h3>읽기 · 판본 · 오프라인 설정</h3>
     <div class="settingRow">
       <button class="btn" data-theme-btn="light">밝게</button>
       <button class="btn" data-theme-btn="sepia">세피아</button>
@@ -1106,9 +1106,30 @@ body.focus-mode .focusExit{display:block}
       <button class="btn" id="tabletPaneToggle">태블릿 2분할 탐색</button>
       <button class="btn" id="shortcutHelpBtn">키보드 단축키</button>
     </div>
+
+    <div class="stabilityBox">
+      <div class="stabilityHead">
+        <div>
+          <div class="stabilityTitle">성경 판본</div>
+          <span class="schemaBadge" id="translationCurrent">현재 · 개역한글 1961</span>
+        </div>
+      </div>
+      <div class="settingRow">
+        <button class="btn primary" id="importModernBibleBtn">개역개정 개인용 JSON 가져오기</button>
+        <input id="modernBibleInput" type="file" accept=".json,application/json" hidden>
+        <button class="btn" id="usePersonalBibleBtn">개인 판본 사용</button>
+        <button class="btn" id="usePublicBibleBtn">개역한글 1961 사용</button>
+        <button class="btn" id="removePersonalBibleBtn">개인 판본 삭제</button>
+      </div>
+      <div class="small">
+        개역개정 등 저작권이 있는 현대 판본은 GitHub에 업로드하지 않습니다.
+        합법적으로 보유한 JSON을 가져오면 <b>이 브라우저의 IndexedDB에만 저장</b>되며 이후 자동으로 열립니다.
+      </div>
+    </div>
+
     <div class="settingRow">
-      <button class="btn primary" id="installBtn">전체 성경 자동 복구</button>
-      <button class="btn" id="importBtn">JSON 직접 불러오기</button>
+      <button class="btn primary" id="installBtn">개역한글 1961 다시 연결</button>
+      <button class="btn" id="importBtn">개역한글 JSON 직접 불러오기</button>
       <input id="fileInput" type="file" accept=".json,application/json" hidden>
     </div>
     <div class="settingRow">
@@ -1125,7 +1146,7 @@ body.focus-mode .focusExit{display:block}
     <div class="stabilityBox">
       <div class="stabilityHead">
         <div>
-          <div class="stabilityTitle">v0.3.10 안정성 도구</div>
+          <div class="stabilityTitle">v0.3.11 안정성 도구</div>
           <span class="schemaBadge">Storage Schema 4</span>
         </div>
         <button class="btn primary" id="selfCheckBtn">앱 전체 점검</button>
@@ -1232,7 +1253,7 @@ body.focus-mode .focusExit{display:block}
 </main>
 
 <footer class="footer">
-  성경전서 개역한글판 © 대한성서공회 1961 · 본문을 임의 현대화하거나 개작하지 않습니다.<br>
+  <span id="translationFooter">성경전서 개역한글판 © 대한성서공회 1961 · 본문을 임의 현대화하거나 개작하지 않습니다.</span><br>
   구조 검증 기준: 66권 · 1,189장 · 31,102절.
 </footer>
 
@@ -1409,11 +1430,13 @@ body.focus-mode .focusExit{display:block}
 (() => {
 'use strict';
 
-const VERSION='0.3.10';
+const VERSION='0.3.11';
 const APP_SCHEMA=4;
 const EXPECTED={books:66,chapters:1189,verses:31102};
 const BIBLE_CACHE_KEY='bible-canonical-v1';
 const BIBLE_CACHE_VERSION='0.3.9-canonical-v1';
+const PERSONAL_BIBLE_KEY='bible-personal-v1';
+const PERSONAL_META_KEY='krv-personal-bible-meta-v1';
 const OLD_COUNT=39;
 
 const BOOK_META=[
@@ -1781,6 +1804,147 @@ function stats(d){
 function valid(d){
   return canonicalValidationReport(d).ok;
 }
+
+function personalBibleValidationReport(d){
+  const errors=[];
+  const s=stats(d);
+  if(s.books!==EXPECTED.books)errors.push(`권 수 ${s.books}/${EXPECTED.books}`);
+  if(s.chapters!==EXPECTED.chapters)errors.push(`장 수 ${s.chapters}/${EXPECTED.chapters}`);
+  if(s.verses!==EXPECTED.verses)errors.push(`절 위치 ${s.verses}/${EXPECTED.verses}`);
+
+  if(Array.isArray(d)&&d.length===66){
+    d.forEach((book,i)=>{
+      const meta=BOOK_META[i];
+      if(book?.title!==meta.name)errors.push(`${i+1}번째 책 이름: ${book?.title||'없음'} ≠ ${meta.name}`);
+      if(book?.chapters?.length!==meta.chapters)errors.push(`${meta.name} 장 수: ${book?.chapters?.length||0}/${meta.chapters}`);
+    });
+  }
+  return{ok:errors.length===0,errors,stats:s};
+}
+function getPersonalBibleMeta(){
+  try{
+    const x=JSON.parse(localStorage.getItem(PERSONAL_META_KEY)||'null');
+    return x&&typeof x==='object'?x:null;
+  }catch(_){return null}
+}
+function savePersonalBibleMeta(meta){
+  if(meta)localStorage.setItem(PERSONAL_META_KEY,JSON.stringify(meta));
+  else localStorage.removeItem(PERSONAL_META_KEY);
+}
+function renderTranslationUI(){
+  const meta=getPersonalBibleMeta();
+  const personalActive=!!meta?.active;
+  const personalName=meta?.name||'개인 판본';
+  const displayName=personalActive?personalName:'개역한글 1961';
+
+  const current=$('#translationCurrent');
+  if(current)current.textContent=`현재 · ${displayName}`;
+
+  const personalBtn=$('#usePersonalBibleBtn');
+  if(personalBtn){
+    personalBtn.disabled=!meta;
+    personalBtn.textContent=meta?`${personalName} 사용`:'개인 판본 사용';
+    personalBtn.classList.toggle('soft',personalActive);
+  }
+  const publicBtn=$('#usePublicBibleBtn');
+  if(publicBtn)publicBtn.classList.toggle('soft',!personalActive);
+  const removeBtn=$('#removePersonalBibleBtn');
+  if(removeBtn)removeBtn.disabled=!meta;
+
+  const heroTitle=$('#translationHeroTitle');
+  if(heroTitle)heroTitle.textContent=personalActive?`성경전서 ${personalName}`:'성경전서 개역한글판';
+
+  const footer=$('#translationFooter');
+  if(footer){
+    footer.textContent=personalActive
+      ?`${personalName} · 개인 기기에서 불러온 판본 · 본문은 이 브라우저에만 저장됩니다.`
+      :'성경전서 개역한글판 © 대한성서공회 1961 · 본문을 임의 현대화하거나 개작하지 않습니다.';
+  }
+  document.title=`한글 성경 · ${displayName}`;
+}
+async function loadPersonalBible(force=false){
+  const meta=getPersonalBibleMeta();
+  if(!meta||(!meta.active&&!force))return false;
+  try{
+    const raw=await idbGet(PERSONAL_BIBLE_KEY);
+    if(!raw){
+      if(meta.active){meta.active=false;savePersonalBibleMeta(meta);renderTranslationUI()}
+      return false;
+    }
+    const d=normalizeAny(raw);
+    const report=personalBibleValidationReport(d);
+    if(!report.ok)throw new Error(report.errors.slice(0,6).join(' / '));
+
+    bible=d;
+    buildFlat();
+    currentSource=`${meta.name||'개인 판본'} · 개인 기기 저장`;
+    setReady(currentSource);
+    renderTranslationUI();
+    return true;
+  }catch(e){
+    console.warn('personal Bible load failed',e);
+    return false;
+  }
+}
+async function importPersonalBible(file){
+  try{
+    const raw=JSON.parse(await file.text());
+    const d=normalizeAny(raw);
+    const report=personalBibleValidationReport(d);
+    if(!report.ok){
+      throw new Error(`66권 구조 검증 실패: ${report.errors.slice(0,6).join(' / ')}`);
+    }
+
+    let name=(prompt('판본 이름을 입력하세요.',getPersonalBibleMeta()?.name||'개역개정')||'').trim();
+    if(!name)name='개역개정';
+
+    await idbSet(PERSONAL_BIBLE_KEY,d);
+    savePersonalBibleMeta({name,active:true,importedAt:Date.now()});
+
+    bible=d;
+    buildFlat();
+    currentSource=`${name} · 개인 기기 저장`;
+    setReady(currentSource);
+    renderTranslationUI();
+    renderReader();
+    toast(`${name} 개인용 판본을 불러왔습니다`);
+  }catch(e){
+    alert('개인용 성경 JSON을 불러올 수 없습니다.\n'+e.message);
+  }
+}
+async function activatePersonalBible(){
+  const meta=getPersonalBibleMeta();
+  if(!meta){alert('먼저 개인용 성경 JSON을 가져와 주세요.');return}
+  meta.active=true;savePersonalBibleMeta(meta);
+  if(await loadPersonalBible(true)){
+    showHome();runSelfCheck(false);toast(`${meta.name} 판본으로 전환했습니다`);
+  }else{
+    meta.active=false;savePersonalBibleMeta(meta);renderTranslationUI();
+    alert('저장된 개인 판본을 열 수 없습니다. 다시 가져와 주세요.');
+  }
+}
+async function activatePublicBible(){
+  const meta=getPersonalBibleMeta();
+  if(meta){meta.active=false;savePersonalBibleMeta(meta)}
+  bible=[];flat=[];currentDailyVerse=null;
+  renderTranslationUI();
+
+  if(await loadEmbedded()||await loadCache()||await loadStaticRepoBible()){
+    showHome();runSelfCheck(false);toast('개역한글 1961 판본으로 전환했습니다');return;
+  }
+  showInstallCard(fullBibleFailure||'개역한글 1961 본문을 불러오지 못했습니다.');
+}
+async function removePersonalBible(){
+  const meta=getPersonalBibleMeta();
+  if(!meta)return;
+  if(!confirm(`${meta.name||'개인 판본'} 데이터를 이 기기에서 삭제할까요?\n형광펜·메모·통독 기록은 삭제하지 않습니다.`))return;
+  const wasActive=!!meta.active;
+  try{await idbDelete(PERSONAL_BIBLE_KEY)}catch(e){console.warn(e)}
+  savePersonalBibleMeta(null);
+  renderTranslationUI();
+  if(wasActive)await activatePublicBible();
+  toast('개인 판본 데이터를 삭제했습니다');
+}
 function normalizeSearchText(s){
   return String(s??'').toLowerCase().normalize('NFC').replace(/[“”‘’"'`~!@#$%^&*()_+=\[\]{}\\|;,.<>/?：·…—–-]+/g,' ').replace(/\s+/g,' ').trim();
 }
@@ -1803,6 +1967,7 @@ function setReady(source){
   $('#verseStat').textContent=`${s.verses.toLocaleString()}절 ✓`;$('#verseStat').classList.add('ok');
   $('#dataStat').textContent=source;$('#dataStat').classList.add('ok');$('#dataStat').classList.remove('bad');
   $('#hero').classList.add('ready');
+  renderTranslationUI();
   if(flat.length&&!currentDailyVerse)pickDailyVerse(false);
 }
 function setBad(msg){
@@ -2312,8 +2477,8 @@ function showInstallCard(err=''){
   $('#reader').innerHTML=`
     <div class="installCard">
       <h2>성경 JSON 연결을 확인해 주세요</h2>
-      <p>v0.3.10는 <b>66권 책 식별자·정규 순서·장 수·대표 구절</b>까지 검증합니다.<br>
-      v0.3.10부터는 실제 오류 원인을 아래에 표시합니다.</p>
+      <p>v0.3.11는 <b>66권 책 식별자·정규 순서·장 수·대표 구절</b>까지 검증합니다.<br>
+      v0.3.11부터는 실제 오류 원인을 아래에 표시합니다.</p>
       <div class="installActions">
         <button class="btn primary" id="cardRetryStatic">캐시 무시하고 다시 연결</button>
         <button class="btn" id="cardOpenJson">JSON 주소 직접 열기</button>
@@ -4289,9 +4454,11 @@ async function importFile(file){
     if(!report.ok){
       throw new Error(`정규 매핑 검증 실패: ${report.errors.slice(0,6).join(' / ')}`);
     }
+    const meta=getPersonalBibleMeta();
+    if(meta){meta.active=false;savePersonalBibleMeta(meta)}
     bible=d;
     buildFlat();
-    currentSource='직접 불러온 검증된 전체 본문';
+    currentSource='직접 불러온 검증된 개역한글 전체 본문';
     try{await idbSet(BIBLE_CACHE_KEY,compactBible())}catch(e){console.warn(e)}
     localStorage.setItem('krv-bible-cache-version',BIBLE_CACHE_VERSION);
     setReady(currentSource);
@@ -4311,7 +4478,7 @@ function exportCompleteHTML(){
   clone.querySelector('#hero').classList.add('ready');
   const out='<!doctype html>\n'+clone.outerHTML;
   const blob=new Blob([out],{type:'text/html;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.10_COMPLETE_OFFLINE.html';
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_KRV_1961_v0.3.11_COMPLETE_OFFLINE.html';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   toast('완전 오프라인 HTML 생성 완료');
 }
@@ -4326,7 +4493,7 @@ function exportBookmarks(){
     ...snapshot
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.10.json';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='KoreanBible_saved_library_v0.3.11.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('검증 정보가 포함된 보관함 백업을 저장했습니다');
 }
@@ -4596,6 +4763,12 @@ function bind(){
   $('#installBtn').onclick=async()=>{if(await loadStaticRepoBible())showHome();else showInstallCard(fullBibleFailure)};
   $('#importBtn').onclick=()=>$('#fileInput').click();
   $('#fileInput').onchange=e=>{const f=e.target.files?.[0];if(f)importFile(f);e.target.value=''};
+
+  $('#importModernBibleBtn').onclick=()=>$('#modernBibleInput').click();
+  $('#modernBibleInput').onchange=e=>{const f=e.target.files?.[0];if(f)importPersonalBible(f);e.target.value=''};
+  $('#usePersonalBibleBtn').onclick=activatePersonalBible;
+  $('#usePublicBibleBtn').onclick=activatePublicBible;
+  $('#removePersonalBibleBtn').onclick=removePersonalBible;
   $('#exportBtn').onclick=exportCompleteHTML;$('#exportBookmarksBtn').onclick=exportBookmarks;
   $('#importSavedBtn').onclick=()=>$('#savedImportInput').click();
   $('#savedImportInput').onchange=e=>{const f=e.target.files?.[0];if(f)importSavedLibrary(f);e.target.value=''};
@@ -4613,6 +4786,13 @@ async function start(){
     await ensureCanonicalBibleCache();
   }catch(e){console.warn('IndexedDB',e)}
 
+  renderTranslationUI();
+
+  // 0) Personal modern translation stays only in this browser and has priority when active.
+  if(getPersonalBibleMeta()?.active && await loadPersonalBible()){
+    repairUserData(false);showHome();runSelfCheck(false);return;
+  }
+
   // 1) Optional fully embedded copy.
   if(await loadEmbedded()){
     repairUserData(false);showHome();runSelfCheck(false);return;
@@ -4623,7 +4803,7 @@ async function start(){
     repairUserData(false);showHome();runSelfCheck(false);return;
   }
 
-  // 3) v0.3.10 default: one same-origin JSON beside index.html.
+  // 3) v0.3.11 default: one same-origin JSON beside index.html.
   // No GitHub Actions, no CORS proxy, no JSONP, no 66-book recovery loop.
   if(await loadStaticRepoBible()){
     repairUserData(false);showHome();runSelfCheck(false);return;
